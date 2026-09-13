@@ -1,6 +1,6 @@
 # 将来 Marketplace に公開するとき
 
-ソースの公開先は [kawato3/fumen-language-support](https://github.com/kawato3/fumen-language-support) です。VSIX によるローカル利用ができます。Marketplace の発行者登録や拡張の公開はまだ行っていません。
+ソースの公開先は [kawato3/fumen-language-support](https://github.com/kawato3/fumen-language-support) です。Marketplace の発行者 `kawato3`（表示名: Katsushi Kawato）は登録済みです。拡張はまだ Marketplace に公開していませんが、VSIX によるローカル利用ができます。
 
 ## ローカル利用と公開の違い
 
@@ -10,14 +10,14 @@ Marketplace に公開すると、ほかの利用者が拡張機能検索から�
 
 ## 公開前に決める項目
 
-1. **発行者 ID**: Microsoft アカウントで Marketplace の発行者を登録し、`package.json` の `publisher` を実際の ID に変更します。現在の `fumen-local` はローカル用の仮 ID です。
+1. **発行者 ID（登録・設定済み）**: `kawato3`。表示名は `Katsushi Kawato`、`package.json` の `publisher` に反映済みです。
 2. **拡張名**: 現在の `fumen-language-support` が希望する名前で利用可能か確認します。拡張の ID は `発行者ID.拡張名` で決まります。
 3. **公開リポジトリーと連絡先（設定済み）**: [GitHub リポジトリー](https://github.com/kawato3/fumen-language-support) をソースと案内の公開先、[Issues](https://github.com/kawato3/fumen-language-support/issues) を不具合報告・機能要望の窓口とします。`repository`、`homepage`、`bugs` に反映済みです。
 4. **ライセンス（決定済み）**: 独自部分は MIT、著作権表示は `Copyright (c) 2026 Katsushi Kawato` とします。`LICENSE`、`package.json`、ロックファイルに反映済みです。同梱する第三者のライセンス・著作権表示は引き続き保持します。
 5. **紹介内容**: 英語中心の紹介文と短い日本語案内、日英の相互リンクは README に反映済みです。Marketplace 公開時にはソースからの導入案内を更新します。見つけやすさのため、独自のアイコン（PNG）と実際の画面の画像もあると便利です。
 6. **同梱物の表記**: `THIRD_PARTY_NOTICES.md` と `media/vendor/` のライセンスを VSIX に含め、本家のライセンスヘッダーも保持します。独自部分の公開ライセンスを変更しても、同梱物のライセンスは変更しません。
 
-発行者 ID を変えた公開版は、現在のローカル版とは別の拡張になります。移行時は先に `fumen-local.fumen-language-support` をアンインストールしてから公開版を入れ、二重に動かないようにします。譜面ファイルはそのまま使えます。
+現在の拡張 ID は `kawato3.fumen-language-support` で、以前のローカル版とは別の拡張になります。移行時は先に `fumen-local.fumen-language-support` をアンインストールしてから現在の版を入れ、二重に動かないようにします。譜面ファイルはそのまま使えます。
 
 ## 紹介文と言語の方針
 
@@ -39,11 +39,11 @@ npm run check:publish
 npm run package
 ```
 
-`check:publish` は未設定の発行者・公開 URL・ライセンスを検出するローカル確認で、Marketplace への通信も公開も行いません。実際の ID の利用可否や Marketplace の審査条件までは判定しません。初期状態でこのコマンドが失敗するのは意図した動作です。
+`check:publish` は未設定の発行者・公開 URL・ライセンスを検出するローカル確認で、Marketplace への通信も公開も行いません。現在は基本メタデータを設定済みですが、実際の ID の利用可否や Marketplace の審査条件までは判定しません。
 
 生成された VSIX を別の VS Code プロファイルにも入れて動作を確認します。サポートする OS と VS Code の最低バージョンも確認します。
 
-その後、Marketplace の管理画面から VSIX をアップロードするか、`vsce` による公開を行います。アカウント登録・認証・公開は、その段階で改めて実行します。認証情報をリポジトリーに保存しないでください。
+その後、Marketplace の管理画面から VSIX をアップロードするか、`vsce` による公開を行います。公開操作は最終確認後に実行します。認証情報をリポジトリーに保存しないでください。
 
 発行者登録や認証方式は変更されるため、公開時に [Microsoft の最新の公開手順](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) を確認します。初回は管理画面から VSIX をアップロードする方法でも構いません。
 

@@ -19,6 +19,8 @@ Requires VS Code **1.90 or later**. No separate Node.js, Fumen or font installat
 
 This extension is not yet published on the Marketplace. To create a VSIX, build from source using the development instructions below. Install future VSIX versions in the same way.
 
+If you used an earlier local build with the extension ID `fumen-local.fumen-language-support`, uninstall it before installing `kawato3.fumen-language-support` to avoid running both copies. Your `.fumen` files are unaffected.
+
 ## Features
 
 - Syntax highlighting for settings, chords, bar lines, sections, durations, annotations and lyrics.
@@ -80,7 +82,7 @@ Normal builds verify bundled assets locally; `npm run vendor:fumen` restores mis
 
 Static contributions use `package.nls.json` and `package.nls.ja.json`; runtime strings use VS Code's `l10n` API and `l10n/bundle.l10n.ja.json`. English is the fallback. The extension follows VS Code's display language, not OS locale or document contents, and never changes the user's language settings.
 
-Before Marketplace publication, register a publisher ID and follow the [publishing guide](docs/PUBLISHING.md) (Japanese). `npm run check:publish` checks placeholder metadata but does not publish. The current `fumen-local` publisher is temporary. `private: true` prevents npm publication, not Marketplace publication.
+The registered Marketplace publisher is `kawato3`; the extension ID is `kawato3.fumen-language-support`. Follow the [publishing guide](docs/PUBLISHING.md) (Japanese) before publication. `npm run check:publish` checks basic metadata but does not publish. `private: true` prevents npm publication, not Marketplace publication.
 
 ## Feedback
 

@@ -133,4 +133,4 @@ FUMEN_TEST_FILTER='Text measurement' npm run test:integration
 
 ## 公開用メタデータ
 
-現在の発行者 `fumen-local` は仮 ID。`private: true` は npm への誤公開を抑止する設定で、VS Code Marketplace への公開を抑止する設定ではない。公開用の npm スクリプトは用意していない。実際の公開前には [公開ガイド](PUBLISHING.md) を参照する。
+登録済みの発行者は `kawato3`、拡張 ID は `kawato3.fumen-language-support`。`private: true` は npm への誤公開を抑止する設定で、VS Code Marketplace への公開を抑止する設定ではない。公開用の npm スクリプトは用意していない。実際の公開前には [公開ガイド](PUBLISHING.md) を参照する。

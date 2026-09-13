@@ -3,7 +3,7 @@
   "displayName": "Fumen Language Support",
   "description": "%description%",
   "version": "0.4.1",
-  "publisher": "fumen-local",
+  "publisher": "kawato3",
   "private": true,
   "license": "MIT",
   "repository": {
@@ -82,7 +82,7 @@
     "test:integration": "npm run build && npm run compile-tests && node scripts/test-integration.cjs",
     "check": "npm run build && npm test",
     "vscode:prepublish": "npm run build",
-    "package": "npm run check && vsce package --no-dependencies --allow-missing-repository",
+    "package": "npm run check && vsce package --no-dependencies",
     "check:publish": "node scripts/check-publish.cjs"
   },
   "devDependencies": {

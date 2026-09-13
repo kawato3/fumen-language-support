@@ -14,6 +14,8 @@
 
 Marketplace にはまだ公開していません。現時点では、後述の「開発・パッケージ作成」の手順でソースから VSIX を生成してインストールできます。
 
+以前のローカル版 `fumen-local.fumen-language-support` を使っている場合は、先にアンインストールしてから `kawato3.fumen-language-support` を導入してください。二重に動くことを防ぐためです。`.fumen` ファイルには影響しません。
+
 1. このプロジェクトで生成した `fumen-language-support-0.4.1.vsix` を用意します。
 2. VS Code の左側にある「拡張機能」を開きます（macOS: `⌘⇧X`、Windows/Linux: `Ctrl+Shift+X`）。
 3. 拡張機能パネルの右上の `…` →「VSIX からのインストール…」を選び、そのファイルを指定します。
@@ -119,7 +121,7 @@ npm run package
 
 `npm run package` はテストとビルドを実行し、プロジェクト直下に VSIX を生成します。Marketplace への公開や npm への公開は行いません。VS Code の F5 キーでも、開発用の別ウィンドウで試せます。
 
-詳細は [開発ガイド](docs/DEVELOPMENT.md) と [公開ガイド](docs/PUBLISHING.md) を参照してください。公開用の発行者 ID は未設定です。現在の `fumen-local` はローカル開発用の仮 ID です。
+詳細は [開発ガイド](docs/DEVELOPMENT.md) と [公開ガイド](docs/PUBLISHING.md) を参照してください。登録済みの発行者 ID は `kawato3`、拡張 ID は `kawato3.fumen-language-support` です。
 
 ## データの扱い
 
