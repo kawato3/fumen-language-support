@@ -14,7 +14,7 @@ Marketplace に公開すると、ほかの利用者が拡張機能検索から�
 2. **拡張名**: 現在の `fumen-language-support` が希望する名前で利用可能か確認します。拡張の ID は `発行者ID.拡張名` で決まります。
 3. **公開リポジトリーと連絡先（設定済み）**: [GitHub リポジトリー](https://github.com/kawato3/fumen-language-support) をソースと案内の公開先、[Issues](https://github.com/kawato3/fumen-language-support/issues) を不具合報告・機能要望の窓口とします。`repository`、`homepage`、`bugs` に反映済みです。
 4. **ライセンス（決定済み）**: 独自部分は MIT、著作権表示は `Copyright (c) 2026 Katsushi Kawato` とします。`LICENSE`、`package.json`、ロックファイルに反映済みです。同梱する第三者のライセンス・著作権表示は引き続き保持します。
-5. **紹介内容**: 英語中心の紹介文と短い日本語案内、日英の相互リンクは README に反映済みです。Marketplace 公開時にはソースからの導入案内を更新します。見つけやすさのため、独自のアイコン（PNG）と実際の画面の画像もあると便利です。
+5. **紹介内容**: 英語中心の紹介文と短い日本語案内、日英の相互リンクは README に反映済みです。選定済みの「F＋リピート」アイコンは `media/icon.png` に設定済みです。Marketplace 公開時にはソースからの導入案内を更新します。操作が伝わるよう、実際の画面の画像もあると便利です。
 6. **同梱物の表記**: `THIRD_PARTY_NOTICES.md` と `media/vendor/` のライセンスを VSIX に含め、本家のライセンスヘッダーも保持します。独自部分の公開ライセンスを変更しても、同梱物のライセンスは変更しません。
 
 現在の拡張 ID は `kawato3.fumen-language-support` で、以前のローカル版とは別の拡張になります。移行時は先に `fumen-local.fumen-language-support` をアンインストールしてから現在の版を入れ、二重に動かないようにします。譜面ファイルはそのまま使えます。

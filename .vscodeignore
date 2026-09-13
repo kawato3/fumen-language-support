@@ -18,4 +18,5 @@
 !examples/*.fumen
 !media/compiled/**/*.js
 !media/preview.css
+!media/icon.png
 !media/vendor/**

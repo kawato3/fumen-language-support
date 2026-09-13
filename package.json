@@ -1,6 +1,7 @@
 {
   "name": "fumen-language-support",
   "displayName": "Fumen Language Support",
+  "icon": "media/icon.png",
   "description": "%description%",
   "version": "0.4.1",
   "publisher": "kawato3",

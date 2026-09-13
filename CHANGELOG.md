@@ -6,6 +6,7 @@
 - Prepare concise English listing copy with a Japanese introduction and document the bilingual publication approach.
 - Add the public GitHub repository and issue tracker, with links between the English and Japanese READMEs.
 - Set the registered Marketplace publisher to `kawato3` and document migration from the earlier `fumen-local` builds.
+- Add an extension icon featuring an F monogram and repeat dots.
 
 ## 0.4.1 — 2026-09-14
 
