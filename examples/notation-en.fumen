@@ -1,0 +1,15 @@
+%TITLE="Notation and Rhythm"
+%SHOW_STAFF="YES"
+%SHOW_FOOTER="NO"
+
+[Intro]
+| (4/4) 'Slowly' C:2 r:2 | -2- |
+
+[A]
+||: <S> C:4 :4 G7:4 :4 | Am7:2 F:2 |
+| [1.] Dm7:2 G7:2 | C:1 :||
+>| [2.] Dm7:2 G7:2 | C:1 <Fine> ||.
+
+[B]
+| `Lyrics`@ C:2 'Softly'@ G7:2 | C:4. :8~ :2 |
+| <:16 F:2 G7:2 | C:1 <D.S. al Fine> ||

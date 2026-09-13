@@ -127,7 +127,7 @@ test('hover explains notation without analyzing chord names', () => {
 });
 
 test('document examples pass basic diagnostics', () => {
-  for (const name of ['basic', 'notation']) {
+  for (const name of ['basic', 'notation', 'notation-en']) {
     assert.deepEqual(diagnose(readFileSync(`examples/${name}.fumen`, 'utf8')), [], name);
   }
 });

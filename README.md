@@ -8,6 +8,10 @@ Write [Fumen](https://github.com/hbjpn/fumen/) chord charts in VS Code with synt
 
 English is the default. With a Japanese VS Code display language, commands, settings descriptions, completion/hover explanations, diagnostics, preview controls and bundled help appear in Japanese. Each help document includes **日本語 / English** links, so you can read either language without changing VS Code's display language.
 
+![Fumen source with syntax highlighting on the left and its rendered score preview on the right](media/screenshots/editor-preview.jpg)
+
+Edit notation and see the score beside it. Try the [English sample](examples/notation-en.fumen) shown above.
+
 ## Install locally
 
 Requires VS Code **1.90 or later**. No separate Node.js, Fumen or font installation is needed to use the extension.
