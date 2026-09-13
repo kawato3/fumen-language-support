@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 1.0.0
+
+- Provide syntax highlighting, contextual notation completion, snippets, hover help and basic diagnostics, without chord-name suggestions or musical validation.
+- Include offline live previews powered by Fumen 1.3.3, plus English and Japanese cheat sheets and user guides.
 
 - Adopt the MIT license for the extension, retaining all third-party notices and licenses.
 - Prepare concise English listing copy with a Japanese introduction and document the bilingual publication approach.
@@ -8,6 +11,7 @@
 - Set the registered Marketplace publisher to `kawato3` and document migration from the earlier `fumen-local` builds.
 - Add an extension icon featuring an F monogram and repeat dots.
 - Add an English notation sample and a real editor/preview screenshot to both READMEs.
+- Update installation and upgrade instructions for Marketplace users, retaining local VSIX installation as an alternative.
 
 ## 0.4.1 — 2026-09-14
 

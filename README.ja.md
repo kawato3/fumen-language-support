@@ -16,16 +16,16 @@
 
 必要なのは VS Code 1.90 以降だけです。拡張を使うために Node.js や Fumen 本体をインストールする必要はありません。
 
-Marketplace にはまだ公開していません。現時点では、後述の「開発・パッケージ作成」の手順でソースから VSIX を生成してインストールできます。
-
 以前のローカル版 `fumen-local.fumen-language-support` を使っている場合は、先にアンインストールしてから `kawato3.fumen-language-support` を導入してください。二重に動くことを防ぐためです。`.fumen` ファイルには影響しません。
 
-1. このプロジェクトで生成した `fumen-language-support-0.4.1.vsix` を用意します。
-2. VS Code の左側にある「拡張機能」を開きます（macOS: `⌘⇧X`、Windows/Linux: `Ctrl+Shift+X`）。
-3. 拡張機能パネルの右上の `…` →「VSIX からのインストール…」を選び、そのファイルを指定します。
-4. 再読み込みの案内が出たら実行します。
+1. VS Code の左側にある「拡張機能」を開きます（macOS: `⌘⇧X`、Windows/Linux: `Ctrl+Shift+X`）。
+2. 検索欄に `@id:kawato3.fumen-language-support` と入力します。
+3. 発行者が **Katsushi Kawato** の **Fumen Language Support** を選び、「インストール」を押します。
+4. 再読み込みの案内が出たら、未保存の変更を保存してから実行します。
 5. コマンドパレット（macOS: `⌘⇧P`、Windows/Linux: `Ctrl+Shift+P`）を開き、`Fumen: 新しい譜面を作成` を選びます。
 6. 曲名を入力して Tab を押すと、次の記入箇所に移ります。最後に `.fumen` の拡張子で保存します。
+
+ローカル版を使う場合は、拡張機能パネルの `…` →「VSIX からのインストール…」で `fumen-language-support-1.0.0.vsix` を指定します。自分で作成する手順は、後述の「開発・パッケージ作成」を参照してください。
 
 既存の `.fumen` ファイルを開いても自動で有効になります。ウィンドウ右下の言語表示が `Fumen` なら認識されています。
 

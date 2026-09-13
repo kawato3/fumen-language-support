@@ -7,13 +7,13 @@ This extension helps you write `.fumen` chord-chart files. It assists with notat
 ## 1. Install or update
 
 1. In VS Code, open the Extensions view.
-2. Open its `…` menu and choose **Install from VSIX…**.
-3. Select `fumen-language-support-0.4.1.vsix`.
-4. Save any unsaved work, then run **Developer: Reload Window** from the Command Palette.
+2. Search for `@id:kawato3.fumen-language-support`.
+3. Select **Fumen Language Support** by **Katsushi Kawato** and click **Install**.
+4. If VS Code asks to reload, save any unsaved work first.
 
 Open the Command Palette with `Cmd+Shift+P` on macOS or `Ctrl+Shift+P` on Windows/Linux. Search for `Fumen` to see the extension's commands.
 
-This is currently a local package, not a Marketplace release. Later VSIX versions can be installed in the same way; uninstalling first is unnecessary.
+Manage updates from the Extensions view. For a local build, choose **… → Install from VSIX…** and select the `.vsix` file; install newer local builds in the same way. If you used the earlier `fumen-local.fumen-language-support` extension, uninstall that copy first to avoid running both versions. Your score files are unaffected.
 
 ## 2. Start a score
 

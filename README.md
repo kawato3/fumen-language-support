@@ -12,16 +12,16 @@ English is the default. With a Japanese VS Code display language, commands, sett
 
 Edit notation and see the score beside it. Try the [English sample](examples/notation-en.fumen) shown above.
 
-## Install locally
+## Install
 
 Requires VS Code **1.90 or later**. No separate Node.js, Fumen or font installation is needed to use the extension.
 
 1. Open the Extensions view in VS Code.
-2. Choose **… → Install from VSIX…** and select `fumen-language-support-0.4.1.vsix`.
-3. Save your work, then run **Developer: Reload Window** if an older version is already active.
+2. Search for `@id:kawato3.fumen-language-support`.
+3. Select **Fumen Language Support** by **Katsushi Kawato** and click **Install**.
 4. Open a `.fumen` file or run **Fumen: New Score** from the Command Palette.
 
-This extension is not yet published on the Marketplace. To create a VSIX, build from source using the development instructions below. Install future VSIX versions in the same way.
+To install a local build instead, choose **… → Install from VSIX…** and select `fumen-language-support-1.0.0.vsix`. See the development instructions below to build it yourself. If VS Code asks to reload after an update, save your work first.
 
 If you used an earlier local build with the extension ID `fumen-local.fumen-language-support`, uninstall it before installing `kawato3.fumen-language-support` to avoid running both copies. Your `.fumen` files are unaffected.
 
