@@ -1,0 +1,8 @@
+node_modules/
+out/
+out-test/
+.vscode-test/
+*.vsix
+.DS_Store
+*.log
+media/compiled/

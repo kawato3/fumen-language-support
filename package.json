@@ -1,0 +1,98 @@
+{
+  "name": "fumen-language-support",
+  "displayName": "Fumen Language Support",
+  "description": "%description%",
+  "version": "0.4.1",
+  "publisher": "fumen-local",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kawato3/fumen-language-support.git"
+  },
+  "homepage": "https://github.com/kawato3/fumen-language-support#readme",
+  "bugs": {
+    "url": "https://github.com/kawato3/fumen-language-support/issues"
+  },
+  "engines": { "vscode": "^1.90.0", "node": ">=22" },
+  "categories": ["Programming Languages", "Snippets"],
+  "keywords": ["fumen", "chord chart", "leadsheet", "譜面"],
+  "main": "./out/extension.js",
+  "l10n": "./l10n",
+  "extensionKind": ["workspace"],
+  "capabilities": {
+    "untrustedWorkspaces": { "supported": true },
+    "virtualWorkspaces": { "supported": true }
+  },
+  "contributes": {
+    "languages": [{
+      "id": "fumen",
+      "aliases": ["Fumen", "fumen"],
+      "extensions": [".fumen"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{ "language": "fumen", "scopeName": "source.fumen", "path": "./syntaxes/fumen.tmLanguage.json" }],
+    "snippets": [{ "language": "fumen", "path": "./snippets/fumen.json" }],
+    "commands": [
+      { "command": "fumen.newScore", "title": "%command.newScore%", "category": "Fumen" },
+      { "command": "fumen.insertTemplate", "title": "%command.insertTemplate%", "category": "Fumen", "enablement": "editorLangId == fumen" },
+      { "command": "fumen.openPreview", "title": "%command.openPreview%", "category": "Fumen", "icon": "$(open-preview)", "enablement": "editorLangId == fumen" },
+      { "command": "fumen.openCheatSheet", "title": "%command.openCheatSheet%", "category": "Fumen", "icon": "$(book)" },
+      { "command": "fumen.openGuide", "title": "%command.openGuide%", "category": "Fumen" }
+    ],
+    "menus": {
+      "editor/title": [
+        { "command": "fumen.openPreview", "when": "resourceLangId == fumen", "group": "navigation@1" },
+        { "command": "fumen.openCheatSheet", "when": "resourceLangId == fumen", "group": "navigation@2" }
+      ]
+    },
+    "keybindings": [{
+      "command": "fumen.openPreview", "key": "ctrl+k v", "mac": "cmd+k v",
+      "when": "editorTextFocus && editorLangId == fumen && !notebookEditorFocused"
+    }],
+    "configuration": {
+      "title": "Fumen",
+      "properties": {
+        "fumen.diagnostics.enabled": {
+          "type": "boolean", "default": true,
+          "description": "%config.diagnostics.enabled%",
+          "scope": "resource"
+        },
+        "fumen.diagnostics.delay": {
+          "type": "number", "default": 700, "minimum": 200, "maximum": 5000,
+          "description": "%config.diagnostics.delay%",
+          "scope": "resource"
+        }
+      }
+    },
+    "configurationDefaults": {
+      "[fumen]": {
+        "editor.wordBasedSuggestions": "off",
+        "editor.quickSuggestions": { "other": "off", "comments": "off", "strings": "off" }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node scripts/vendor-fumen.cjs --check && tsc -p tsconfig.json && tsc -p tsconfig.webview.json",
+    "watch": "tsc -p tsconfig.json --watch",
+    "watch:webview": "tsc -p tsconfig.webview.json --watch",
+    "vendor:fumen": "node scripts/vendor-fumen.cjs",
+    "compile-tests": "tsc -p tsconfig.test.json",
+    "test": "npm run compile-tests && node --test out-test/test/unit/*.test.js",
+    "test:integration": "npm run build && npm run compile-tests && node scripts/test-integration.cjs",
+    "check": "npm run build && npm test",
+    "vscode:prepublish": "npm run build",
+    "package": "npm run check && vsce package --no-dependencies --allow-missing-repository",
+    "check:publish": "node scripts/check-publish.cjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "1.90.0",
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "3.9.2",
+    "typescript": "~5.9.3",
+    "markdown-it": "14.3.2",
+    "vscode-oniguruma": "2.0.1",
+    "vscode-textmate": "9.3.2"
+  }
+}

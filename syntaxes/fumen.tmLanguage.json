@@ -1,0 +1,68 @@
+{
+  "name": "Fumen",
+  "scopeName": "source.fumen",
+  "patterns": [
+    { "include": "#variable" },
+    { "include": "#text" },
+    { "name": "keyword.control.alignment.fumen", "match": "^\\s*[<>](?=\\s*(?:\\||:\\|))" },
+    {
+      "name": "meta.section.fumen", "contentName": "entity.name.section.fumen",
+      "begin": "^\\s*(\\[)", "end": "\\]",
+      "beginCaptures": { "1": { "name": "punctuation.definition.section.begin.fumen" } },
+      "endCaptures": { "0": { "name": "punctuation.definition.section.end.fumen" } }
+    },
+    {
+      "name": "constant.other.volta.fumen", "begin": "\\[", "end": "\\]",
+      "beginCaptures": { "0": { "name": "punctuation.definition.volta.begin.fumen" } },
+      "endCaptures": { "0": { "name": "punctuation.definition.volta.end.fumen" } }
+    },
+    { "name": "keyword.control.repeat.fumen", "begin": "<(?=[A-Za-z])", "end": ">" },
+    { "name": "keyword.control.bar.fumen", "match": "\\./\\|/\\.|:\\|\\|:?(?:x(?:[0-9]+|X))?|\\|\\|[.:]?|\\|" },
+    { "name": "constant.numeric.time.fumen", "match": "\\([0-9]+/[0-9]+\\)" },
+    { "name": "keyword.control.syncopation.fumen", "match": "<(?=:)" },
+    { "name": "constant.other.rest.fumen", "match": "(?<!\\w)r(?=:)|(?<!\\w)-[0-9]+-" },
+    { "name": "keyword.control.simile.fumen", "match": "\\./+\\." },
+    { "include": "#duration" },
+    {
+      "name": "support.type.chord.fumen",
+      "begin": "(?<![\\w/])(?=[A-G])|/(?=[A-G])",
+      "end": "(?=\\s|[|\\[\\]<>\"'`@]|$)",
+      "patterns": [{ "include": "#duration" }]
+    },
+    { "name": "punctuation.separator.fumen", "match": "[, @]" },
+    { "name": "punctuation.separator.continuation.fumen", "match": "\\\\$" }
+  ],
+  "repository": {
+    "variable": {
+      "patterns": [
+        {
+          "name": "meta.variable.fumen",
+          "begin": "(%)([A-Za-z_][A-Za-z_0-9]*)(?=\\s*=)",
+          "beginCaptures": {
+            "1": { "name": "punctuation.definition.variable.fumen" },
+            "2": { "name": "variable.other.setting.fumen" }
+          },
+          "end": "$",
+          "patterns": [
+            {
+              "name": "string.quoted.double.json.fumen", "begin": "\"", "end": "\"|(?=$)",
+              "patterns": [{ "name": "constant.character.escape.fumen", "match": "\\\\(?:[\"\\\\/bfnrt]|u[0-9a-fA-F]{4})" }]
+            },
+            { "name": "keyword.operator.assignment.fumen", "match": "=" },
+            { "name": "constant.language.json.fumen", "match": "\\b(?:true|false|null)\\b" },
+            { "name": "constant.numeric.json.fumen", "match": "-?\\b[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b" }
+          ]
+        },
+        { "name": "variable.other.setting.fumen", "match": "%[A-Za-z_0-9]*" }
+      ]
+    },
+    "text": {
+      "patterns": [
+        { "name": "string.quoted.single.annotation.fumen", "begin": "'", "end": "'" },
+        { "name": "string.quoted.other.lyric.fumen", "begin": "`", "end": "`" },
+        { "name": "string.quoted.double.text.fumen", "begin": "\"", "end": "\"" }
+      ]
+    },
+    "duration": { "name": "constant.numeric.duration.fumen", "match": ":[0-9]+(?:_[0-9]+)?\\.*~?" }
+  }
+}

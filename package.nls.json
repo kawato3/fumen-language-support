@@ -1,0 +1,10 @@
+{
+  "description": "Syntax highlighting, snippets and offline live previews for Fumen chord charts.",
+  "command.newScore": "New Score",
+  "command.insertTemplate": "Insert Template",
+  "command.openPreview": "Open Preview to the Side",
+  "command.openCheatSheet": "Open Cheat Sheet",
+  "command.openGuide": "Open User Guide",
+  "config.diagnostics.enabled": "Check setting values and unclosed delimiters. Chord names and musical content are not validated.",
+  "config.diagnostics.delay": "Delay in milliseconds after typing stops before updating diagnostics."
+}

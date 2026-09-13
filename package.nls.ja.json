@@ -1,0 +1,10 @@
+{
+  "description": "Fumen の譜面作成を、構文の色分け・スニペット・オフラインのリアルタイムプレビューで支援します。",
+  "command.newScore": "新しい譜面を作成",
+  "command.insertTemplate": "ひな形を挿入",
+  "command.openPreview": "横にプレビューを開く",
+  "command.openCheatSheet": "チートシートを開く",
+  "command.openGuide": "使い方を開く",
+  "config.diagnostics.enabled": "設定値と閉じ忘れの基本チェックを有効にします。コード名や音楽的な内容は検証しません。",
+  "config.diagnostics.delay": "入力が止まってからエラー表示を更新するまでの時間（ミリ秒）。"
+}
