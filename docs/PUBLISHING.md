@@ -1,8 +1,18 @@
 # Marketplace 公開ガイド
 
-ソースの公開先は [kawato3/fumen-language-support](https://github.com/kawato3/fumen-language-support) です。Marketplace の発行者 `kawato3`（表示名: Katsushi Kawato）は登録済みです。拡張はまだ Marketplace に公開していませんが、VSIX によるローカル利用ができます。
+ソースの公開先は [kawato3/fumen-language-support](https://github.com/kawato3/fumen-language-support) です。Marketplace の発行者は `kawato3`（表示名: Katsushi Kawato）です。[Fumen Language Support](https://marketplace.visualstudio.com/items?itemName=kawato3.fumen-language-support) を Marketplace に公開しています。
 
-現在の公開候補は **1.0.1** です。1.0.0 のローカル印刷の不具合を修正した版です。README と同梱の操作ガイドは公開後の導入手順に更新済みですが、それ自体は公開完了を意味しません。アップロードは所有者の最終確認後に行います。既に `kawato3.fumen-language-support` の1.0.0が入っている場合、アンインストールせず更新できます。
+現在の公開版は **1.0.1** です。1.0.0 のローカル印刷の不具合を修正した版を、2026-09-14 に初めて Marketplace へ公開しました。VS Code の拡張機能検索で `@id:kawato3.fumen-language-support` を指定してインストールできます。既に同じ拡張 ID の1.0.0が入っている場合、アンインストールせず更新できます。
+
+## Marketplace 公開結果（2026-09-14）
+
+- 発行者管理画面から検証済みの `fumen-language-support-1.0.1.vsix` をアップロードし、Marketplace 側の検証が完了して `Public` になったことを確認しました。プレリリースではなく通常の公開版です。
+- 公開直前にビルド・単体テスト68件・公開メタデータ確認を再実行しました。ソースのコミット `e674986` から別の一時フォルダーに作った VSIX と、アップロードする既存 VSIX の全52エントリーの内容がバイト単位で一致しています。アップロードしたファイルの SHA-256 は、下記の1.0.1の記録と同じです。
+- 公開ページで、拡張名・発行者名・1.0.1の表示、アイコン、編集画面とプレビューの紹介画像、英語の説明と日本語 README へのリンクを確認しました。
+- macOS の VS Code 1.137.0 で、専用のユーザーデータ・拡張ディレクトリーを指定し、ローカル VSIX ではなく Marketplace から `kawato3.fumen-language-support@1.0.1` を新規インストールしました。登録元が `gallery`、版が1.0.1、通常の公開版であることを確認しました。
+- インストールされた拡張50ファイルは、インストーラーが追加するメタデータを除いてアップロード済み VSIX と一致しました。そのインストール先を `FUMEN_TEST_EXTENSION_PATH` に指定し、隔離プロファイルの VS Code 1.137.0（英語）で統合テスト17件がすべて成功しました。
+
+普段使いの VS Code の拡張・設定は変更していません。この公開確認では Chrome の実印刷・PDF 生成を再実行しておらず、Windows・Linux・Remote の実機確認も追加していません。以下は公開前の時点で行った検証の履歴です。
 
 ## GitHub 反映前の再確認（2026-09-14）
 
@@ -79,7 +89,7 @@ Marketplace に公開すると、ほかの利用者が拡張機能検索から�
 ## 公開前に決める項目
 
 1. **発行者 ID（登録・設定済み）**: `kawato3`。表示名は `Katsushi Kawato`、`package.json` の `publisher` に反映済みです。
-2. **拡張名**: 現在の `fumen-language-support` が希望する名前で利用可能か確認します。拡張の ID は `発行者ID.拡張名` で決まります。
+2. **拡張名（公開済み）**: `fumen-language-support`。拡張の ID は `kawato3.fumen-language-support` です。
 3. **公開リポジトリーと連絡先（設定済み）**: [GitHub リポジトリー](https://github.com/kawato3/fumen-language-support) をソースと案内の公開先、[Issues](https://github.com/kawato3/fumen-language-support/issues) を不具合報告・機能要望の窓口とします。`repository`、`homepage`、`bugs` に反映済みです。
 4. **ライセンス（決定済み）**: 独自部分は MIT、著作権表示は `Copyright (c) 2026 Katsushi Kawato` とします。`LICENSE`、`package.json`、ロックファイルに反映済みです。同梱する第三者のライセンス・著作権表示は引き続き保持します。
 5. **紹介内容（準備済み）**: 英語中心の紹介文と短い日本語案内、日英の相互リンクは README に反映済みです。選定済みの「F＋リピート」アイコンは `media/icon.png` に設定済みです。英語サンプルの編集画面とプレビューを撮影した画像 `media/screenshots/editor-preview.jpg` を、日英両方の README に掲載しています。導入案内は Marketplace 中心に更新済みで、ローカル VSIX の手順も残しています。
