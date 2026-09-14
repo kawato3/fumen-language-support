@@ -3,6 +3,7 @@ import { NEW_SCORE, TEMPLATES } from './catalog';
 import { complete, diagnose, hover } from './language';
 import { PreviewManager } from './preview';
 import { helpFile } from './localization';
+import { formattingEdits } from './formatting';
 
 const MAX_DOCUMENT_LENGTH = 500_000;
 
@@ -51,6 +52,13 @@ export function activate(context: vscode.ExtensionContext): { preview: PreviewMa
   context.subscriptions.push(
     diagnostics,
     { dispose: () => { for (const timer of timers.values()) clearTimeout(timer); timers.clear(); } },
+    vscode.languages.registerDocumentFormattingEditProvider(selector, {
+      provideDocumentFormattingEdits(document, _options, token) {
+        if (token.isCancellationRequested) return [];
+        return formattingEdits(document.getText()).map(edit =>
+          vscode.TextEdit.replace(range(document, edit.start, edit.end), edit.text));
+      }
+    }),
     vscode.languages.registerCompletionItemProvider(selector, {
       provideCompletionItems(document, position) {
         const text = document.getText();

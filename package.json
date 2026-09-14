@@ -16,7 +16,7 @@
     "url": "https://github.com/kawato3/fumen-language-support/issues"
   },
   "engines": { "vscode": "^1.90.0", "node": ">=22" },
-  "categories": ["Programming Languages", "Snippets"],
+  "categories": ["Programming Languages", "Snippets", "Formatters"],
   "keywords": ["fumen", "chord chart", "leadsheet", "譜面"],
   "main": "./out/extension.js",
   "l10n": "./l10n",

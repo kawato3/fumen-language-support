@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import type { PreviewManager } from '../../src/preview';
 import { createTranslator } from '../../src/localization';
 import { editingTests } from './editing.test';
+import { formattingTests } from './formatting.test';
 import { helpTests } from './help.test';
 import { Fixture, TestEnvironment } from './helpers';
 import { previewTests } from './preview.test';
@@ -31,7 +32,7 @@ export async function run(): Promise<void> {
   console.log(`VS Code ${vscode.version}; language ${vscode.env.language}; trusted ${vscode.workspace.isTrusted}`);
 
   const failures: Error[] = [];
-  const cases = [...editingTests, ...previewTests, ...helpTests]
+  const cases = [...editingTests, ...formattingTests, ...previewTests, ...helpTests]
     .filter(test => test.name.includes(process.env.FUMEN_TEST_FILTER || ''));
   assert.ok(cases.length, 'The test filter must select at least one case');
   // The official test-electron runner accepts an async run function. Named cases
