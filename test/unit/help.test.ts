@@ -49,7 +49,7 @@ for (const locale of ['en', 'ja']) {
   });
 }
 
-test('help is discoverable and only the context-scoped preview has a default shortcut', () => {
+test('help and preview are discoverable, with only one extension-owned default shortcut', () => {
   const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
   const help = manifest.contributes.commands.find((item: { command: string }) => item.command === 'fumen.openCheatSheet');
   assert.equal(help.title, '%command.openCheatSheet%');
@@ -59,6 +59,11 @@ test('help is discoverable and only the context-scoped preview has a default sho
   assert.equal(help.enablement, undefined, 'Help can open without an active Fumen editor');
   assert.ok(manifest.contributes.menus['editor/title'].some((item: { command: string; when: string }) =>
     item.command === help.command && item.when === 'resourceLangId == fumen'));
+  assert.deepEqual(manifest.contributes.menus['editor/context'].map((item: { command: string; when: string }) =>
+    ({ command: item.command, when: item.when })), [
+    { command: 'fumen.openPreview', when: 'resourceLangId == fumen' },
+    { command: 'fumen.openCheatSheet', when: 'resourceLangId == fumen' }
+  ]);
   assert.deepEqual(manifest.contributes.keybindings, [{
     command: 'fumen.openPreview', key: 'ctrl+k v', mac: 'cmd+k v',
     when: 'editorTextFocus && editorLangId == fumen && !notebookEditorFocused'

@@ -42,6 +42,10 @@
       { "command": "fumen.openGuide", "title": "%command.openGuide%", "category": "Fumen" }
     ],
     "menus": {
+      "editor/context": [
+        { "command": "fumen.openPreview", "when": "resourceLangId == fumen", "group": "2_fumen@1" },
+        { "command": "fumen.openCheatSheet", "when": "resourceLangId == fumen", "group": "2_fumen@2" }
+      ],
       "editor/title": [
         { "command": "fumen.openPreview", "when": "resourceLangId == fumen", "group": "navigation@1" },
         { "command": "fumen.openCheatSheet", "when": "resourceLangId == fumen", "group": "navigation@2" }
