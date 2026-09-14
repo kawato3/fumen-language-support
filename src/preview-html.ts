@@ -21,6 +21,7 @@ export function previewHtml(resources: { script: string; library: string; style:
       <button id="fit" type="button" aria-pressed="true">${escape(t('Fit to Width'))}</button>
       <span id="zoom" aria-live="off"></span>
       <button id="refresh" type="button" title="${escape(t('Reload preview'))}">${escape(t('Reload'))}</button>
+      <button id="print" type="button" disabled title="${escape(t('Open Print View in Chrome'))}">${escape(t('Print / PDF'))}</button>
     </div>
     <p id="status" role="status" aria-live="polite">${escape(t('Preparing preview…'))}</p>
   </header>

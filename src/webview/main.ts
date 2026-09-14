@@ -1,7 +1,6 @@
 import { MAX_PREVIEW_LENGTH, PreviewInput, PreviewStatus } from '../preview-protocol.js';
 import { RenderQueue } from './render-queue.js';
-import { CanvasBudget, checkLayout } from './layout-safety.js';
-import { MeasurementCacheBudget } from './measurement-budget.js';
+import { ScoreRenderer, releasePages as release } from './score.js';
 import { createTranslator } from '../localization.js';
 
 declare function acquireVsCodeApi(): {
@@ -9,23 +8,19 @@ declare function acquireVsCodeApi(): {
   getState(): SavedState | undefined;
   setState(state: SavedState): void;
 };
-interface Track { childNodes?: Track[]; name?: string; value?: unknown; getVariable(name: string): unknown }
-declare const Fumen: {
-  Parser: new (error: (message: string) => void) => { parse(text: string): Track | null };
-  DefaultRenderer: new (provider: () => HTMLCanvasElement, options: object) => { render(track: Track): Promise<unknown> };
-};
 interface SavedState { uri: string; zoom: number | 'fit'; top: number; left: number; lastGood?: string }
 type Input = PreviewInput & { error?: string };
 
 const vscode = acquireVsCodeApi();
 // Only extension-owned translations cross this boundary, never score text or executable code.
 const t = createTranslator(JSON.parse(document.body.dataset.l10n || '{}'));
-const measurementBudget = new MeasurementCacheBudget(t);
+const renderer = new ScoreRenderer(t);
 const viewport = document.getElementById('viewport')!;
 const pages = document.getElementById('pages')!;
 const status = document.getElementById('status')!;
 const fit = document.getElementById('fit')!;
 const zoomLabel = document.getElementById('zoom')!;
+const printButton = document.getElementById('print') as HTMLButtonElement;
 const previous = vscode.getState();
 let saved: SavedState = previous && typeof previous.uri === 'string'
   ? { ...previous, zoom: previous.zoom === 'fit' ? 'fit' : clampZoom(previous.zoom), top: previous.top || 0, left: previous.left || 0 }
@@ -38,11 +33,8 @@ let restoringScroll = false;
 function clampZoom(value: number): number { return Number.isFinite(value) ? Math.max(0.25, Math.min(2, value)) : 1; }
 function canvases(): HTMLCanvasElement[] { return [...pages.querySelectorAll('canvas')]; }
 function persist(): void { vscode.setState(saved); }
-function release(container: HTMLElement): void {
-  for (const canvas of container.querySelectorAll('canvas')) { canvas.width = 0; canvas.height = 0; }
-  container.replaceChildren();
-}
 function report(input: PreviewInput, state: PreviewStatus['state'], message: string): void {
+  printButton.disabled = state !== 'rendered';
   status.textContent = message;
   status.dataset.state = state;
   vscode.postMessage({ type: 'status', uri: input.uri, revision: input.revision, state, pages: pages.childElementCount, message } satisfies PreviewStatus);
@@ -78,60 +70,7 @@ function replacePages(container: HTMLElement): void {
   requestAnimationFrame(() => { restoringScroll = false; });
 }
 
-async function renderScore(text: string, current: () => boolean): Promise<HTMLElement> {
-  if (typeof Fumen === 'undefined') throw new Error(t("Could not load the rendering library. Try Reload."));
-  let parseError = '';
-  const track = new Fumen.Parser(message => { parseError = message; }).parse(text);
-  if (!track) throw new Error(parseError || t("Fumen could not parse this notation."));
-  checkLayout(track, t);
-  measurementBudget.reserve(track.getVariable('PARAM'), window.devicePixelRatio || 1);
-  const container = document.createElement('div');
-  const budget = new CanvasBudget(undefined, t);
-  let cancelled = false;
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  try {
-    const renderer = new Fumen.DefaultRenderer(() => {
-      if (cancelled || !current()) throw new Error('Superseded render');
-      if (container.childElementCount >= 100) throw new Error(t("The preview supports up to 100 pages. Split the score into smaller files."));
-      const canvas = document.createElement('canvas');
-      // Only instrument canvases supplied to Fumen; never modify the browser's global prototype.
-      for (const dimension of ['width', 'height'] as const) {
-        const native = Object.getOwnPropertyDescriptor(HTMLCanvasElement.prototype, dimension)!;
-        Object.defineProperty(canvas, dimension, {
-          get: () => native.get!.call(canvas) as number,
-          set: (value: number) => {
-            budget.resize(canvas, dimension === 'width' ? value : canvas.width, dimension === 'height' ? value : canvas.height);
-            native.set!.call(canvas, value);
-          }
-        });
-      }
-      canvas.setAttribute('role', 'img');
-      canvas.setAttribute('aria-label', t('Score page {0}. The content is available in the source text.', container.childElementCount + 1));
-      container.append(canvas);
-      return canvas;
-    }, { preset: 'A4' });
-    await Promise.race([
-      renderer.render(track),
-      new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error(t("Rendering did not finish. Try Reload."))), 15_000); })
-    ]);
-    for (const canvas of container.querySelectorAll('canvas')) {
-      const width = parseFloat(canvas.style.width), height = parseFloat(canvas.style.height);
-      if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0 || width > 8192 || height > 16384) {
-        throw new Error(t("This paper size cannot be previewed. Check the dimensions in %PARAM."));
-      }
-      canvas.dataset.width = String(width);
-      canvas.dataset.height = String(height);
-    }
-    return container;
-  } catch (error) {
-    cancelled = true;
-    release(container);
-    throw error;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
+const renderScore = (text: string, current: () => boolean) => renderer.render(text, current);
 const queue = new RenderQueue<Input, HTMLElement>({
   async render(input, current) {
     // Webview contexts are discarded when hidden. Restore the last valid image from local state.
@@ -195,6 +134,9 @@ document.getElementById('zoom-out')!.addEventListener('click', () => setZoom(cla
 document.getElementById('zoom-in')!.addEventListener('click', () => setZoom(clampZoom(Math.round((actualZoom + 0.1) * 100) / 100)));
 fit.addEventListener('click', () => setZoom('fit'));
 document.getElementById('refresh')!.addEventListener('click', () => vscode.postMessage({ type: 'refresh' }));
+printButton.addEventListener('click', () => {
+  if (!printButton.disabled) vscode.postMessage({ type: 'print', uri: saved.uri, revision: latestRevision });
+});
 viewport.addEventListener('scroll', () => {
   if (restoringScroll) return;
   saved.top = viewport.scrollTop;

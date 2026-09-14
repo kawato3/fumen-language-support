@@ -9,12 +9,13 @@ import { formattingTests } from './formatting.test';
 import { helpTests } from './help.test';
 import { Fixture, TestEnvironment } from './helpers';
 import { previewTests } from './preview.test';
+import { printingTests } from './printing.test';
 
 export async function run(): Promise<void> {
   const manifest = JSON.parse(readFileSync(path.resolve(__dirname, '../../../package.json'), 'utf8')) as { publisher: string; name: string };
   const extension = vscode.extensions.getExtension(`${manifest.publisher}.${manifest.name}`);
   assert.ok(extension, 'Extension is discoverable');
-  const api = await extension.activate() as { preview: PreviewManager };
+  const api = await extension.activate() as { preview: PreviewManager; globalStorageUri: vscode.Uri };
   assert.ok(extension.isActive);
   assert.equal(vscode.env.language, process.env.FUMEN_TEST_LOCALE || 'en', 'Actual VS Code display language');
   if (process.env.FUMEN_VSCODE_VERSION && /^\d+\.\d+\.\d+$/.test(process.env.FUMEN_VSCODE_VERSION)) {
@@ -23,16 +24,16 @@ export async function run(): Promise<void> {
   if (process.env.FUMEN_TEST_RESTRICTED) assert.equal(vscode.workspace.isTrusted, false, 'Restricted mode is actually active');
   const japanese = /^ja(?:-|$)/i.test(vscode.env.language);
   const environment: TestEnvironment = {
-    extension, preview: api.preview, japanese,
+    extension, preview: api.preview, globalStorageUri: api.globalStorageUri, japanese,
     t: createTranslator(japanese ? JSON.parse(readFileSync(path.join(extension.extensionPath, 'l10n/bundle.l10n.ja.json'), 'utf8')) : {})
   };
   // Manifest and runtime translations are separate VS Code mechanisms.
   const title = extension.packageJSON.contributes.commands.find((command: { command: string }) => command.command === 'fumen.openCheatSheet').title;
   assert.equal(typeof title === 'string' ? title : title.value, japanese ? 'チートシートを開く' : 'Open Cheat Sheet');
-  console.log(`VS Code ${vscode.version}; language ${vscode.env.language}; trusted ${vscode.workspace.isTrusted}`);
+  console.log(`VS Code ${vscode.version}; language ${vscode.env.language}; trusted ${vscode.workspace.isTrusted}; storage ${api.globalStorageUri.scheme}`);
 
   const failures: Error[] = [];
-  const cases = [...editingTests, ...formattingTests, ...previewTests, ...helpTests]
+  const cases = [...editingTests, ...formattingTests, ...previewTests, ...printingTests, ...helpTests]
     .filter(test => test.name.includes(process.env.FUMEN_TEST_FILTER || ''));
   assert.ok(cases.length, 'The test filter must select at least one case');
   // The official test-electron runner accepts an async run function. Named cases

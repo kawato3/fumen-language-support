@@ -62,8 +62,9 @@ test('help and preview are discoverable, with only one extension-owned default s
   assert.deepEqual(manifest.contributes.menus['editor/context'].map((item: { command: string; when: string }) =>
     ({ command: item.command, when: item.when })), [
     { command: 'fumen.openPreview', when: 'resourceLangId == fumen' },
-    { command: 'fumen.openCheatSheet', when: 'resourceLangId == fumen' }
-  ]);
+    { command: 'fumen.openCheatSheet', when: 'resourceLangId == fumen' },
+    { command: 'fumen.openPrint', when: 'resourceLangId == fumen' }
+  ], 'Fumen-only actions; Format Document is supplied by VS Code, not duplicated');
   assert.deepEqual(manifest.contributes.keybindings, [{
     command: 'fumen.openPreview', key: 'ctrl+k v', mac: 'cmd+k v',
     when: 'editorTextFocus && editorLangId == fumen && !notebookEditorFocused'

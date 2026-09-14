@@ -3,6 +3,8 @@
   "command.newScore": "New Score",
   "command.insertTemplate": "Insert Template",
   "command.openPreview": "Open Preview to the Side",
+  "command.openPrint": "Open Print View in Chrome",
+  "config.print.chromePath": "Optional absolute path to the Google Chrome executable. Leave empty to detect a standard installation. Used only for local printing; workspace settings cannot override this path.",
   "command.openCheatSheet": "Open Cheat Sheet",
   "command.openGuide": "Open User Guide",
   "config.diagnostics.enabled": "Check setting values and unclosed delimiters. Chord names and musical content are not validated.",

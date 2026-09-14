@@ -4,13 +4,18 @@ import { complete, diagnose, hover } from './language';
 import { PreviewManager } from './preview';
 import { helpFile } from './localization';
 import { formattingEdits } from './formatting';
+import { PrintManager } from './printing';
 
 const MAX_DOCUMENT_LENGTH = 500_000;
+let printing: PrintManager | undefined;
 
-export function activate(context: vscode.ExtensionContext): { preview: PreviewManager } | undefined {
+export function activate(context: vscode.ExtensionContext): { preview: PreviewManager; globalStorageUri: vscode.Uri } | undefined {
   const t = vscode.l10n.t;
-  const preview = new PreviewManager(context);
-  context.subscriptions.push(preview);
+  printing = new PrintManager(context);
+  const printer = printing;
+  const preview = new PreviewManager(context, document => printer.open(document));
+  context.subscriptions.push(preview, printer,
+    vscode.commands.registerCommand('fumen.openPrint', () => printer.open(vscode.window.activeTextEditor?.document)));
   const selector: vscode.DocumentSelector = { language: 'fumen' };
   const diagnostics = vscode.languages.createDiagnosticCollection('fumen');
   const timers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -137,6 +142,8 @@ export function activate(context: vscode.ExtensionContext): { preview: PreviewMa
     })
   );
   vscode.workspace.textDocuments.forEach(validate);
-  // Test builds can observe actual webview render completion without a production debug command.
-  return context.extensionMode === vscode.ExtensionMode.Test ? { preview } : undefined;
+  // Tests observe real rendering and storage without a production debug command or a fabricated file URI.
+  return context.extensionMode === vscode.ExtensionMode.Test ? { preview, globalStorageUri: context.globalStorageUri } : undefined;
 }
+
+export async function deactivate(): Promise<void> { await printing?.close(); printing = undefined; }

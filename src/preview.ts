@@ -15,7 +15,7 @@ export class PreviewManager implements vscode.Disposable {
   readonly onDidChangeStatus = this.statusChanged.event;
   status?: PreviewStatus;
 
-  constructor(private readonly context: vscode.ExtensionContext) {
+  constructor(private readonly context: vscode.ExtensionContext, private readonly print?: (document: vscode.TextDocument) => Promise<void>) {
     this.subscriptions.push(
       vscode.commands.registerCommand('fumen.openPreview', () => this.open()),
       vscode.workspace.onDidChangeTextDocument(event => {
@@ -55,6 +55,11 @@ export class PreviewManager implements vscode.Disposable {
         const type = (message as { type?: unknown }).type;
         if (type === 'ready') { this.ready = true; this.send(); }
         else if (type === 'refresh') this.reload();
+        else if (type === 'print') {
+          const request = message as { uri?: unknown; revision?: unknown };
+          if (this.document && this.status?.state === 'rendered' && request.uri === this.document.uri.toString()
+            && request.revision === this.revision) void this.print?.(this.document);
+        }
         else if (isPreviewStatus(message) && message.uri === this.document?.uri.toString() && message.revision === this.revision) {
           this.status = message;
           this.statusChanged.fire(message);

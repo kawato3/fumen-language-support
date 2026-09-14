@@ -16,8 +16,16 @@
 !docs/CHEATSHEET.ja.md
 !docs/QUICKSTART.ja.md
 !examples/*.fumen
-!media/compiled/**/*.js
+!media/compiled/print.js
+!media/compiled/localization.js
+!media/compiled/preview-protocol.js
+!media/compiled/webview/main.js
+!media/compiled/webview/score.js
+!media/compiled/webview/render-queue.js
+!media/compiled/webview/layout-safety.js
+!media/compiled/webview/measurement-budget.js
 !media/preview.css
+!media/print.css
 !media/icon.png
 !media/screenshots/editor-preview.jpg
 !media/vendor/**

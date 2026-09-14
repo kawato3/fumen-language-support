@@ -3,7 +3,7 @@
   "displayName": "Fumen Language Support",
   "icon": "media/icon.png",
   "description": "%description%",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "kawato3",
   "private": true,
   "license": "MIT",
@@ -15,70 +15,176 @@
   "bugs": {
     "url": "https://github.com/kawato3/fumen-language-support/issues"
   },
-  "engines": { "vscode": "^1.90.0", "node": ">=22" },
-  "categories": ["Programming Languages", "Snippets", "Formatters"],
-  "keywords": ["fumen", "chord chart", "leadsheet", "譜面"],
+  "engines": {
+    "vscode": "^1.90.0",
+    "node": ">=22"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Formatters"
+  ],
+  "keywords": [
+    "fumen",
+    "chord chart",
+    "leadsheet",
+    "譜面"
+  ],
   "main": "./out/extension.js",
   "l10n": "./l10n",
-  "extensionKind": ["workspace"],
+  "extensionKind": [
+    "workspace"
+  ],
   "capabilities": {
-    "untrustedWorkspaces": { "supported": true },
-    "virtualWorkspaces": { "supported": true }
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": {
+      "supported": true
+    }
   },
   "contributes": {
-    "languages": [{
-      "id": "fumen",
-      "aliases": ["Fumen", "fumen"],
-      "extensions": [".fumen"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{ "language": "fumen", "scopeName": "source.fumen", "path": "./syntaxes/fumen.tmLanguage.json" }],
-    "snippets": [{ "language": "fumen", "path": "./snippets/fumen.json" }],
+    "languages": [
+      {
+        "id": "fumen",
+        "aliases": [
+          "Fumen",
+          "fumen"
+        ],
+        "extensions": [
+          ".fumen"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "fumen",
+        "scopeName": "source.fumen",
+        "path": "./syntaxes/fumen.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "fumen",
+        "path": "./snippets/fumen.json"
+      }
+    ],
     "commands": [
-      { "command": "fumen.newScore", "title": "%command.newScore%", "category": "Fumen" },
-      { "command": "fumen.insertTemplate", "title": "%command.insertTemplate%", "category": "Fumen", "enablement": "editorLangId == fumen" },
-      { "command": "fumen.openPreview", "title": "%command.openPreview%", "category": "Fumen", "icon": "$(open-preview)", "enablement": "editorLangId == fumen" },
-      { "command": "fumen.openCheatSheet", "title": "%command.openCheatSheet%", "category": "Fumen", "icon": "$(book)" },
-      { "command": "fumen.openGuide", "title": "%command.openGuide%", "category": "Fumen" }
+      {
+        "command": "fumen.newScore",
+        "title": "%command.newScore%",
+        "category": "Fumen"
+      },
+      {
+        "command": "fumen.insertTemplate",
+        "title": "%command.insertTemplate%",
+        "category": "Fumen",
+        "enablement": "editorLangId == fumen"
+      },
+      {
+        "command": "fumen.openPreview",
+        "title": "%command.openPreview%",
+        "category": "Fumen",
+        "icon": "$(open-preview)",
+        "enablement": "editorLangId == fumen"
+      },
+      {
+        "command": "fumen.openPrint",
+        "title": "%command.openPrint%",
+        "category": "Fumen",
+        "icon": "$(export)",
+        "enablement": "editorLangId == fumen"
+      },
+      {
+        "command": "fumen.openCheatSheet",
+        "title": "%command.openCheatSheet%",
+        "category": "Fumen",
+        "icon": "$(book)"
+      },
+      {
+        "command": "fumen.openGuide",
+        "title": "%command.openGuide%",
+        "category": "Fumen"
+      }
     ],
     "menus": {
       "editor/context": [
-        { "command": "fumen.openPreview", "when": "resourceLangId == fumen", "group": "2_fumen@1" },
-        { "command": "fumen.openCheatSheet", "when": "resourceLangId == fumen", "group": "2_fumen@2" }
+        {
+          "command": "fumen.openPreview",
+          "when": "resourceLangId == fumen",
+          "group": "2_fumen@1"
+        },
+        {
+          "command": "fumen.openCheatSheet",
+          "when": "resourceLangId == fumen",
+          "group": "2_fumen@2"
+        },
+        {
+          "command": "fumen.openPrint",
+          "when": "resourceLangId == fumen",
+          "group": "2_fumen@3"
+        }
       ],
       "editor/title": [
-        { "command": "fumen.openPreview", "when": "resourceLangId == fumen", "group": "navigation@1" },
-        { "command": "fumen.openCheatSheet", "when": "resourceLangId == fumen", "group": "navigation@2" }
+        {
+          "command": "fumen.openPreview",
+          "when": "resourceLangId == fumen",
+          "group": "navigation@1"
+        },
+        {
+          "command": "fumen.openCheatSheet",
+          "when": "resourceLangId == fumen",
+          "group": "navigation@2"
+        }
       ]
     },
-    "keybindings": [{
-      "command": "fumen.openPreview", "key": "ctrl+k v", "mac": "cmd+k v",
-      "when": "editorTextFocus && editorLangId == fumen && !notebookEditorFocused"
-    }],
+    "keybindings": [
+      {
+        "command": "fumen.openPreview",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "editorTextFocus && editorLangId == fumen && !notebookEditorFocused"
+      }
+    ],
     "configuration": {
       "title": "Fumen",
       "properties": {
         "fumen.diagnostics.enabled": {
-          "type": "boolean", "default": true,
+          "type": "boolean",
+          "default": true,
           "description": "%config.diagnostics.enabled%",
           "scope": "resource"
         },
         "fumen.diagnostics.delay": {
-          "type": "number", "default": 700, "minimum": 200, "maximum": 5000,
+          "type": "number",
+          "default": 700,
+          "minimum": 200,
+          "maximum": 5000,
           "description": "%config.diagnostics.delay%",
           "scope": "resource"
+        },
+        "fumen.print.chromePath": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "%config.print.chromePath%"
         }
       }
     },
     "configurationDefaults": {
       "[fumen]": {
         "editor.wordBasedSuggestions": "off",
-        "editor.quickSuggestions": { "other": "off", "comments": "off", "strings": "off" }
+        "editor.quickSuggestions": {
+          "other": "off",
+          "comments": "off",
+          "strings": "off"
+        }
       }
     }
   },
   "scripts": {
-    "build": "node scripts/vendor-fumen.cjs --check && tsc -p tsconfig.json && tsc -p tsconfig.webview.json",
+    "build": "node scripts/vendor-fumen.cjs --check && tsc -p tsconfig.json && tsc -p tsconfig.webview.json && node scripts/build-print.cjs",
     "watch": "tsc -p tsconfig.json --watch",
     "watch:webview": "tsc -p tsconfig.webview.json --watch",
     "vendor:fumen": "node scripts/vendor-fumen.cjs",
@@ -88,15 +194,18 @@
     "check": "npm run build && npm test",
     "vscode:prepublish": "npm run build",
     "package": "npm run check && vsce package --no-dependencies",
-    "check:publish": "node scripts/check-publish.cjs"
+    "check:publish": "node scripts/check-publish.cjs",
+    "test:print": "npm run build && node --test test/browser/print.test.cjs"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/vscode": "1.90.0",
     "@vscode/test-electron": "3.1.0",
     "@vscode/vsce": "3.9.2",
-    "typescript": "~5.9.3",
+    "esbuild": "0.28.2",
     "markdown-it": "14.3.2",
+    "playwright-core": "1.63.0",
+    "typescript": "~5.9.3",
     "vscode-oniguruma": "2.0.1",
     "vscode-textmate": "9.3.2"
   }

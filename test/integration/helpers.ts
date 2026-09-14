@@ -7,6 +7,7 @@ import type { PreviewStatus } from '../../src/preview-protocol';
 export interface TestEnvironment {
   extension: vscode.Extension<unknown>;
   preview: PreviewManager;
+  globalStorageUri: vscode.Uri;
   t: Translator;
   japanese: boolean;
 }
