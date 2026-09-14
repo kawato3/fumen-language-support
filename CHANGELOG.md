@@ -1,10 +1,19 @@
 # Changelog
 
+## 1.0.1
+
+- Fix local Chrome printing when VS Code supplies a `vscode-userdata:` storage URI. Keep remote and web printing restrictions in place.
+- Test print snapshots against VS Code's actual storage URI and file-system provider instead of substituting a `file:` URI.
+- Clarify that 1.0.0 can be updated in place; only the earlier `fumen-local` extension needs to be removed.
+
 ## 1.0.0
 
 - Provide syntax highlighting, contextual notation completion, snippets, hover help and basic diagnostics, without chord-name suggestions or musical validation.
 - Include offline live previews powered by Fumen 1.3.3, plus English and Japanese cheat sheets and user guides.
-
+- Add Fumen editor context-menu actions for the preview and cheat sheet.
+- Support standard Format Document shortcuts and menus with conservative whitespace-only formatting, preserving score structure and text.
+- Collapse redundant blank lines to one, retaining single blank lines and protecting text and line-continuation boundaries.
+- Add a local Chrome print view for vector-friendly, searchable PDF output, with snapshot isolation, synchronous Canvas replay, bounded recording and temporary-file cleanup. No SVG conversion or PDF runtime is bundled.
 - Adopt the MIT license for the extension, retaining all third-party notices and licenses.
 - Prepare concise English listing copy with a Japanese introduction and document the bilingual publication approach.
 - Add the public GitHub repository and issue tracker, with links between the English and Japanese READMEs.

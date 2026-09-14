@@ -49,6 +49,8 @@ The bundled snippets use stable English names and `fumen-` prefixes in every dis
 
 Click the preview button at the top-right of a Fumen editor, or run **Fumen: Open Preview to the Side**.
 
+The editor's right-click menu also includes **Open Preview to the Side** and **Open Cheat Sheet**.
+
 - Edits appear after roughly 0.3 seconds without typing; saving is not required.
 - Use **+**, **−** and **Fit to Width** to adjust the display without changing the source.
 - If incomplete notation cannot be rendered, the previous valid image remains with an explanation. Fixing the source updates it again.
@@ -58,7 +60,7 @@ Click the preview button at the top-right of a Fumen editor, or run **Fumen: Ope
 
 The bundled Fumen 1.3.3 renderer works offline, with no extra font installation. The default paper preset is A4; `%PARAM` takes precedence when specified.
 
-Limits are 100,000 characters, 100 pages and 32 million page pixels per render, with additional guards for extreme rendering parameters. A separate text-measurement cache is limited to 16 million pixels. If changing `%PARAM` text_size or pixel_ratio fills that cache, close and reopen the preview. Large scores may update slowly; these limits do not bound total process memory or execution time. PDF export, direct editing on the score and synchronized source/preview scrolling are not provided.
+Limits are 100,000 characters, 100 pages and 32 million page pixels per render, with additional guards for extreme rendering parameters. A separate text-measurement cache is limited to 16 million pixels. If changing `%PARAM` text_size or pixel_ratio fills that cache, close and reopen the preview. Large scores may update slowly; these limits do not bound total process memory or execution time. Direct editing on the score and synchronized source/preview scrolling are not provided.
 
 ## 6. Look up notation
 
@@ -79,7 +81,7 @@ The preview uses the same default shortcut as VS Code's Markdown preview. Focus 
 
 These are sequential keystrokes, not one simultaneous combination. Do not hold Cmd/Ctrl for the second `V`.
 
-Other commands, including the cheat sheet, have no default shortcut. To assign your own:
+Other Fumen commands, including the cheat sheet, have no default shortcut. To assign your own:
 
 1. Open **Keyboard Shortcuts**: `Cmd+K`, then `Cmd+S` on macOS; `Ctrl+K`, then `Ctrl+S` on Windows/Linux.
 2. Search for `Fumen`. For a specific command, search `@command:fumen.openCheatSheet` or `@command:fumen.openPreview`.
@@ -87,6 +89,26 @@ Other commands, including the cheat sheet, have no default shortcut. To assign y
 4. Check for conflicting assignments before using the shortcut.
 
 User assignments override defaults. Installing this extension never edits your `keybindings.json`.
+
+## 8. Format whitespace
+
+Right-click the Fumen source and choose **Format Document**, or find that standard command in the Command Palette. Its default shortcut is `Shift+Option+F` on macOS, `Shift+Alt+F` on Windows, or `Ctrl+Shift+I` on Linux; press these keys together.
+
+The formatter spaces bar lines, reduces gaps between notation tokens to one space, removes trailing whitespace and normalizes `%NAME=value` assignments. Consecutive blank lines become one blank line; a single blank line is kept. Blank lines inside text/labels and immediately after a `\` line continuation are left alone to preserve the score's structure. Other line breaks, line-ending style, indentation, chord spelling, lyrics, annotations, labels and JSON value contents stay unchanged. Bar-column alignment and selection formatting are not included. Use **Undo** once to revert the format.
+
+Unclosed text delimiters and documents above 500,000 characters are skipped; invalid JSON settings are left alone. The extension does not turn on automatic formatting. Your existing **Editor: Format On Save** setting is respected; if multiple formatters are installed, choose this extension through **Format Document With… → Configure Default Formatter…**. To change the shortcut, search Keyboard Shortcuts for `@command:editor.action.formatDocument`.
+
+## 9. Print or save as PDF
+
+Install Google Chrome and use local desktop VS Code. Choose **Fumen: Open Print View in Chrome** from the Command Palette or the Fumen editor's right-click menu, or click **Print / PDF** in a successfully rendered preview.
+
+In Chrome, wait for the score, click **Print / Save as PDF**, and select **Save as PDF**, **A4**, **no margins**, with **headers and footers off**. Choose a PDF filename and save it. The PDF preserves vector drawing and searchable text where Chrome and your fonts support them. Short scores can be larger due to embedded fonts.
+
+Unsaved source edits are included, but the page does not update afterward. Reopen it after editing. Invalid input does not print the last valid preview. Custom Fumen page dimensions fit proportionally inside A4. Printing has the preview's safety limits plus a drawing-complexity limit. There is no default print shortcut; assign one by searching for `Fumen` in Keyboard Shortcuts.
+
+The local HTML snapshot contains your source and bundled assets; the extension does not upload it. It is removed when the extension closes, or, after a crash, on the next print request once it is more than 24 hours old. Save the PDF before closing VS Code. Chrome's own extensions and the chosen print destination are outside this extension's control.
+
+Chrome is required only for this feature. If it cannot be found, use **Fumen: Print Chrome Path** in User Settings to specify the executable's absolute path (no arguments). Workspace overrides are ignored. Remote SSH, WSL, containers and browser-based VS Code are not supported for printing: open the source locally instead.
 
 ## Troubleshooting
 

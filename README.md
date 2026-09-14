@@ -21,7 +21,7 @@ Requires VS Code **1.90 or later**. No separate Node.js, Fumen or font installat
 3. Select **Fumen Language Support** by **Katsushi Kawato** and click **Install**.
 4. Open a `.fumen` file or run **Fumen: New Score** from the Command Palette.
 
-To install a local build instead, choose **… → Install from VSIX…** and select `fumen-language-support-1.0.0.vsix`. See the development instructions below to build it yourself. If VS Code asks to reload after an update, save your work first.
+To install a local build instead, choose **… → Install from VSIX…** and select `fumen-language-support-1.0.1.vsix`. Version 1.0.0 can be updated in place without uninstalling it. See the development instructions below to build it yourself. If VS Code asks to reload after an update, save your work first.
 
 If you used an earlier local build with the extension ID `fumen-local.fumen-language-support`, uninstall it before installing `kawato3.fumen-language-support` to avoid running both copies. Your `.fumen` files are unaffected.
 
@@ -33,8 +33,10 @@ If you used an earlier local build with the extension ID `fumen-local.fumen-lang
 - Hover explanations and basic checks for malformed settings or missing delimiters.
 - Live, side-by-side previews using the bundled **Fumen 1.3.3** renderer, including unsaved edits.
 - Offline cheat sheets and user guides in English and Japanese, with links to the official reference.
+- Conservative whitespace formatting through VS Code's standard **Format Document** command.
+- A vector-friendly print view in Google Chrome, using Chrome's **Save as PDF** without a PDF library in the extension.
 
-The extension does **not** suggest chord names, judge chord progressions, validate beat counts or reformat your score. Fumen word-based suggestions are disabled by default to keep arbitrary chord names from being suggested. Your settings or other extensions may override this.
+The extension does **not** suggest chord names, judge chord progressions or validate beat counts. Fumen word-based suggestions are disabled by default to keep arbitrary chord names from being suggested. Your settings or other extensions may override this.
 
 ## Commands and shortcuts
 
@@ -45,14 +47,25 @@ Open the Command Palette with `Cmd+Shift+P` on macOS or `Ctrl+Shift+P` on Window
 | Fumen: New Score | Start an untitled score with placeholders. |
 | Fumen: Insert Template | Insert bars, sections, repeats, annotations or lyrics. |
 | Fumen: Open Preview to the Side | Render the active Fumen document beside the source. |
+| Fumen: Open Print View in Chrome | Open a snapshot for printing or saving as PDF. |
 | Fumen: Open Cheat Sheet | Open an offline notation reference beside the source. |
 | Fumen: Open User Guide | Open detailed usage instructions. |
 
-The preview and cheat sheet also have buttons at the top-right of a Fumen editor. Reopening the cheat sheet reuses its tab. Each document's language links work even in an English-only VS Code installation; reopening via the command follows the display language again.
+The preview and cheat sheet are also available from a Fumen editor's right-click menu and top-right buttons. Reopening the cheat sheet reuses its tab. Each document's language links work even in an English-only VS Code installation; reopening via the command follows the display language again.
 
 The preview uses Markdown's familiar shortcut: **Cmd+K, then V** on macOS, or **Ctrl+K, then V** on Windows/Linux. Release the first keys before pressing V. It applies only while editing Fumen source text.
 
-Other commands have no default key binding. Open **Keyboard Shortcuts** (`Cmd+K`, then `Cmd+S` on macOS; `Ctrl+K`, then `Ctrl+S` elsewhere), search for `Fumen`, and double-click a command to assign a key. User bindings override defaults; this extension never edits your `keybindings.json`.
+Other Fumen commands have no default key binding. Open **Keyboard Shortcuts** (`Cmd+K`, then `Cmd+S` on macOS; `Ctrl+K`, then `Ctrl+S` elsewhere), search for `Fumen`, and double-click a command to assign a key. User bindings override defaults; this extension never edits your `keybindings.json`.
+
+## Format whitespace
+
+Right-click in a Fumen editor and choose **Format Document**, or use the Command Palette. The standard shortcut is **Shift+Option+F** on macOS, **Shift+Alt+F** on Windows, and **Ctrl+Shift+I** on Linux. These are simultaneous key combinations, not the preview's two-step shortcut.
+
+Formatting adds spaces around bar lines, reduces spaces/tabs between notation tokens to one space, removes trailing whitespace and normalizes setting assignments to `%NAME=value`. Runs of blank lines become one blank line; a single blank line is kept. Blank lines inside text/labels and immediately after a `\` line continuation are preserved, because changing them can affect the score. Other line breaks, line-ending style, indentation, chord spelling, lyrics, annotations, labels and JSON value contents are unchanged. It does not align bar columns or format a selection.
+
+Use normal **Undo** to revert the entire format. Unclosed text delimiters cause formatting to be skipped; invalid JSON settings are left alone. Documents above 500,000 characters are not formatted.
+
+The extension does not enable automatic formatting or change your default formatter. If you already use **Editor: Format On Save**, that setting applies to Fumen too. With multiple Fumen formatters installed, use **Format Document With… → Configure Default Formatter…** to choose one. See [VS Code's formatting documentation](https://code.visualstudio.com/docs/editing/codebasics#_formatting).
 
 ## Preview behavior and limits
 
@@ -62,12 +75,29 @@ Rendering is local and uses no network service. Source text is sent to a sandbox
 
 Limits: 100,000 source characters, 100 pages, 32 million page pixels per render and bounds on extreme rendering parameters. The renderer's retained text-measurement cache has a separate 16-million-pixel limit. Repeated changes to `%PARAM` text size or pixel ratio may fill it; close and reopen the preview to clear it. These are allocation guards, not a guarantee of total process memory or rendering time. Basic editor diagnostics stop above 500,000 characters. Split unusually large scores into smaller files.
 
-PDF export, editing by clicking the score and synchronized source/preview scrolling are not included. Upstream renderer error details are shown as received, while the extension's own messages follow the display language.
+Editing by clicking the score and synchronized source/preview scrolling are not included. Upstream renderer error details are shown as received, while the extension's own messages follow the display language.
+
+## Print or save as PDF
+
+Requires **Google Chrome** and **local desktop VS Code**. Chrome is needed only for printing; it is not bundled. Remote SSH, WSL, containers and browser-based VS Code are not supported for this feature.
+
+1. Choose **Fumen: Open Print View in Chrome** from the Command Palette or the Fumen editor's right-click menu. You can also use **Print / PDF** in a successfully rendered preview.
+2. Wait for the print view to finish loading, then click **Print / Save as PDF**.
+3. In Chrome, choose **Save as PDF**, **A4**, **no margins**, and turn **headers and footers off**. Choose where to save the PDF yourself.
+
+The page is a snapshot of the source, including unsaved edits. Editing in VS Code does not update an already-open print page: open a new one after changes. Invalid scores do not fall back to an older preview image. Custom Fumen page sizes are fitted proportionally inside A4.
+
+The adapter records Fumen's Canvas drawing commands and replays them synchronously for Chrome's print capture. This preserves vector notation and searchable text where Chrome and the available fonts support them; it does not convert to SVG or add invisible text over a bitmap. Search and font behavior can vary by browser version and OS. Short scores may be larger than image-based PDFs because of embedded fonts. The normal rendering limits apply, with an additional drawing-complexity limit.
+
+Rendering uses only bundled assets, without uploading the score. The extension launches Chrome without a shell and creates private local HTML snapshots in its VS Code storage. These contain the source text and third-party notices. They are removed when the extension shuts down; after a crash, snapshots older than 24 hours are removed on the next print request. Save the PDF before closing VS Code. Your own Chrome extensions, browser settings and chosen print destination remain outside this extension's control.
+
+If Chrome is installed in a nonstandard location, set `fumen.print.chromePath` to its executable's absolute path in **User Settings**. This machine-only setting does not accept command-line arguments or workspace overrides. Printing has no default shortcut; you may assign one in Keyboard Shortcuts.
 
 ## Settings and snippets
 
 - `fumen.diagnostics.enabled`: enable basic setting/delimiter checks (default: true).
 - `fumen.diagnostics.delay`: milliseconds after typing stops (default: 700; range: 200–5000).
+- `fumen.print.chromePath`: optional absolute Chrome executable path (default: detect a standard installation).
 
 Snippets use English names and stable `fumen-` prefixes in all display languages: `fumen-new`, `fumen-4bars`, `fumen-8bars`, `fumen-section`, `fumen-repeat`, `fumen-endings`, `fumen-note`, `fumen-lyric`. Use **Snippets: Insert Snippet** or invoke completion manually. Template placeholders and notation examples stay in English; existing score content is never translated.
 
@@ -79,10 +109,11 @@ Building requires Node.js 22 or later:
 npm ci
 npm run check
 npm run test:integration
+npm run test:print
 npm run package
 ```
 
-Normal builds verify bundled assets locally; `npm run vendor:fumen` restores missing assets from pinned upstream URLs. Tests cover notation support, rendering safety, actual VS Code previews and localization. See the [development guide](docs/DEVELOPMENT.md) (Japanese) for isolated test profiles and specific VS Code versions.
+Normal builds verify bundled assets locally; `npm run vendor:fumen` restores missing assets from pinned upstream URLs. Tests cover notation support, rendering safety, actual VS Code previews and localization. `test:print` uses an installed Chrome with isolated contexts; it does not download a browser. See the [development guide](docs/DEVELOPMENT.md) (Japanese) for isolated test profiles and specific VS Code versions.
 
 Static contributions use `package.nls.json` and `package.nls.ja.json`; runtime strings use VS Code's `l10n` API and `l10n/bundle.l10n.ja.json`. English is the fallback. The extension follows VS Code's display language, not OS locale or document contents, and never changes the user's language settings.
 
