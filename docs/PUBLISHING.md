@@ -2,7 +2,7 @@
 
 ソースの公開先は [kawato3/fumen-language-support](https://github.com/kawato3/fumen-language-support) です。Marketplace の発行者は `kawato3`（表示名: Katsushi Kawato）です。[Fumen Language Support](https://marketplace.visualstudio.com/items?itemName=kawato3.fumen-language-support) を Marketplace に公開しています。
 
-現在の公開版は **1.0.1** です。1.0.0 のローカル印刷の不具合を修正した版を、2026-09-14 に初めて Marketplace へ公開しました。VS Code の拡張機能検索で `@id:kawato3.fumen-language-support` を指定してインストールできます。既に同じ拡張 ID の1.0.0が入っている場合、アンインストールせず更新できます。
+現在の公開版は **1.0.2** です。1.0.1 は 2026-09-14 に初めて Marketplace へ公開した版で、1.0.2 ではコード構成要素の表示を選べる拡張固有の `%PARAM` を追加しました。VS Code の拡張機能検索で `@id:kawato3.fumen-language-support` を指定してインストールできます。
 
 ## Marketplace 公開結果（2026-09-14）
 
@@ -105,6 +105,8 @@ Marketplace に公開すると、ほかの利用者が拡張機能検索から�
 README は英語を主にし、冒頭に短い日本語の概要を置きます。詳しい日本語説明は `README.ja.md`、拡張内の操作説明・チートシートは英語・日本語をそれぞれ用意します。全文を段落ごとに併記せず、言語を選んで読める構成にします。
 
 両 README の冒頭に相互リンクを用意しています。`vsce` は公開 GitHub リポジトリーの情報から README の相対リンクを解決するため、公開用 VSIX でも日本語 README・ライセンス・各資料へのリンクを確認します。
+
+次回の Marketplace 公開では、英語 README の **Use the renderer patch outside VS Code** 節に、[Fumen 1.3.3 コード構成要素表示パッチ](../patches/fumen-1.3.3-chord-component-display/)への GitHub リンクが残っていることを確認します。このリンクが次の VSIX と Marketplace 本文へ反映されます。パッチ本体は開発者向けの GitHub 配布物であり、`.vscodeignore` により VSIX には含めません。リンクを Marketplace 本文へ反映するだけでは、変更履歴に版を追加する必要はありません。
 
 参考: [Microsoft の Marketplace 表示ガイド](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#marketplace-integration)、[MIT ライセンス本文](https://spdx.org/licenses/MIT.html)。
 

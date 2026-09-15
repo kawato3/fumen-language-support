@@ -108,3 +108,12 @@ test('the reusable Fumen patch is documented, version-pinned and excluded from t
   assert.ok(example.includes('"chord_suffix_style":"inline"'));
   assert.ok(!readFileSync('.vscodeignore', 'utf8').includes('!patches/'), 'The developer patch stays out of the VSIX');
 });
+
+test('the publishing guide preserves the Marketplace reminder for the reusable patch', () => {
+  const guide = readFileSync('docs/PUBLISHING.md', 'utf8');
+  assert.ok(guide.includes('現在の公開版は **1.0.2**'));
+  assert.ok(guide.includes('Use the renderer patch outside VS Code'));
+  assert.ok(guide.includes('fumen-1.3.3-chord-component-display'));
+  assert.ok(guide.includes('VSIX には含めません'));
+  assert.ok(guide.includes('変更履歴に版を追加する必要はありません'));
+});
