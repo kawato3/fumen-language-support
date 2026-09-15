@@ -21,10 +21,6 @@ Requires VS Code **1.90 or later**. No separate Node.js, Fumen or font installat
 3. Select **Fumen Language Support** by **Katsushi Kawato** and click **Install**.
 4. Open a `.fumen` file or run **Fumen: New Score** from the Command Palette.
 
-To install a local build instead, run `npm run package`, then choose **… → Install from VSIX…** and select the generated `fumen-language-support-<version>.vsix` file. A local build with the current extension ID can be updated in place. If VS Code asks to reload after an update, save your work first.
-
-If you used an earlier local build with the extension ID `fumen-local.fumen-language-support`, uninstall it before installing `kawato3.fumen-language-support` to avoid running both copies. Your `.fumen` files are unaffected.
-
 ## Features
 
 - Syntax highlighting for settings, chords, bar lines, sections, durations, annotations and lyrics.
@@ -80,11 +76,7 @@ The bundled renderer is based on Fumen 1.3.3 and has one clearly scoped extensio
 
 ![The same chords in Fumen's default compact layout and this extension's inline layout](media/screenshots/chord-display-modes.png)
 
-## Use the renderer patch outside VS Code
-
-For another application that uses Fumen 1.3.3, the matching source patch, application instructions and example score are available in the [Fumen 1.3.3 chord component display patch](https://github.com/kawato3/fumen-language-support/tree/main/patches/fumen-1.3.3-chord-component-display) directory. It is a developer-facing source artifact and is not included in the VSIX. It must be applied to the exact documented upstream revision; it is independently maintained, not an official Fumen feature.
-
-Limits: 100,000 source characters, 100 pages, 32 million page pixels per render and bounds on extreme rendering parameters. The renderer's retained text-measurement cache has a separate 16-million-pixel limit. Repeated changes to `%PARAM` text size or pixel ratio may fill it; close and reopen the preview to clear it. These are allocation guards, not a guarantee of total process memory or rendering time. Basic editor diagnostics stop above 500,000 characters. Split unusually large scores into smaller files.
+Very large scores or extreme rendering parameters may exceed safety limits and show an error instead of rendering. Split unusually large scores into smaller files.
 
 Editing by clicking the score and synchronized source/preview scrolling are not included. Upstream renderer error details are shown as received, while the extension's own messages follow the display language.
 
@@ -98,7 +90,7 @@ Requires **Google Chrome** and **local desktop VS Code**. Chrome is needed only 
 
 The page is a snapshot of the source, including unsaved edits. Editing in VS Code does not update an already-open print page: open a new one after changes. Invalid scores do not fall back to an older preview image. Custom Fumen page sizes are fitted proportionally inside A4.
 
-The adapter records Fumen's Canvas drawing commands and replays them synchronously for Chrome's print capture. This preserves vector notation and searchable text where Chrome and the available fonts support them; it does not convert to SVG or add invisible text over a bitmap. Search and font behavior can vary by browser version and OS. Short scores may be larger than image-based PDFs because of embedded fonts. The normal rendering limits apply, with an additional drawing-complexity limit.
+The print view preserves vector notation and searchable text where Chrome and the available fonts support them. Search and font behavior can vary by browser version and OS. Short scores may be larger than image-based PDFs because of embedded fonts.
 
 Rendering uses only bundled assets, without uploading the score. The extension launches Chrome without a shell and creates private local HTML snapshots in its VS Code storage. These contain the source text and third-party notices. They are removed when the extension shuts down; after a crash, snapshots older than 24 hours are removed on the next print request. Save the PDF before closing VS Code. Your own Chrome extensions, browser settings and chosen print destination remain outside this extension's control.
 
@@ -112,24 +104,6 @@ If Chrome is installed in a nonstandard location, set `fumen.print.chromePath` t
 
 Snippets use English names and stable `fumen-` prefixes in all display languages: `fumen-new`, `fumen-4bars`, `fumen-8bars`, `fumen-section`, `fumen-repeat`, `fumen-endings`, `fumen-note`, `fumen-lyric`. Use **Snippets: Insert Snippet** or invoke completion manually. Template placeholders and notation examples stay in English; existing score content is never translated.
 
-## Development and distribution
-
-Building requires Node.js 22 or later:
-
-```sh
-npm ci
-npm run check
-npm run test:integration
-npm run test:print
-npm run package
-```
-
-Normal builds verify bundled assets locally; `npm run vendor:fumen` restores missing assets from pinned upstream URLs. Tests cover notation support, rendering safety, actual VS Code previews and localization. `test:print` uses an installed Chrome with isolated contexts; it does not download a browser. See the [development guide](docs/DEVELOPMENT.md) (Japanese) for isolated test profiles and specific VS Code versions.
-
-Static contributions use `package.nls.json` and `package.nls.ja.json`; runtime strings use VS Code's `l10n` API and `l10n/bundle.l10n.ja.json`. English is the fallback. The extension follows VS Code's display language, not OS locale or document contents, and never changes the user's language settings.
-
-The registered Marketplace publisher is `kawato3`; the extension ID is `kawato3.fumen-language-support`. Follow the [publishing guide](docs/PUBLISHING.md) (Japanese) before publication. `npm run check:publish` checks basic metadata but does not publish. `private: true` prevents npm publication, not Marketplace publication.
-
 ## Feedback
 
 Report bugs and request features through [GitHub Issues](https://github.com/kawato3/fumen-language-support/issues). English and Japanese are both welcome. For bug reports, include your VS Code and extension versions and a small example you can share publicly.
@@ -142,16 +116,4 @@ This is an independent extension, not an official Fumen product. Rendering is pr
 
 ## Changelog
 
-### 1.0.3
-
-- Add a searchable notation picker for Fumen structure, navigation signs, rhythm, text and common score settings. It inserts editable VS Code snippets without suggesting chord names, chord progressions or other musical content.
-- Add the notation picker to the Fumen editor context menu, using concise labels that include the inserted Fumen spelling.
-- Open the bundled offline cheat sheet directly from notation hover help.
-
-### 1.0.2
-
-- Added extension-specific chord component display parameters: `minor_label`, `major_label`, and `chord_suffix_style`. Choose custom minor/major labels and either Fumen’s compact layout or a full-size inline layout.
-
-### 1.0.1
-
-- Initial Marketplace release of Fumen Language Support.
+Release notes are maintained in [CHANGELOG.md](CHANGELOG.md).

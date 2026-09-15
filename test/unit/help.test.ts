@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { SETTINGS, SIGNS } from '../../src/catalog';
@@ -92,19 +93,17 @@ test('main documentation identifies the renderer addition as extension-specific'
   }
   assert.ok(english.includes('extension-specific'));
   assert.ok(japanese.includes('独自'));
-  assert.ok(english.includes('### 1.0.3') && english.includes('### 1.0.2') && english.includes('### 1.0.1'));
-  assert.ok(japanese.includes('### 1.0.3') && japanese.includes('### 1.0.2') && japanese.includes('### 1.0.1'));
+  assert.ok(english.includes('[CHANGELOG.md](CHANGELOG.md)'));
+  assert.ok(japanese.includes('[CHANGELOG.md](CHANGELOG.md)'));
+  assert.doesNotMatch(english, /^### 1\.0\./m);
+  assert.doesNotMatch(japanese, /^### 1\.0\./m);
+  assert.ok(!english.includes('Development and distribution'));
+  assert.ok(!japanese.includes('開発・パッケージ作成'));
+  assert.ok(!english.includes('npm run '));
+  assert.ok(!japanese.includes('npm run '));
   assert.ok(english.includes('media/screenshots/chord-display-modes.png'));
   assert.ok(japanese.includes('media/screenshots/chord-display-modes.png'));
   assert.ok(readFileSync('media/screenshots/chord-display-modes.png').length > 1_000, 'A rendered comparison image is included');
-});
-
-test('installation docs use a version-independent local VSIX filename', () => {
-  for (const filename of ['README.md', 'README.ja.md']) {
-    const source = readFileSync(filename, 'utf8');
-    assert.ok(source.includes('fumen-language-support-<version>.vsix'), filename);
-    assert.ok(!source.includes('fumen-language-support-1.0.1.vsix'), filename);
-  }
 });
 
 test('release metadata and changelog are prepared for version 1.0.3', () => {
@@ -138,15 +137,10 @@ test('the reusable Fumen patch is documented, version-pinned and excluded from t
   }
   assert.ok(patch.startsWith('From e0d08758ee51f967f7b8d07852a264f96bd5ae28 '));
   assert.ok(patch.includes('src/renderer/default_renderer.js'));
+  assert.ok(!patch.includes('katsushi@kawa.to'));
+  const checksum = createHash('sha256').update(patch).digest('hex');
+  assert.ok(english.includes(checksum));
+  assert.ok(japanese.includes(checksum));
   assert.ok(example.includes('"chord_suffix_style":"inline"'));
   assert.ok(!readFileSync('.vscodeignore', 'utf8').includes('!patches/'), 'The developer patch stays out of the VSIX');
-});
-
-test('the publishing guide preserves the Marketplace reminder for the reusable patch', () => {
-  const guide = readFileSync('docs/PUBLISHING.md', 'utf8');
-  assert.ok(guide.includes('現在の公開版は **1.0.2**'));
-  assert.ok(guide.includes('Use the renderer patch outside VS Code'));
-  assert.ok(guide.includes('fumen-1.3.3-chord-component-display'));
-  assert.ok(guide.includes('VSIX には含めません'));
-  assert.ok(guide.includes('変更履歴に版を追加する必要はありません'));
 });
