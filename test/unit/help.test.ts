@@ -92,3 +92,19 @@ test('main documentation identifies the renderer addition as extension-specific'
   assert.ok(japanese.includes('media/screenshots/chord-display-modes.png'));
   assert.ok(readFileSync('media/screenshots/chord-display-modes.png').length > 1_000, 'A rendered comparison image is included');
 });
+
+test('the reusable Fumen patch is documented, version-pinned and excluded from the VSIX', () => {
+  const directory = 'patches/fumen-1.3.3-chord-component-display';
+  const english = readFileSync(`${directory}/README.md`, 'utf8');
+  const japanese = readFileSync(`${directory}/README.ja.md`, 'utf8');
+  const patch = readFileSync(`${directory}/0001-fumen-1.3.3-chord-component-display.patch`, 'utf8');
+  const example = readFileSync(`${directory}/examples/chord-component-display.fumen`, 'utf8');
+  for (const source of [english, japanese]) {
+    assert.ok(source.includes('f3d04a522c19236c81f553871d6aee665d9eda22'));
+    for (const field of ['minor_label', 'major_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
+  }
+  assert.ok(patch.startsWith('From e0d08758ee51f967f7b8d07852a264f96bd5ae28 '));
+  assert.ok(patch.includes('src/renderer/default_renderer.js'));
+  assert.ok(example.includes('"chord_suffix_style":"inline"'));
+  assert.ok(!readFileSync('.vscodeignore', 'utf8').includes('!patches/'), 'The developer patch stays out of the VSIX');
+});

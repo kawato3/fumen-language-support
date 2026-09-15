@@ -1,0 +1,10 @@
+%TITLE="Chord component display"
+%SHOW_FOOTER="NO"
+%PARAM={"minor_label":"m","major_label":"M","chord_suffix_style":"inline"}
+
+[Inline symbols]
+| Am7(#11)/C | AM7/E | C-5 | D7,b9,#11 |
+
+[Original compact symbols]
+%PARAM={"minor_label":"–","major_label":"Δ","chord_suffix_style":"compact"}
+| Am7(#11)/C | AM7/E | C-5 | D7,b9,#11 |

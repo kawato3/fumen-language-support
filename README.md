@@ -78,6 +78,10 @@ The bundled renderer is based on Fumen 1.3.3 and has one clearly scoped extensio
 
 ![The same chords in Fumen's default compact layout and this extension's inline layout](media/screenshots/chord-display-modes.png)
 
+## Use the renderer patch outside VS Code
+
+For another application that uses Fumen 1.3.3, the matching source patch, application instructions and example score are available in the [Fumen 1.3.3 chord component display patch](https://github.com/kawato3/fumen-language-support/tree/main/patches/fumen-1.3.3-chord-component-display) directory. It is a developer-facing source artifact and is not included in the VSIX. It must be applied to the exact documented upstream revision; it is independently maintained, not an official Fumen feature.
+
 Limits: 100,000 source characters, 100 pages, 32 million page pixels per render and bounds on extreme rendering parameters. The renderer's retained text-measurement cache has a separate 16-million-pixel limit. Repeated changes to `%PARAM` text size or pixel ratio may fill it; close and reopen the preview to clear it. These are allocation guards, not a guarantee of total process memory or rendering time. Basic editor diagnostics stop above 500,000 characters. Split unusually large scores into smaller files.
 
 Editing by clicking the score and synchronized source/preview scrolling are not included. Upstream renderer error details are shown as received, while the extension's own messages follow the display language.
