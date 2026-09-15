@@ -3,6 +3,7 @@
 ## 構成
 
 - `src/catalog.ts`: 設定・記号の説明、コマンドで挿入するひな形。
+- `src/notation-inserts.ts`: 検索可能な「記法を挿入」メニューの、音楽的な候補を含まない記法スニペット一覧。
 - `src/notation.ts`: 文字位置を保持する小さな字句読み取り。音楽的な判定はしない。
 - `src/language.ts`: VS Code に依存しない補完・説明・診断。
 - `src/formatting.ts`: UTF-16 オフセットによる空白だけの編集。引用符・ラベル・設定値の内部と譜面構造を保持。
@@ -24,7 +25,7 @@
 - `language-configuration.json`: 括弧・引用符とインデントの設定。
 - `snippets/fumen.json`: VS Code のスニペット一覧。コマンドのひな形との一致をテストする。
 - `test/unit`: 補完の置換範囲、診断の誤検出回避、実際の TextMate エンジンを使ったテスト。
-- `test/integration`: VS Code 内での拡張の起動、編集、診断更新、括弧補完、Tab 移動を確認。
+- `test/integration`: VS Code 内での拡張の起動、記法メニューからのスニペット挿入、編集、診断更新、括弧補完、Tab 移動を確認。
 - `test/browser`: 実際の Chrome による印刷用ページ・CSP・ローカライズ・描画再実行の検査。
 
 拡張ホストは VS Code API、プレビューと印刷用ページは同梱の Fumen を使う。Language Server と実行時のネットワーク通信はない。外部プロセスは利用者が明示的に印刷を求めたときの Chrome のみ。VSIX は実行時に必要なファイルとライセンスだけを許可リストで含める。esbuild と playwright-core は開発専用で、VSIX に含めない。

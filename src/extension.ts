@@ -5,9 +5,12 @@ import { PreviewManager } from './preview';
 import { helpFile } from './localization';
 import { formattingEdits } from './formatting';
 import { PrintManager } from './printing';
+import { NOTATION_INSERT_GROUPS, NotationInsert } from './notation-inserts';
 
 const MAX_DOCUMENT_LENGTH = 500_000;
 let printing: PrintManager | undefined;
+
+type NotationQuickPickItem = vscode.QuickPickItem & { notation?: NotationInsert };
 
 export function activate(context: vscode.ExtensionContext): { preview: PreviewManager; globalStorageUri: vscode.Uri } | undefined {
   const t = vscode.l10n.t;
@@ -121,6 +124,23 @@ export function activate(context: vscode.ExtensionContext): { preview: PreviewMa
       if (template && !editor.document.isClosed) {
         const target = await vscode.window.showTextDocument(editor.document, editor.viewColumn);
         await target.insertSnippet(new vscode.SnippetString(template.body));
+      }
+    }),
+    vscode.commands.registerCommand('fumen.insertNotation', async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (editor?.document.languageId !== 'fumen') return;
+      const choices: NotationQuickPickItem[] = NOTATION_INSERT_GROUPS.flatMap(group => [
+        { label: t(group.label), kind: vscode.QuickPickItemKind.Separator },
+        ...group.items.map(notation => ({
+          label: t(notation.label), description: t(notation.description), notation
+        }))
+      ]);
+      const notation = await vscode.window.showQuickPick(choices, {
+        placeHolder: t('Choose notation to insert'), matchOnDescription: true
+      });
+      if (notation?.notation && !editor.document.isClosed) {
+        const target = await vscode.window.showTextDocument(editor.document, editor.viewColumn);
+        await target.insertSnippet(new vscode.SnippetString(notation.notation.body));
       }
     }),
     vscode.commands.registerCommand('fumen.openGuide', async () => {

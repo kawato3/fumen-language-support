@@ -39,9 +39,13 @@ Run **Fumen: New Score**. Fill in the title and artist, then press Tab to move t
 
 Chord names, keys and free-form text are not suggested. The extension also disables word-based suggestions for Fumen by default to avoid guessing chords from other parts of the song. Other extensions or user settings can override this behavior.
 
-## 4. Templates and snippets
+## 4. Insert notation without recalling syntax
 
-Run **Fumen: Insert Template** for four/eight bars, sections, repeats, endings, annotations or lyrics. Tab and Shift+Tab move between placeholders; Escape ends placeholder navigation.
+Run **Fumen: Insert Notation…** from the Command Palette or right-click menu. Search by a name such as “repeat” or “lyrics”, or by a literal marker such as `:||:`. The native VS Code picker groups its choices into score structure and bars, navigation signs, rhythm, text and common score settings.
+
+Choosing an item inserts a normal VS Code snippet at the cursor, replacing a selection when one exists. Tab and Shift+Tab move through editable fields; Escape ends placeholder navigation. It includes four/eight-bar and alternate-ending templates as well as individual markers.
+
+The picker inserts Fumen syntax only. It does not suggest chord names, chord progressions or musical content. **Fumen: Insert Template** remains available as a shorter list of the established templates.
 
 The bundled snippets use stable English names and `fumen-` prefixes in every display language. Run **Snippets: Insert Snippet** and choose a Fumen snippet, or type a prefix such as `fumen-4bars` and invoke completion. These templates insert text only; they do not change existing music automatically.
 
@@ -49,7 +53,7 @@ The bundled snippets use stable English names and `fumen-` prefixes in every dis
 
 Click the preview button at the top-right of a Fumen editor, or run **Fumen: Open Preview to the Side**.
 
-The editor's right-click menu also includes **Open Preview to the Side** and **Open Cheat Sheet**.
+The editor's right-click menu also includes **Insert Notation…**, **Open Preview to the Side** and **Open Cheat Sheet**.
 
 - Edits appear after roughly 0.3 seconds without typing; saving is not required.
 - Use **+**, **−** and **Fit to Width** to adjust the display without changing the source.
@@ -83,10 +87,10 @@ The preview uses the same default shortcut as VS Code's Markdown preview. Focus 
 
 These are sequential keystrokes, not one simultaneous combination. Do not hold Cmd/Ctrl for the second `V`.
 
-Other Fumen commands, including the cheat sheet, have no default shortcut. To assign your own:
+Other Fumen commands, including **Insert Notation…** and the cheat sheet, have no default shortcut. To assign your own:
 
 1. Open **Keyboard Shortcuts**: `Cmd+K`, then `Cmd+S` on macOS; `Ctrl+K`, then `Ctrl+S` on Windows/Linux.
-2. Search for `Fumen`. For a specific command, search `@command:fumen.openCheatSheet` or `@command:fumen.openPreview`.
+2. Search for `Fumen`. For a specific command, search `@command:fumen.insertNotation`, `@command:fumen.openCheatSheet` or `@command:fumen.openPreview`.
 3. Double-click the command, press your preferred keys, and press Enter.
 4. Check for conflicting assignments before using the shortcut.
 

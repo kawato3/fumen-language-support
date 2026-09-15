@@ -2,6 +2,7 @@
   "description": "Fumen の譜面作成を、構文の色分け・スニペット・オフラインのリアルタイムプレビューで支援します。",
   "command.newScore": "新しい譜面を作成",
   "command.insertTemplate": "ひな形を挿入",
+  "command.insertNotation": "記法を挿入…",
   "command.openPreview": "横にプレビューを開く",
   "command.openPrint": "Chrome で印刷用ページを開く",
   "config.print.chromePath": "Google Chrome の実行ファイルの絶対パス。空欄の場合は標準のインストール先を探します。ローカルの印刷専用で、ワークスペース設定からは変更できません。",

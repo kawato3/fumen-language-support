@@ -30,6 +30,7 @@ If you used an earlier local build with the extension ID `fumen-local.fumen-lang
 - Syntax highlighting for settings, chords, bar lines, sections, durations, annotations and lyrics.
 - Bracket/quote pairing and Tab-based snippets for common structures.
 - Contextual completion for settings, fixed values, navigation signs and durations.
+- A native, searchable notation picker for score structure, signs, rhythm, text and common score settings.
 - Hover explanations, a direct link to the bundled cheat sheet and basic checks for malformed settings or missing delimiters.
 - Live, side-by-side previews using the bundled **Fumen 1.3.3** renderer, including unsaved edits.
 - An extension-specific chord-component display option in the bundled renderer: retain Fumen's compact layout or choose full-size inline symbols such as `Am7` and `AM7`. It is clearly separated from upstream Fumen settings in the [cheat sheet](docs/CHEATSHEET.md).
@@ -47,12 +48,13 @@ Open the Command Palette with `Cmd+Shift+P` on macOS or `Ctrl+Shift+P` on Window
 | --- | --- |
 | Fumen: New Score | Start an untitled score with placeholders. |
 | Fumen: Insert Template | Insert bars, sections, repeats, annotations or lyrics. |
+| Fumen: Insert Notation… | Search and insert Fumen notation as an editable snippet. |
 | Fumen: Open Preview to the Side | Render the active Fumen document beside the source. |
 | Fumen: Open Print View in Chrome | Open a snapshot for printing or saving as PDF. |
 | Fumen: Open Cheat Sheet | Open an offline notation reference beside the source. |
 | Fumen: Open User Guide | Open detailed usage instructions. |
 
-The preview and cheat sheet are also available from a Fumen editor's right-click menu and top-right buttons. Reopening the cheat sheet reuses its tab. Each document's language links work even in an English-only VS Code installation; reopening via the command follows the display language again.
+The notation picker, preview and cheat sheet are also available from a Fumen editor's right-click menu. The preview and cheat sheet also have top-right buttons. Reopening the cheat sheet reuses its tab. Each document's language links work even in an English-only VS Code installation; reopening via the command follows the display language again.
 
 The preview uses Markdown's familiar shortcut: **Cmd+K, then V** on macOS, or **Ctrl+K, then V** on Windows/Linux. Release the first keys before pressing V. It applies only while editing Fumen source text.
 

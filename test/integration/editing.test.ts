@@ -4,6 +4,21 @@ import { IntegrationCase, remainsTrue, suggestions, waitFor } from './helpers';
 
 export const editingTests: IntegrationCase[] = [
   {
+    name: 'Notation picker inserts a native snippet without suggesting music',
+    async run(fixture) {
+      const editor = await fixture.editor('');
+      const command = vscode.commands.executeCommand('fumen.insertNotation');
+      // showQuickPick creates its UI before the command promise resolves. The
+      // workbench commands exercise the same keyboard-only path as a user.
+      await new Promise(resolve => setTimeout(resolve, 50));
+      await vscode.commands.executeCommand('workbench.action.quickOpenSelectNext');
+      await vscode.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
+      await command;
+      assert.match(editor.document.getText(), /^\|{1,2} $/, 'First structure choices insert only bar notation');
+      assert.equal(editor.selection.active.character, editor.document.getText().length, 'Caret reaches the snippet endpoint');
+    }
+  },
+  {
     name: 'Hover links safely open the bundled cheat sheet',
     async run(fixture) {
       const editor = await fixture.editor('| C :||: D |');

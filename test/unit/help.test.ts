@@ -54,8 +54,13 @@ for (const locale of ['en', 'ja']) {
   });
 }
 
-test('help and preview are discoverable, with only one extension-owned default shortcut', () => {
+test('Fumen actions are discoverable, with only one extension-owned default shortcut', () => {
   const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
+  const notation = manifest.contributes.commands.find((item: { command: string }) => item.command === 'fumen.insertNotation');
+  assert.equal(notation.title, '%command.insertNotation%');
+  assert.equal(JSON.parse(readFileSync('package.nls.json', 'utf8'))['command.insertNotation'], 'Insert Notation…');
+  assert.equal(JSON.parse(readFileSync('package.nls.ja.json', 'utf8'))['command.insertNotation'], '記法を挿入…');
+  assert.equal(notation.enablement, 'editorLangId == fumen');
   const help = manifest.contributes.commands.find((item: { command: string }) => item.command === 'fumen.openCheatSheet');
   assert.equal(help.title, '%command.openCheatSheet%');
   assert.equal(JSON.parse(readFileSync('package.nls.json', 'utf8'))['command.openCheatSheet'], 'Open Cheat Sheet');
@@ -66,6 +71,7 @@ test('help and preview are discoverable, with only one extension-owned default s
     item.command === help.command && item.when === 'resourceLangId == fumen'));
   assert.deepEqual(manifest.contributes.menus['editor/context'].map((item: { command: string; when: string }) =>
     ({ command: item.command, when: item.when })), [
+    { command: 'fumen.insertNotation', when: 'resourceLangId == fumen' },
     { command: 'fumen.openPreview', when: 'resourceLangId == fumen' },
     { command: 'fumen.openCheatSheet', when: 'resourceLangId == fumen' },
     { command: 'fumen.openPrint', when: 'resourceLangId == fumen' }
@@ -91,6 +97,17 @@ test('main documentation identifies the renderer addition as extension-specific'
   assert.ok(english.includes('media/screenshots/chord-display-modes.png'));
   assert.ok(japanese.includes('media/screenshots/chord-display-modes.png'));
   assert.ok(readFileSync('media/screenshots/chord-display-modes.png').length > 1_000, 'A rendered comparison image is included');
+});
+
+test('notation picker is documented as a native, non-musical insertion aid', () => {
+  const english = [readFileSync('README.md', 'utf8'), readFileSync('docs/QUICKSTART.md', 'utf8')].join('\n');
+  const japanese = [readFileSync('README.ja.md', 'utf8'), readFileSync('docs/QUICKSTART.ja.md', 'utf8')].join('\n');
+  assert.ok(english.includes('Fumen: Insert Notation…'));
+  assert.ok(english.includes('@command:fumen.insertNotation'));
+  assert.ok(english.includes('does not suggest chord names'));
+  assert.ok(japanese.includes('Fumen: 記法を挿入…'));
+  assert.ok(japanese.includes('@command:fumen.insertNotation'));
+  assert.ok(japanese.includes('コード名、コード進行、音楽的な内容は提案しません。'));
 });
 
 test('the reusable Fumen patch is documented, version-pinned and excluded from the VSIX', () => {

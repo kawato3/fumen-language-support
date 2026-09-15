@@ -83,6 +83,12 @@
         "enablement": "editorLangId == fumen"
       },
       {
+        "command": "fumen.insertNotation",
+        "title": "%command.insertNotation%",
+        "category": "Fumen",
+        "enablement": "editorLangId == fumen"
+      },
+      {
         "command": "fumen.openPreview",
         "title": "%command.openPreview%",
         "category": "Fumen",
@@ -111,19 +117,24 @@
     "menus": {
       "editor/context": [
         {
-          "command": "fumen.openPreview",
+          "command": "fumen.insertNotation",
           "when": "resourceLangId == fumen",
           "group": "2_fumen@1"
         },
         {
-          "command": "fumen.openCheatSheet",
+          "command": "fumen.openPreview",
           "when": "resourceLangId == fumen",
           "group": "2_fumen@2"
         },
         {
-          "command": "fumen.openPrint",
+          "command": "fumen.openCheatSheet",
           "when": "resourceLangId == fumen",
           "group": "2_fumen@3"
+        },
+        {
+          "command": "fumen.openPrint",
+          "when": "resourceLangId == fumen",
+          "group": "2_fumen@4"
         }
       ],
       "editor/title": [

@@ -2,6 +2,7 @@
   "description": "Syntax highlighting, snippets and offline live previews for Fumen chord charts.",
   "command.newScore": "New Score",
   "command.insertTemplate": "Insert Template",
+  "command.insertNotation": "Insert Notation…",
   "command.openPreview": "Open Preview to the Side",
   "command.openPrint": "Open Print View in Chrome",
   "config.print.chromePath": "Optional absolute path to the Google Chrome executable. Leave empty to detect a standard installation. Used only for local printing; workspace settings cannot override this path.",

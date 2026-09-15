@@ -3,6 +3,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { test } from 'node:test';
 import * as ts from 'typescript';
 import { DURATIONS, SETTINGS, SIGNS, TEMPLATES } from '../../src/catalog';
+import { NOTATION_INSERT_GROUPS } from '../../src/notation-inserts';
 import { complete, diagnose, hover } from '../../src/language';
 import { createTranslator, helpFile, TranslationBundle } from '../../src/localization';
 import { previewHtml } from '../../src/preview-html';
@@ -52,7 +53,8 @@ test('translation placeholders and catalog descriptions stay complete', () => {
     assert.doesNotMatch(key, /[ぁ-んァ-ヶ一-龠]/);
   }
   const messages = [...SETTINGS.map(item => item.description), ...SIGNS.map(item => item.description),
-    ...DURATIONS.map(item => item[1]), ...TEMPLATES.flatMap(item => [item.label, item.description])];
+    ...DURATIONS.map(item => item[1]), ...TEMPLATES.flatMap(item => [item.label, item.description]),
+    ...NOTATION_INSERT_GROUPS.flatMap(group => [group.label, ...group.items.flatMap(item => [item.label, item.description])])];
   for (const message of messages) assert.ok(bundle[message], message);
   // Check literal t(...) messages without requiring the VS Code runtime.
   for (const directory of ['src', 'src/webview']) {
