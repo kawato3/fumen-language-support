@@ -54,7 +54,7 @@ test('translation placeholders and catalog descriptions stay complete', () => {
   }
   const messages = [...SETTINGS.map(item => item.description), ...SIGNS.map(item => item.description),
     ...DURATIONS.map(item => item[1]), ...TEMPLATES.flatMap(item => [item.label, item.description]),
-    ...NOTATION_INSERT_GROUPS.flatMap(group => [group.label, ...group.items.flatMap(item => [item.label, item.description])])];
+    ...NOTATION_INSERT_GROUPS.flatMap(group => [group.label, ...group.items.map(item => item.label)])];
   for (const message of messages) assert.ok(bundle[message], message);
   // Check literal t(...) messages without requiring the VS Code runtime.
   for (const directory of ['src', 'src/webview']) {

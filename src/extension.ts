@@ -132,11 +132,11 @@ export function activate(context: vscode.ExtensionContext): { preview: PreviewMa
       const choices: NotationQuickPickItem[] = NOTATION_INSERT_GROUPS.flatMap(group => [
         { label: t(group.label), kind: vscode.QuickPickItemKind.Separator },
         ...group.items.map(notation => ({
-          label: t(notation.label), description: t(notation.description), notation
+          label: t(notation.label), notation
         }))
       ]);
       const notation = await vscode.window.showQuickPick(choices, {
-        placeHolder: t('Choose notation to insert'), matchOnDescription: true
+        placeHolder: t('Choose notation to insert')
       });
       if (notation?.notation && !editor.document.isClosed) {
         const target = await vscode.window.showTextDocument(editor.document, editor.viewColumn);

@@ -59,7 +59,7 @@ test('Fumen actions are discoverable, with only one extension-owned default shor
   const notation = manifest.contributes.commands.find((item: { command: string }) => item.command === 'fumen.insertNotation');
   assert.equal(notation.title, '%command.insertNotation%');
   assert.equal(JSON.parse(readFileSync('package.nls.json', 'utf8'))['command.insertNotation'], 'Insert Notation…');
-  assert.equal(JSON.parse(readFileSync('package.nls.ja.json', 'utf8'))['command.insertNotation'], '記法を挿入…');
+  assert.equal(JSON.parse(readFileSync('package.nls.ja.json', 'utf8'))['command.insertNotation'], 'Fumen 記法の挿入…');
   assert.equal(notation.enablement, 'editorLangId == fumen');
   const help = manifest.contributes.commands.find((item: { command: string }) => item.command === 'fumen.openCheatSheet');
   assert.equal(help.title, '%command.openCheatSheet%');
@@ -92,11 +92,27 @@ test('main documentation identifies the renderer addition as extension-specific'
   }
   assert.ok(english.includes('extension-specific'));
   assert.ok(japanese.includes('独自'));
-  assert.ok(english.includes('### 1.0.2') && english.includes('### 1.0.1'));
-  assert.ok(japanese.includes('### 1.0.2') && japanese.includes('### 1.0.1'));
+  assert.ok(english.includes('### 1.0.3') && english.includes('### 1.0.2') && english.includes('### 1.0.1'));
+  assert.ok(japanese.includes('### 1.0.3') && japanese.includes('### 1.0.2') && japanese.includes('### 1.0.1'));
   assert.ok(english.includes('media/screenshots/chord-display-modes.png'));
   assert.ok(japanese.includes('media/screenshots/chord-display-modes.png'));
   assert.ok(readFileSync('media/screenshots/chord-display-modes.png').length > 1_000, 'A rendered comparison image is included');
+});
+
+test('installation docs use a version-independent local VSIX filename', () => {
+  for (const filename of ['README.md', 'README.ja.md']) {
+    const source = readFileSync(filename, 'utf8');
+    assert.ok(source.includes('fumen-language-support-<version>.vsix'), filename);
+    assert.ok(!source.includes('fumen-language-support-1.0.1.vsix'), filename);
+  }
+});
+
+test('release metadata and changelog are prepared for version 1.0.3', () => {
+  const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
+  const changelog = readFileSync('CHANGELOG.md', 'utf8');
+
+  assert.equal(manifest.version, '1.0.3');
+  assert.match(changelog, /^## 1\.0\.3$/m);
 });
 
 test('notation picker is documented as a native, non-musical insertion aid', () => {
@@ -105,7 +121,7 @@ test('notation picker is documented as a native, non-musical insertion aid', () 
   assert.ok(english.includes('Fumen: Insert Notation…'));
   assert.ok(english.includes('@command:fumen.insertNotation'));
   assert.ok(english.includes('does not suggest chord names'));
-  assert.ok(japanese.includes('Fumen: 記法を挿入…'));
+  assert.ok(japanese.includes('Fumen 記法の挿入…'));
   assert.ok(japanese.includes('@command:fumen.insertNotation'));
   assert.ok(japanese.includes('コード名、コード進行、音楽的な内容は提案しません。'));
 });

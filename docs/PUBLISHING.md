@@ -2,7 +2,7 @@
 
 ソースの公開先は [kawato3/fumen-language-support](https://github.com/kawato3/fumen-language-support) です。Marketplace の発行者は `kawato3`（表示名: Katsushi Kawato）です。[Fumen Language Support](https://marketplace.visualstudio.com/items?itemName=kawato3.fumen-language-support) を Marketplace に公開しています。
 
-現在の公開版は **1.0.2** です。1.0.1 は 2026-09-14 に初めて Marketplace へ公開した版で、1.0.2 ではコード構成要素の表示を選べる拡張固有の `%PARAM` を追加しました。VS Code の拡張機能検索で `@id:kawato3.fumen-language-support` を指定してインストールできます。
+現在の公開版は **1.0.3** です。1.0.1 は 2026-09-14 に初めて Marketplace へ公開した版で、1.0.2 ではコード構成要素の表示を選べる拡張固有の `%PARAM` を追加しました。1.0.3 では、検索可能な記法選択と、ホバーから同梱チートシートを開く導線を追加しました。VS Code の拡張機能検索で `@id:kawato3.fumen-language-support` を指定してインストールできます。
 
 ## Marketplace 公開結果（2026-09-14）
 

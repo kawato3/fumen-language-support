@@ -21,7 +21,7 @@ Requires VS Code **1.90 or later**. No separate Node.js, Fumen or font installat
 3. Select **Fumen Language Support** by **Katsushi Kawato** and click **Install**.
 4. Open a `.fumen` file or run **Fumen: New Score** from the Command Palette.
 
-To install a local build instead, choose **… → Install from VSIX…** and select `fumen-language-support-1.0.1.vsix`. Version 1.0.0 can be updated in place without uninstalling it. See the development instructions below to build it yourself. If VS Code asks to reload after an update, save your work first.
+To install a local build instead, run `npm run package`, then choose **… → Install from VSIX…** and select the generated `fumen-language-support-<version>.vsix` file. A local build with the current extension ID can be updated in place. If VS Code asks to reload after an update, save your work first.
 
 If you used an earlier local build with the extension ID `fumen-local.fumen-language-support`, uninstall it before installing `kawato3.fumen-language-support` to avoid running both copies. Your `.fumen` files are unaffected.
 
@@ -141,6 +141,12 @@ MIT License — Copyright (c) 2026 Katsushi Kawato. See [LICENSE](LICENSE) for t
 This is an independent extension, not an official Fumen product. Rendering is provided by [hbjpn/fumen](https://github.com/hbjpn/fumen/), created by Hiroyuki Baba. Bundled third-party code, documentation and music symbols retain their own MIT/OFL licenses and copyright notices; see [third-party notices](THIRD_PARTY_NOTICES.md) and [bundled licenses](media/vendor/).
 
 ## Changelog
+
+### 1.0.3
+
+- Add a searchable notation picker for Fumen structure, navigation signs, rhythm, text and common score settings. It inserts editable VS Code snippets without suggesting chord names, chord progressions or other musical content.
+- Add the notation picker to the Fumen editor context menu, using concise labels that include the inserted Fumen spelling.
+- Open the bundled offline cheat sheet directly from notation hover help.
 
 ### 1.0.2
 
