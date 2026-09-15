@@ -6,5 +6,6 @@ output/
 *.vsix
 .DS_Store
 *.log
+/AGENTS.md
 media/compiled/
 design/icon-options/
