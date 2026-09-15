@@ -4,8 +4,8 @@
     "name": "Fumen 拡張を試す",
     "type": "extensionHost",
     "request": "launch",
-    "args": ["--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/examples/basic.fumen"],
-    "outFiles": ["${workspaceFolder}/out/**/*.js"],
+    "args": ["--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/docs/examples/basic.fumen"],
+    "outFiles": ["${workspaceFolder}/build/extension/**/*.js"],
     "preLaunchTask": "npm: build"
   }]
 }

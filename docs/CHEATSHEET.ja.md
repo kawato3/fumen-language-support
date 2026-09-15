@@ -209,4 +209,4 @@
 
 公式チートシートの「Da Capo al Coda」の行は記号が重複しているため、この一覧では本体の実装に合わせて `<D.C. al Coda>` としています。
 
-原資料: Copyright (c) 2020 Hiroyuki Baba、MIT ライセンス。原資料のライセンス全文は同梱の `media/vendor/FUMEN-LICENSE.txt`、同梱物の一覧は `THIRD_PARTY_NOTICES.md` を参照してください。公式の日本語訳ではありません。
+原資料: Copyright (c) 2020 Hiroyuki Baba、MIT ライセンス。原資料のライセンス全文は同梱の `resources/vendor/FUMEN-LICENSE.txt`、同梱物の一覧は `resources/vendor/THIRD_PARTY_NOTICES.md` を参照してください。公式の日本語訳ではありません。

@@ -12,7 +12,7 @@ import { previewTests } from './preview.test';
 import { printingTests } from './printing.test';
 
 export async function run(): Promise<void> {
-  const manifest = JSON.parse(readFileSync(path.resolve(__dirname, '../../../package.json'), 'utf8')) as { publisher: string; name: string };
+  const manifest = JSON.parse(readFileSync(path.resolve(__dirname, '../../../../package.json'), 'utf8')) as { publisher: string; name: string };
   const extension = vscode.extensions.getExtension(`${manifest.publisher}.${manifest.name}`);
   assert.ok(extension, 'Extension is discoverable');
   const api = await extension.activate() as { preview: PreviewManager; globalStorageUri: vscode.Uri };
@@ -25,7 +25,7 @@ export async function run(): Promise<void> {
   const japanese = /^ja(?:-|$)/i.test(vscode.env.language);
   const environment: TestEnvironment = {
     extension, preview: api.preview, globalStorageUri: api.globalStorageUri, japanese,
-    t: createTranslator(japanese ? JSON.parse(readFileSync(path.join(extension.extensionPath, 'l10n/bundle.l10n.ja.json'), 'utf8')) : {})
+    t: createTranslator(japanese ? JSON.parse(readFileSync(path.join(extension.extensionPath, 'resources/l10n/bundle.l10n.ja.json'), 'utf8')) : {})
   };
   // Manifest and runtime translations are separate VS Code mechanisms.
   const title = extension.packageJSON.contributes.commands.find((command: { command: string }) => command.command === 'fumen.openCheatSheet').title;

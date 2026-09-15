@@ -1,7 +1,7 @@
 {
   "name": "fumen-language-support",
   "displayName": "Fumen Language Support",
-  "icon": "media/icon.png",
+  "icon": "resources/images/icon.png",
   "description": "%description%",
   "version": "1.0.3",
   "publisher": "kawato3",
@@ -30,8 +30,8 @@
     "leadsheet",
     "譜面"
   ],
-  "main": "./out/extension.js",
-  "l10n": "./l10n",
+  "main": "./build/extension/extension.js",
+  "l10n": "./resources/l10n",
   "extensionKind": [
     "workspace"
   ],
@@ -54,20 +54,20 @@
         "extensions": [
           ".fumen"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./resources/language/language-configuration.json"
       }
     ],
     "grammars": [
       {
         "language": "fumen",
         "scopeName": "source.fumen",
-        "path": "./syntaxes/fumen.tmLanguage.json"
+        "path": "./resources/language/fumen.tmLanguage.json"
       }
     ],
     "snippets": [
       {
         "language": "fumen",
-        "path": "./snippets/fumen.json"
+        "path": "./resources/language/snippets.json"
       }
     ],
     "commands": [
@@ -195,18 +195,18 @@
     }
   },
   "scripts": {
-    "build": "node scripts/vendor-fumen.cjs --check && tsc -p tsconfig.json && tsc -p tsconfig.webview.json && node scripts/build-print.cjs",
+    "build": "node scripts/vendor-fumen.cjs --check && tsc -p tsconfig.json && tsc -p src/webview/tsconfig.json && node scripts/build-print.cjs",
     "watch": "tsc -p tsconfig.json --watch",
-    "watch:webview": "tsc -p tsconfig.webview.json --watch",
+    "watch:webview": "tsc -p src/webview/tsconfig.json --watch",
     "vendor:fumen": "node scripts/vendor-fumen.cjs",
-    "compile-tests": "node scripts/clean-test-output.cjs && tsc -p tsconfig.test.json",
-    "test": "npm run compile-tests && node --test out-test/test/unit/*.test.js",
+    "compile-tests": "node scripts/clean-test-output.cjs && tsc -p tests/tsconfig.json",
+    "test": "npm run compile-tests && node --test build/tests/tests/unit/*.test.js",
     "test:integration": "npm run build && npm run compile-tests && node scripts/test-integration.cjs",
     "check": "npm run build && npm test",
     "vscode:prepublish": "npm run build",
-    "package": "npm run check:publish && npm run check && vsce package --no-dependencies",
+    "package": "npm run check:publish && npm run check && node scripts/package.cjs",
     "check:publish": "node scripts/check-publish.cjs",
-    "test:print": "npm run build && node --test test/browser/print.test.cjs"
+    "test:print": "npm run build && node --test tests/browser/print.test.cjs"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

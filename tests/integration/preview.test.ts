@@ -113,8 +113,8 @@ export const previewTests: IntegrationCase[] = [
       assert.ok(previous.pages > 1);
       const examples = [
         '%TITLE="<script>alert(1)</script> 日本語"\n[A]\n| C |',
-        readFileSync(path.join(fixture.env.extension.extensionPath, 'examples/notation.fumen'), 'utf8'),
-        readFileSync(path.join(fixture.env.extension.extensionPath, 'examples/notation-en.fumen'), 'utf8')
+        readFileSync(path.join(fixture.env.extension.extensionPath, 'docs/examples/notation.fumen'), 'utf8'),
+        readFileSync(path.join(fixture.env.extension.extensionPath, 'docs/examples/notation-en.fumen'), 'utf8')
       ];
       for (const filename of ['CHEATSHEET.md', 'CHEATSHEET.ja.md']) {
         const text = readFileSync(path.join(fixture.env.extension.extensionPath, 'docs', filename), 'utf8');

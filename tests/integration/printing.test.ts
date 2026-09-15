@@ -11,7 +11,7 @@ export const printingTests: IntegrationCase[] = [{
   async run(fixture) {
     const {extension, japanese} = fixture.env;
     // Load the actual extension under test, including when running against an extracted VSIX.
-    const Manager = (require(join(extension.extensionPath, 'out/printing.js')) as {PrintManager: typeof PrintManager}).PrintManager;
+    const Manager = (require(join(extension.extensionPath, 'build/extension/printing.js')) as {PrintManager: typeof PrintManager}).PrintManager;
     // Preserve the scheme and provider of VS Code's real storage, including vscode-userdata.
     const storage = vscode.Uri.joinPath(fixture.env.globalStorageUri, `test-${randomUUID()}`);
     await vscode.workspace.fs.createDirectory(storage);
@@ -49,7 +49,7 @@ export const printingTests: IntegrationCase[] = [{
   name: 'Printing rejects empty or oversized input and discards a snapshot changed during preparation',
   async run(fixture) {
     const {extension} = fixture.env;
-    const Manager = (require(join(extension.extensionPath, 'out/printing.js')) as {PrintManager: typeof PrintManager}).PrintManager;
+    const Manager = (require(join(extension.extensionPath, 'build/extension/printing.js')) as {PrintManager: typeof PrintManager}).PrintManager;
     const storage = vscode.Uri.joinPath(fixture.env.globalStorageUri, `test-${randomUUID()}`);
     await vscode.workspace.fs.createDirectory(storage);
     const root = storage.fsPath;

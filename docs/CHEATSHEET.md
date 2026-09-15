@@ -209,4 +209,4 @@ Adapted from the [official Fumen v1.3.3 cheat sheet](https://github.com/hbjpn/fu
 
 The official cheat sheet duplicates a sign in its “Da Capo al Coda” row. This reference uses `<D.C. al Coda>` to match the implementation.
 
-Original material: Copyright (c) 2020 Hiroyuki Baba, MIT License. The full license is bundled as `media/vendor/FUMEN-LICENSE.txt`; see `THIRD_PARTY_NOTICES.md` for the inventory. This is an independently maintained adaptation, not official documentation.
+Original material: Copyright (c) 2020 Hiroyuki Baba, MIT License. The full license is bundled as `resources/vendor/FUMEN-LICENSE.txt`; see `resources/vendor/THIRD_PARTY_NOTICES.md` for the inventory. This is an independently maintained adaptation, not official documentation.
