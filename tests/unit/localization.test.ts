@@ -9,7 +9,7 @@ import { createTranslator, helpFile, TranslationBundle } from '../../src/localiz
 import { previewHtml } from '../../src/preview-html';
 import { CanvasBudget, checkLayout } from '../../src/webview/layout-safety';
 
-const bundle: TranslationBundle = JSON.parse(readFileSync('l10n/bundle.l10n.ja.json', 'utf8'));
+const bundle: TranslationBundle = JSON.parse(readFileSync('resources/l10n/bundle.l10n.ja.json', 'utf8'));
 const ja = createTranslator(bundle);
 const en = createTranslator();
 
@@ -38,9 +38,9 @@ test('manifest localization is complete in English and Japanese and included in 
     assert.ok(defaults[key] && japanese[key], key);
     assert.doesNotMatch(defaults[key], /[ぁ-んァ-ヶ一-龠]/, 'English default');
   }
-  assert.equal(JSON.parse(manifest).l10n, './l10n');
+  assert.equal(JSON.parse(manifest).l10n, './resources/l10n');
   const packaging = readFileSync('.vscodeignore', 'utf8');
-  for (const file of ['package.nls*.json', 'l10n/*.json', 'docs/CHEATSHEET.md', 'docs/CHEATSHEET.ja.md', 'docs/QUICKSTART.md', 'docs/QUICKSTART.ja.md']) {
+  for (const file of ['package.nls*.json', 'resources/l10n/*.json', 'docs/CHEATSHEET.md', 'docs/CHEATSHEET.ja.md', 'docs/QUICKSTART.md', 'docs/QUICKSTART.ja.md']) {
     assert.ok(packaging.includes(`!${file}`), file);
   }
 });

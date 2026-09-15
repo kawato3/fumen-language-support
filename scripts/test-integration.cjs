@@ -21,7 +21,10 @@ async function main() {
     // language pack enabled rather than disabling every installed extension.
     '--skip-welcome', '--skip-release-notes', '--disable-gpu'
   ];
-  const executable = process.env.FUMEN_VSCODE_EXECUTABLE || await downloadAndUnzipVSCode(process.env.FUMEN_VSCODE_VERSION || 'stable');
+  const executable = process.env.FUMEN_VSCODE_EXECUTABLE || await downloadAndUnzipVSCode({
+    version: process.env.FUMEN_VSCODE_VERSION || 'stable',
+    cachePath: path.join(root, 'build', 'cache', 'vscode')
+  });
   if (process.env.FUMEN_TEST_LOCALE === 'ja') {
     // A locale flag without a language pack falls back to English. Install Microsoft's
     // pack only in this isolated profile, with no change to the user's installation.
@@ -37,7 +40,7 @@ async function main() {
     await runTests({
       vscodeExecutablePath: executable,
       extensionDevelopmentPath: extensionRoot,
-      extensionTestsPath: path.join(root, 'out-test/test/integration/locale-setup.js'),
+      extensionTestsPath: path.join(root, 'build/tests/tests/integration/locale-setup.js'),
       extensionTestsEnv: { FUMEN_TEST_LANGUAGE_PACK_CACHE: path.join(temporary, 'user-data', 'languagepacks.json') },
       launchArgs
     });
@@ -46,11 +49,11 @@ async function main() {
     // runTests() itself adds --disable-workspace-trust. Use the documented CLI for this pass.
     const workspace = path.join(temporary, 'workspace');
     fs.mkdirSync(workspace);
-    fs.copyFileSync(path.join(root, 'examples/basic.fumen'), path.join(workspace, 'basic.fumen'));
+    fs.copyFileSync(path.join(root, 'docs/examples/basic.fumen'), path.join(workspace, 'basic.fumen'));
     await new Promise((resolve, reject) => {
       const child = spawn(executable, [workspace, ...launchArgs,
         `--extensionDevelopmentPath=${extensionRoot}`,
-        `--extensionTestsPath=${path.join(root, 'out-test/test/integration/index.js')}`
+        `--extensionTestsPath=${path.join(root, 'build/tests/tests/integration/index.js')}`
       ], { stdio: 'inherit', env: process.env });
       child.on('error', reject);
       child.on('exit', code => code === 0 ? resolve() : reject(new Error(`Restricted-mode tests exited with ${code}`)));
@@ -59,7 +62,7 @@ async function main() {
   }
   await runTests({
     extensionDevelopmentPath: extensionRoot,
-    extensionTestsPath: path.join(root, 'out-test/test/integration/index.js'),
+    extensionTestsPath: path.join(root, 'build/tests/tests/integration/index.js'),
     vscodeExecutablePath: executable,
     launchArgs
   });

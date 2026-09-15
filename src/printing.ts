@@ -51,9 +51,9 @@ export class PrintManager implements vscode.Disposable {
       }
       const read = async (...parts: string[]) => new TextDecoder().decode(await vscode.workspace.fs.readFile(vscode.Uri.joinPath(this.context.extensionUri, ...parts)));
       const [library, script, style, notices] = await Promise.all([
-        read('media', 'vendor', 'fumen.js'), read('media', 'compiled', 'print.js'), read('media', 'print.css'),
+        read('resources', 'vendor', 'fumen.js'), read('build', 'browser', 'print.js'), read('resources', 'webview', 'print.css'),
         Promise.all(['FUMEN-LICENSE.txt', 'OFL.txt', 'BABEL-LICENSE.txt', 'CORE-JS-LICENSE.txt', 'REGENERATOR-LICENSE.txt', 'WEBPACK-LICENSE.txt']
-          .map(async name => `${name}\n\n${await read('media', 'vendor', name)}`)).then(licenses => licenses.join('\n\n'))
+          .map(async name => `${name}\n\n${await read('resources', 'vendor', name)}`)).then(licenses => licenses.join('\n\n'))
       ]);
       filename = await this.files.create(printHtml({ text, name: posix.basename(document.uri.path) || 'Untitled.fumen' },
         { library, script, style, notices, nonce: randomBytes(18).toString('base64') }, t, vscode.env.language, vscode.l10n.bundle));

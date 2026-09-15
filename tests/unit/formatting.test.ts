@@ -70,11 +70,11 @@ test('formatting preserves upstream notation structure for shipped examples and 
     Parser: new () => { parse(source: string): { exportCode(): string } | null };
   } } };
   // The browser bundle only needs `self` to expose its API; no DOM or rendering mocks.
-  runInNewContext(readFileSync('media/vendor/fumen.js', 'utf8'), browser);
+  runInNewContext(readFileSync('resources/vendor/fumen.js', 'utf8'), browser);
   assert.ok(browser.self.Fumen);
   const { Parser } = browser.self.Fumen;
-  const sources = readdirSync('examples').filter(name => name.endsWith('.fumen'))
-    .map(name => readFileSync(`examples/${name}`, 'utf8'));
+  const sources = readdirSync('docs/examples').filter(name => name.endsWith('.fumen'))
+    .map(name => readFileSync(`docs/examples/${name}`, 'utf8'));
   for (const name of ['docs/CHEATSHEET.md', 'docs/CHEATSHEET.ja.md']) {
     for (const match of readFileSync(name, 'utf8').matchAll(/```fumen\n([\s\S]*?)```/g)) sources.push(match[1]!);
   }

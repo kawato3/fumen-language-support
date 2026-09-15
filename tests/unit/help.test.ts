@@ -82,28 +82,28 @@ test('Fumen actions are discoverable, with only one extension-owned default shor
     when: 'editorTextFocus && editorLangId == fumen && !notebookEditorFocused'
   }]);
   assert.ok(readFileSync('.vscodeignore', 'utf8').includes('!docs/CHEATSHEET.md'));
-  assert.ok(readFileSync('.vscodeignore', 'utf8').includes('!media/screenshots/chord-display-modes.png'));
+  assert.ok(readFileSync('.vscodeignore', 'utf8').includes('!resources/images/chord-display-modes.png'));
 });
 
 test('main documentation identifies the renderer addition as extension-specific', () => {
   const english = readFileSync('README.md', 'utf8');
-  const japanese = readFileSync('README.ja.md', 'utf8');
+  const japanese = readFileSync('docs/README.ja.md', 'utf8');
   for (const source of [english, japanese]) {
     for (const field of ['minor_label', 'major_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
   }
   assert.ok(english.includes('extension-specific'));
   assert.ok(japanese.includes('独自'));
   assert.ok(english.includes('[CHANGELOG.md](CHANGELOG.md)'));
-  assert.ok(japanese.includes('[CHANGELOG.md](CHANGELOG.md)'));
+  assert.ok(japanese.includes('[CHANGELOG.md](../CHANGELOG.md)'));
   assert.doesNotMatch(english, /^### 1\.0\./m);
   assert.doesNotMatch(japanese, /^### 1\.0\./m);
   assert.ok(!english.includes('Development and distribution'));
   assert.ok(!japanese.includes('開発・パッケージ作成'));
   assert.ok(!english.includes('npm run '));
   assert.ok(!japanese.includes('npm run '));
-  assert.ok(english.includes('media/screenshots/chord-display-modes.png'));
-  assert.ok(japanese.includes('media/screenshots/chord-display-modes.png'));
-  assert.ok(readFileSync('media/screenshots/chord-display-modes.png').length > 1_000, 'A rendered comparison image is included');
+  assert.ok(english.includes('resources/images/chord-display-modes.png'));
+  assert.ok(japanese.includes('resources/images/chord-display-modes.png'));
+  assert.ok(readFileSync('resources/images/chord-display-modes.png').length > 1_000, 'A rendered comparison image is included');
 });
 
 test('release metadata and changelog are prepared for version 1.0.3', () => {
@@ -116,7 +116,7 @@ test('release metadata and changelog are prepared for version 1.0.3', () => {
 
 test('notation picker is documented as a native, non-musical insertion aid', () => {
   const english = [readFileSync('README.md', 'utf8'), readFileSync('docs/QUICKSTART.md', 'utf8')].join('\n');
-  const japanese = [readFileSync('README.ja.md', 'utf8'), readFileSync('docs/QUICKSTART.ja.md', 'utf8')].join('\n');
+  const japanese = [readFileSync('docs/README.ja.md', 'utf8'), readFileSync('docs/QUICKSTART.ja.md', 'utf8')].join('\n');
   assert.ok(english.includes('Fumen: Insert Notation…'));
   assert.ok(english.includes('@command:fumen.insertNotation'));
   assert.ok(english.includes('does not suggest chord names'));

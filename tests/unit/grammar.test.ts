@@ -9,7 +9,7 @@ test('TextMate grammar highlights settings, chords, rhythm and Japanese text', a
   await loadWASM(wasm.buffer.slice(wasm.byteOffset, wasm.byteOffset + wasm.byteLength));
   const registry = new Registry({
     onigLib: Promise.resolve({ createOnigScanner: sources => new OnigScanner(sources), createOnigString: source => new OnigString(source) }),
-    loadGrammar: async scope => scope === 'source.fumen' ? parseRawGrammar(readFileSync('syntaxes/fumen.tmLanguage.json', 'utf8'), 'fumen.json') : null
+    loadGrammar: async scope => scope === 'source.fumen' ? parseRawGrammar(readFileSync('resources/language/fumen.tmLanguage.json', 'utf8'), 'fumen.json') : null
   });
   try {
     const grammar = await registry.loadGrammar('source.fumen');

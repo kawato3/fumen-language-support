@@ -14,7 +14,7 @@ const assets = [
 ];
 
 async function main() {
-  const directory = path.resolve(__dirname, '../media/vendor');
+  const directory = path.resolve(__dirname, '../resources/vendor');
   const pending = [];
   for (const [name, url, checksum] of assets) {
     const target = path.join(directory, name);

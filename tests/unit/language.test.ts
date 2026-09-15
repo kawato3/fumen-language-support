@@ -128,12 +128,12 @@ test('hover explains notation without analyzing chord names', () => {
 
 test('document examples pass basic diagnostics', () => {
   for (const name of ['basic', 'notation', 'notation-en']) {
-    assert.deepEqual(diagnose(readFileSync(`examples/${name}.fumen`, 'utf8')), [], name);
+    assert.deepEqual(diagnose(readFileSync(`docs/examples/${name}.fumen`, 'utf8')), [], name);
   }
 });
 
 test('packaged snippets and command templates stay consistent', () => {
-  const snippets = JSON.parse(readFileSync('snippets/fumen.json', 'utf8')) as Record<string, { body: string | string[] }>;
+  const snippets = JSON.parse(readFileSync('resources/language/snippets.json', 'utf8')) as Record<string, { body: string | string[] }>;
   const body = (label: string) => {
     const snippet = snippets[label]!.body;
     return Array.isArray(snippet) ? snippet.join('\n') : snippet;

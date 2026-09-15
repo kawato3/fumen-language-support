@@ -101,5 +101,5 @@ test('print command is discoverable, with a machine-only path and no stolen prin
   assert.ok(manifest.contributes.commands.some((entry: { command: string }) => entry.command === 'fumen.openPrint'));
   assert.equal(manifest.contributes.configuration.properties['fumen.print.chromePath'].scope, 'machine');
   assert.ok(!manifest.contributes.keybindings.some((entry: { command: string }) => entry.command === 'fumen.openPrint'));
-  assert.ok(readFileSync('.vscodeignore', 'utf8').includes('!media/print.css'));
+  assert.ok(readFileSync('.vscodeignore', 'utf8').includes('!resources/webview/print.css'));
 });

@@ -46,7 +46,11 @@ export class PreviewManager implements vscode.Disposable {
       this.panel = vscode.window.createWebviewPanel('fumen.preview', '',
         { viewColumn: vscode.ViewColumn.Beside, preserveFocus: true }, {
           enableScripts: true,
-          localResourceRoots: [vscode.Uri.joinPath(this.context.extensionUri, 'media')]
+          localResourceRoots: [
+            vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'vendor'),
+            vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webview'),
+            vscode.Uri.joinPath(this.context.extensionUri, 'build', 'browser')
+          ]
         });
       const panel = this.panel;
       const disposables: vscode.Disposable[] = [];
@@ -110,10 +114,10 @@ export class PreviewManager implements vscode.Disposable {
     if (!this.panel) return;
     this.ready = false;
     this.invalidate();
-    const asset = (...parts: string[]) => this.panel!.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', ...parts)).toString();
+    const asset = (...parts: string[]) => this.panel!.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, ...parts)).toString();
     this.panel.webview.html = previewHtml({
-      script: asset('compiled', 'webview', 'main.js'), library: asset('vendor', 'fumen.js'),
-      style: asset('preview.css'), cspSource: this.panel.webview.cspSource, nonce: randomBytes(18).toString('base64')
+      script: asset('build', 'browser', 'webview', 'main.js'), library: asset('resources', 'vendor', 'fumen.js'),
+      style: asset('resources', 'webview', 'preview.css'), cspSource: this.panel.webview.cspSource, nonce: randomBytes(18).toString('base64')
     }, vscode.l10n.t, vscode.env.language, vscode.l10n.bundle);
   }
 

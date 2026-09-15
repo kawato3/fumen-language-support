@@ -7,9 +7,9 @@ const {pathToFileURL} = require('node:url');
 const {randomBytes} = require('node:crypto');
 const {chromium} = require('playwright-core');
 const {build} = require('esbuild');
-const {printHtml} = require('../../out/print-html');
-const {createTranslator} = require('../../out/localization');
-const {findChrome} = require('../../out/print-platform');
+const {printHtml} = require('../../build/extension/print-html');
+const {createTranslator} = require('../../build/extension/localization');
+const {findChrome} = require('../../build/extension/print-platform');
 
 const score = '%TITLE="Print test"\n%SHOW_STAFF="YES"\n[A]\n||: (4/4) `青い空を見上げて`@ C:2 r:2 | `We walk beneath the open sky`@ G7:1 :||';
 let browser, temporary, assets, japanese;
@@ -19,9 +19,9 @@ before(async () => {
   assert.ok(executablePath, 'Install Google Chrome or set FUMEN_CHROME_PATH; no browser is downloaded by this suite');
   temporary = await fs.mkdtemp(path.join(os.tmpdir(), 'fumen-print-browser-test-'));
   const read = filename => fs.readFile(path.resolve(filename), 'utf8');
-  assets = { library: await read('media/vendor/fumen.js'), script: await read('media/compiled/print.js'),
-    style: await read('media/print.css'), notices: await read('media/vendor/FUMEN-LICENSE.txt'), nonce: randomBytes(18).toString('base64') };
-  japanese = JSON.parse(await read('l10n/bundle.l10n.ja.json'));
+  assets = { library: await read('resources/vendor/fumen.js'), script: await read('build/browser/print.js'),
+    style: await read('resources/webview/print.css'), notices: await read('resources/vendor/FUMEN-LICENSE.txt'), nonce: randomBytes(18).toString('base64') };
+  japanese = JSON.parse(await read('resources/l10n/bundle.l10n.ja.json'));
   browser = await chromium.launch({executablePath, headless: true});
 });
 after(async () => { await browser?.close(); if (temporary) await fs.rm(temporary, {recursive: true, force: true}); });
@@ -80,7 +80,7 @@ test('custom page dimensions fit without clipping or aspect-ratio distortion', a
 });
 
 test('bundled notation and multiple pages replay without changing any rendered page', async t => {
-  const notation = await fs.readFile('examples/notation-en.fumen', 'utf8');
+  const notation = await fs.readFile('docs/examples/notation-en.fumen', 'utf8');
   const page = await open(t, notation + Array.from({length: 14}, (_, i) => `\n\n[Section ${i + 1}]\n| C:2 G7:2 | Am7:1 |\n| F:2 G7:2 | C:1 |`).join(''));
   assert.equal(await page.locator('body').getAttribute('data-state'), 'ready', await page.locator('#status').innerText());
   const original = await page.locator('canvas').evaluateAll(cs => cs.map(c => c.toDataURL()));

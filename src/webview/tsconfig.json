@@ -1,12 +1,12 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "module": "ES2022",
     "moduleResolution": "Bundler",
-    "outDir": "media/compiled",
+    "outDir": "../../build/browser",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": [],
     "sourceMap": false
   },
-  "include": ["src/webview/**/*.ts", "src/preview-protocol.ts"]
+  "include": ["**/*.ts", "../preview-protocol.ts"]
 }

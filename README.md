@@ -1,16 +1,16 @@
 # Fumen Language Support
 
-English | [日本語](README.ja.md)
+English | [日本語](docs/README.ja.md)
 
 Write [Fumen](https://github.com/hbjpn/fumen/) chord charts in VS Code with syntax highlighting, contextual completion, snippets and offline live previews. Keep English and Japanese notation guides close at hand, without chord-name suggestions getting in your way.
 
-日本語: `.fumen` の譜面作成を、構文の色分け・設定や記号の補完・スニペット・オフラインのリアルタイムプレビューで支援します。コード名の補完は行いません。詳しくは [日本語の説明](README.ja.md)をご覧ください。
+日本語: `.fumen` の譜面作成を、構文の色分け・設定や記号の補完・スニペット・オフラインのリアルタイムプレビューで支援します。コード名の補完は行いません。詳しくは [日本語の説明](docs/README.ja.md)をご覧ください。
 
 English is the default. With a Japanese VS Code display language, commands, settings descriptions, completion/hover explanations, diagnostics, preview controls and bundled help appear in Japanese. Each help document includes **日本語 / English** links, so you can read either language without changing VS Code's display language.
 
-![Fumen source with syntax highlighting on the left and its rendered score preview on the right](media/screenshots/editor-preview.jpg)
+![Fumen source with syntax highlighting on the left and its rendered score preview on the right](resources/images/editor-preview.jpg)
 
-Edit notation and see the score beside it. Try the [English sample](examples/notation-en.fumen) shown above.
+Edit notation and see the score beside it. Try the [English sample](docs/examples/notation-en.fumen) shown above.
 
 ## Install
 
@@ -74,7 +74,7 @@ Rendering is local and uses no network service. Source text is sent to a sandbox
 
 The bundled renderer is based on Fumen 1.3.3 and has one clearly scoped extension-specific display addition: `minor_label`, `major_label` and `chord_suffix_style`. They choose chord labels and either the original compact layout or an ordinary-size inline layout for all components after a root note. These are not published Fumen 1.3.3 parameters; another Fumen tool may ignore them. The [cheat sheet's extension-specific section](docs/CHEATSHEET.md#extension-chord-display) explains the visual difference, exact defaults and portable-sharing caveat.
 
-![The same chords in Fumen's default compact layout and this extension's inline layout](media/screenshots/chord-display-modes.png)
+![The same chords in Fumen's default compact layout and this extension's inline layout](resources/images/chord-display-modes.png)
 
 Very large scores or extreme rendering parameters may exceed safety limits and show an error instead of rendering. Split unusually large scores into smaller files.
 
@@ -112,7 +112,7 @@ Report bugs and request features through [GitHub Issues](https://github.com/kawa
 
 MIT License — Copyright (c) 2026 Katsushi Kawato. See [LICENSE](LICENSE) for the full terms.
 
-This is an independent extension, not an official Fumen product. Rendering is provided by [hbjpn/fumen](https://github.com/hbjpn/fumen/), created by Hiroyuki Baba. Bundled third-party code, documentation and music symbols retain their own MIT/OFL licenses and copyright notices; see [third-party notices](THIRD_PARTY_NOTICES.md) and [bundled licenses](media/vendor/).
+This is an independent extension, not an official Fumen product. Rendering is provided by [hbjpn/fumen](https://github.com/hbjpn/fumen/), created by Hiroyuki Baba. Bundled third-party code, documentation and music symbols retain their own MIT/OFL licenses and copyright notices; see [third-party notices](resources/vendor/THIRD_PARTY_NOTICES.md) and [bundled licenses](resources/vendor/).
 
 ## Changelog
 

@@ -1,11 +1,7 @@
-node_modules/
-out/
-out-test/
-output/
-.vscode-test/
+/node_modules/
+/build/
+/artifacts/
 *.vsix
 .DS_Store
 *.log
 /AGENTS.md
-media/compiled/
-design/icon-options/
