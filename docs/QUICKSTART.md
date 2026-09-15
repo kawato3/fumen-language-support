@@ -34,7 +34,7 @@ Run **Fumen: New Score**. Fill in the title and artist, then press Tab to move t
 - Type `%` at the start of a setting to see setting names.
 - Known fixed values, such as `"YES"` and `"NO"`, have completion choices.
 - Inside a measure, `<` offers navigation signs and `:` offers durations.
-- Hover over a setting or symbol to read its explanation and a link to the official reference.
+- Hover over a setting or symbol to read its explanation and open the bundled cheat sheet for the relevant notation.
 - Use **Trigger Suggest** (`Ctrl+Space`, including on macOS) for manual completion. If the operating system intercepts it, run that command from the Command Palette or assign another key.
 
 Chord names, keys and free-form text are not suggested. The extension also disables word-based suggestions for Fumen by default to avoid guessing chords from other parts of the song. Other extensions or user settings can override this behavior.

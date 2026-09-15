@@ -87,9 +87,12 @@ export function activate(context: vscode.ExtensionContext): { preview: PreviewMa
         const info = hover(text, document.offsetAt(position));
         if (!info) return undefined;
         const markdown = new vscode.MarkdownString();
+        // The link target is a fixed, extension-owned command. Do not trust arbitrary
+        // Markdown or grant access to any command other than the bundled help command.
+        markdown.isTrusted = { enabledCommands: ['fumen.openCheatSheet'] };
         markdown.appendText(t(info.title)).appendMarkdown('\n\n').appendText(t(info.description));
         if (info.example) markdown.appendCodeblock(info.example, 'fumen');
-        markdown.appendMarkdown(`\n\n[${t('Fumen notation')}](https://hbjpn.github.io/fumen/${info.page}/)`);
+        markdown.appendMarkdown(`\n\n[${t('Open Fumen Cheat Sheet')}](command:fumen.openCheatSheet)`);
         return new vscode.Hover(markdown, range(document, info.start, info.end));
       }
     }),

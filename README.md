@@ -30,7 +30,7 @@ If you used an earlier local build with the extension ID `fumen-local.fumen-lang
 - Syntax highlighting for settings, chords, bar lines, sections, durations, annotations and lyrics.
 - Bracket/quote pairing and Tab-based snippets for common structures.
 - Contextual completion for settings, fixed values, navigation signs and durations.
-- Hover explanations and basic checks for malformed settings or missing delimiters.
+- Hover explanations, a direct link to the bundled cheat sheet and basic checks for malformed settings or missing delimiters.
 - Live, side-by-side previews using the bundled **Fumen 1.3.3** renderer, including unsaved edits.
 - An extension-specific chord-component display option in the bundled renderer: retain Fumen's compact layout or choose full-size inline symbols such as `Am7` and `AM7`. It is clearly separated from upstream Fumen settings in the [cheat sheet](docs/CHEATSHEET.md).
 - Offline cheat sheets and user guides in English and Japanese, with links to the official reference.

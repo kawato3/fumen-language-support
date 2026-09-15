@@ -4,6 +4,21 @@ import { IntegrationCase, remainsTrue, suggestions, waitFor } from './helpers';
 
 export const editingTests: IntegrationCase[] = [
   {
+    name: 'Hover links safely open the bundled cheat sheet',
+    async run(fixture) {
+      const editor = await fixture.editor('| C :||: D |');
+      const hovers = await vscode.commands.executeCommand<vscode.Hover[]>(
+        'vscode.executeHoverProvider', editor.document.uri, new vscode.Position(0, 5));
+      const contents = hovers?.flatMap(item => Array.isArray(item.contents) ? item.contents : [item.contents]) ?? [];
+      const markdown = contents.find((content): content is vscode.MarkdownString => content instanceof vscode.MarkdownString
+        && content.value.includes('command:fumen.openCheatSheet'));
+      assert.ok(markdown, 'Hover contains a cheat-sheet command link');
+      assert.ok(markdown.value.includes(`[${fixture.env.t('Open Fumen Cheat Sheet')}](command:fumen.openCheatSheet)`));
+      assert.deepEqual(markdown.isTrusted, { enabledCommands: ['fumen.openCheatSheet'] });
+      assert.ok(!markdown.value.includes('hbjpn.github.io'), 'Hover does not send users to an external website');
+    }
+  },
+  {
     name: 'Setting completions insert placeholders and replace values without duplicate quotes',
     async run(fixture) {
       const title = await fixture.editor('%TI');
