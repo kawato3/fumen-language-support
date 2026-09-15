@@ -39,6 +39,11 @@ for (const locale of ['en', 'ja']) {
     assert.ok(source.includes('Fumen 1.3.3'));
     assert.ok(source.includes('Copyright (c) 2020 Hiroyuki Baba'));
     assert.ok(source.includes('https://hbjpn.github.io/fumen/cheatsheet/'));
+    for (const field of ['minor_label', 'major_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
+    assert.ok(source.includes('U+2013'));
+    assert.ok(source.includes('U+0394'));
+    assert.ok(source.includes('extension-chord-display'));
+    assert.ok(source.includes(locale === 'ja' ? '**既定:' : '**Default:'), 'Each extension-specific parameter states its default');
     assert.ok(source.includes(`(QUICKSTART${suffix}.md)`));
     assert.ok(source.split('\n').slice(0, 5).join('\n').includes(locale === 'ja' ? '[English](CHEATSHEET.md)' : '[日本語](CHEATSHEET.ja.md)'));
     // Explicit anchors avoid VS Code version differences in Japanese heading slugs.
@@ -70,4 +75,20 @@ test('help and preview are discoverable, with only one extension-owned default s
     when: 'editorTextFocus && editorLangId == fumen && !notebookEditorFocused'
   }]);
   assert.ok(readFileSync('.vscodeignore', 'utf8').includes('!docs/CHEATSHEET.md'));
+  assert.ok(readFileSync('.vscodeignore', 'utf8').includes('!media/screenshots/chord-display-modes.png'));
+});
+
+test('main documentation identifies the renderer addition as extension-specific', () => {
+  const english = readFileSync('README.md', 'utf8');
+  const japanese = readFileSync('README.ja.md', 'utf8');
+  for (const source of [english, japanese]) {
+    for (const field of ['minor_label', 'major_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
+  }
+  assert.ok(english.includes('extension-specific'));
+  assert.ok(japanese.includes('独自'));
+  assert.ok(english.includes('### 1.0.2') && english.includes('### 1.0.1'));
+  assert.ok(japanese.includes('### 1.0.2') && japanese.includes('### 1.0.1'));
+  assert.ok(english.includes('media/screenshots/chord-display-modes.png'));
+  assert.ok(japanese.includes('media/screenshots/chord-display-modes.png'));
+  assert.ok(readFileSync('media/screenshots/chord-display-modes.png').length > 1_000, 'A rendered comparison image is included');
 });

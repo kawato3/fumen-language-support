@@ -1,10 +1,10 @@
-// Fetch unmodified, pinned third-party distribution assets. Normal builds only verify local hashes.
+// Verify the locally patched Fumen bundle used by this extension.
 const { createHash } = require('node:crypto');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const base = 'https://raw.githubusercontent.com/hbjpn/fumen/f3d04a522c19236c81f553871d6aee665d9eda22/';
 const assets = [
-  ['fumen.js', base + 'dist/fumen.js', 'd6d8dc5351f0212b1469b838ac0e1bf408fc5465d584238a790f04cc61052390'],
+  ['fumen.js', null, '453f0b4ca6a9354619b1e289cdf5e2a1860a9bfb611c899b3a2b0807de4c88fa'],
   ['FUMEN-LICENSE.txt', base + 'LICENSE.txt', 'c929baf8c1319dc5c7a2febbbc63abcff243ebdc0d2e1fedf989ff33b7181849'],
   ['OFL.txt', base + 'OFL.txt', '632bb8c8c187ad3385504addd36705148b29de24f67b3bdafb7efb11687eb7fc'],
   ['BABEL-LICENSE.txt', 'https://unpkg.com/@babel/polyfill@7.8.7/LICENSE', '117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76'],
@@ -23,6 +23,7 @@ async function main() {
     catch (error) {
       if (error.code !== 'ENOENT') throw error;
       if (process.argv.includes('--check')) throw new Error(`${name} is missing. Run npm run vendor:fumen.`);
+      if (!url) throw new Error(`${name} is a local preview patch and cannot be downloaded automatically.`);
       const response = await fetch(url, { signal: AbortSignal.timeout(30_000) });
       if (!response.ok) throw new Error(`Download failed: ${url} (${response.status})`);
       bytes = Buffer.from(await response.arrayBuffer());
@@ -34,6 +35,6 @@ async function main() {
     await fs.mkdir(directory, { recursive: true });
     for (const [target, bytes] of pending) await fs.writeFile(target, bytes, { flag: 'wx' });
   }
-  console.log(`Fumen 1.3.3 and third-party license hashes verified (${assets.length} files).`);
+  console.log(`Local Fumen 1.3.3 chord-component patch and third-party license hashes verified (${assets.length} files).`);
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

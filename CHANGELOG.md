@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- Add extension-specific `minor_label`, `major_label` and `chord_suffix_style` `%PARAM` values to choose chord labels and compact or full-size inline chord-component display.
+
 ## 1.0.1
 
 - Fix local Chrome printing when VS Code supplies a `vscode-userdata:` storage URI. Keep remote and web printing restrictions in place.

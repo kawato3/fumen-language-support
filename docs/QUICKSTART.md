@@ -58,7 +58,9 @@ The editor's right-click menu also includes **Open Preview to the Side** and **O
 - Closing the preview stops rendering. After closing, renaming or replacing the source document, reopen the preview.
 - Use **Reload** if rendering does not resume after correcting the source.
 
-The bundled Fumen 1.3.3 renderer works offline, with no extra font installation. The default paper preset is A4; `%PARAM` takes precedence when specified.
+The bundled renderer is based on Fumen 1.3.3 and works offline, with no extra font installation. The default paper preset is A4; `%PARAM` takes precedence when specified. It also has an extension-specific chord-component display addition: `minor_label`, `major_label` and `chord_suffix_style` can select compact or ordinary-size inline chord symbols. These are not published Fumen 1.3.3 parameters and other Fumen tools may ignore them; see the separate [extension-specific cheat-sheet section](CHEATSHEET.md#extension-chord-display) before using them in shared scores.
+
+![The default compact rendering beside the extension-specific inline rendering](../media/screenshots/chord-display-modes.png)
 
 Limits are 100,000 characters, 100 pages and 32 million page pixels per render, with additional guards for extreme rendering parameters. A separate text-measurement cache is limited to 16 million pixels. If changing `%PARAM` text_size or pixel_ratio fills that cache, close and reopen the preview. Large scores may update slowly; these limits do not bound total process memory or execution time. Direct editing on the score and synchronized source/preview scrolling are not provided.
 

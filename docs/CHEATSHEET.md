@@ -14,6 +14,7 @@ A quick reference for the bundled **Fumen 1.3.3**, available offline. Chord name
 - [Navigation signs](#signs)
 - [Annotations, lyrics and spacing](#text)
 - [Titles and display settings](#settings)
+- [Extension-specific chord component display](#extension-chord-display)
 
 <a id="basics"></a>
 
@@ -169,6 +170,36 @@ The advanced `%PARAM` setting accepts a JSON object. For example, this changes p
 [A]
 | C | Am7 | F | G7 ||.
 ```
+
+<a id="extension-chord-display"></a>
+
+## Extension-specific chord component display
+
+**This section describes an addition made by Fumen Language Support; it is not part of the published Fumen 1.3.3 documentation or parameter set.** It is available only in the renderer bundled with this extension. Other Fumen applications and the official browser playground may ignore these three `%PARAM` members and use their normal chord appearance. The score's chord notation and musical meaning do not change; only the renderer's appearance changes. When the three members are omitted, the default values below apply. Remove these three members when you need to share a score without this extension-specific display choice.
+
+In Fumen's original compact appearance, the root note is full size while the following chord components are smaller and arranged above or below it. The original minor glyph is an en dash (`–`, U+2013), and the explicit major glyph is a Greek capital delta (`Δ`, U+0394), not the white triangle (`△`). This extension lets you preserve that compact style explicitly or use familiar full-size, baseline-aligned chord symbols such as `Am7` and `AM7`.
+
+| `%PARAM` member | Default and effect |
+| --- | --- |
+| `minor_label` | **Default: `"–"`** — the text for a minor triad. Choose `"m"` for conventional `Am` symbols. |
+| `major_label` | **Default: `"Δ"`** — the text for an explicit major mark. Choose `"M"` for conventional `AM7` symbols. |
+| `chord_suffix_style` | **Default: `"compact"`** — preserves Fumen's original smaller upper/lower layout. `"inline"` draws every component after the root at the ordinary size on one shared baseline. |
+
+This form spells out all three defaults and reproduces the original Fumen appearance. It is useful when a score should retain the same compact look in this renderer even if you later change the label text.
+
+```fumen
+%PARAM={"minor_label":"–","major_label":"Δ","chord_suffix_style":"compact"}
+| Am7(#11)/C | AM7/E |
+```
+
+For conventional chord symbols, choose `m` and `M` and switch the whole suffix to `"inline"`.
+
+```fumen
+%PARAM={"minor_label":"m","major_label":"M","chord_suffix_style":"inline"}
+| Am7(#11)/C | AM7/E |
+```
+
+`"inline"` is deliberately one switch: it applies consistently to every component after the root, including chord qualities, `7` and other extensions, altered fifths, `#11`/`b9` and other alterations, parentheses, and a right-positioned slash bass such as `/C`. There is no separate upper-versus-lower setting. If the existing Fumen `on_bass_style` is `"below"`, the bass remains below the chord as requested, but uses the ordinary inline font size.
 
 [Variables](https://hbjpn.github.io/fumen/variable/) · [Transposition](https://hbjpn.github.io/fumen/transpose/) · [Rendering parameters](https://hbjpn.github.io/fumen/api_reference/)
 

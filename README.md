@@ -32,6 +32,7 @@ If you used an earlier local build with the extension ID `fumen-local.fumen-lang
 - Contextual completion for settings, fixed values, navigation signs and durations.
 - Hover explanations and basic checks for malformed settings or missing delimiters.
 - Live, side-by-side previews using the bundled **Fumen 1.3.3** renderer, including unsaved edits.
+- An extension-specific chord-component display option in the bundled renderer: retain Fumen's compact layout or choose full-size inline symbols such as `Am7` and `AM7`. It is clearly separated from upstream Fumen settings in the [cheat sheet](docs/CHEATSHEET.md).
 - Offline cheat sheets and user guides in English and Japanese, with links to the official reference.
 - Conservative whitespace formatting through VS Code's standard **Format Document** command.
 - A vector-friendly print view in Google Chrome, using Chrome's **Save as PDF** without a PDF library in the extension.
@@ -72,6 +73,10 @@ The extension does not enable automatic formatting or change your default format
 The preview updates after about 300 ms without typing. It follows the document from which it was opened and supports multiple pages, zoom and fit-to-width. While the source is incomplete, the last valid image remains visible with an error message. Close the preview to stop rendering; use **Reload** if necessary.
 
 Rendering is local and uses no network service. Source text is sent to a sandboxed webview as data, never interpolated into HTML. The bundled renderer and licenses are version/hash pinned. The A4 preset is the default; `%PARAM` can override it within safety limits.
+
+The bundled renderer is based on Fumen 1.3.3 and has one clearly scoped extension-specific display addition: `minor_label`, `major_label` and `chord_suffix_style`. They choose chord labels and either the original compact layout or an ordinary-size inline layout for all components after a root note. These are not published Fumen 1.3.3 parameters; another Fumen tool may ignore them. The [cheat sheet's extension-specific section](docs/CHEATSHEET.md#extension-chord-display) explains the visual difference, exact defaults and portable-sharing caveat.
+
+![The same chords in Fumen's default compact layout and this extension's inline layout](media/screenshots/chord-display-modes.png)
 
 Limits: 100,000 source characters, 100 pages, 32 million page pixels per render and bounds on extreme rendering parameters. The renderer's retained text-measurement cache has a separate 16-million-pixel limit. Repeated changes to `%PARAM` text size or pixel ratio may fill it; close and reopen the preview to clear it. These are allocation guards, not a guarantee of total process memory or rendering time. Basic editor diagnostics stop above 500,000 characters. Split unusually large scores into smaller files.
 
@@ -128,3 +133,13 @@ Report bugs and request features through [GitHub Issues](https://github.com/kawa
 MIT License — Copyright (c) 2026 Katsushi Kawato. See [LICENSE](LICENSE) for the full terms.
 
 This is an independent extension, not an official Fumen product. Rendering is provided by [hbjpn/fumen](https://github.com/hbjpn/fumen/), created by Hiroyuki Baba. Bundled third-party code, documentation and music symbols retain their own MIT/OFL licenses and copyright notices; see [third-party notices](THIRD_PARTY_NOTICES.md) and [bundled licenses](media/vendor/).
+
+## Changelog
+
+### 1.0.2
+
+- Added extension-specific chord component display parameters: `minor_label`, `major_label`, and `chord_suffix_style`. Choose custom minor/major labels and either Fumen’s compact layout or a full-size inline layout.
+
+### 1.0.1
+
+- Initial Marketplace release of Fumen Language Support.

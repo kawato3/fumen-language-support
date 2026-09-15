@@ -1,10 +1,14 @@
 # Third-party notices
 
-This extension bundles the **unmodified** browser distribution of
+This extension bundles a browser distribution derived from
 [hbjpn/fumen 1.3.3](https://github.com/hbjpn/fumen/tree/v1.3.3), commit
 `f3d04a522c19236c81f553871d6aee665d9eda22`, as `media/vendor/fumen.js`.
-The original license banner is preserved. No source map, playground page,
-analytics, URL-sharing code, or externally hosted script is loaded at runtime.
+It includes the local chord-component patch `10aa5970aef0c5daa53f0cf542bea4e88e58e639`:
+`minor_label`, `major_label` and `chord_suffix_style` select chord labels and
+compact or inline chord-component display. This extension-specific addition is
+not part of the published Fumen 1.3.3 parameter set. The original license banner
+is preserved. No source map, playground page, analytics,
+URL-sharing code, or externally hosted script is loaded at runtime.
 
 `docs/CHEATSHEET.md` and `docs/CHEATSHEET.ja.md` are English and Japanese
 adaptations of the v1.3.3 documentation,
@@ -28,7 +32,7 @@ to the third-party components independently of this extension's MIT license
 (Copyright 2026 Katsushi Kawato; see `LICENSE`). No endorsement by the
 upstream authors is implied.
 
-`scripts/vendor-fumen.cjs` records exact source URLs and SHA-256 checksums.
-`npm run vendor:fumen` retrieves missing assets; normal builds verify them
-offline and never fetch or update code. The dependency versions are taken
-from the upstream 1.3.3 package lock.
+`scripts/vendor-fumen.cjs` verifies the local patched bundle and the bundled
+third-party licenses with SHA-256 checksums. The patched bundle is intentionally
+not downloaded automatically. The dependency versions are taken from the
+upstream 1.3.3 package lock.
