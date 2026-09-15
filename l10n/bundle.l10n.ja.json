@@ -79,7 +79,7 @@
   "Measure repeat": "繰り返し記号",
   "Repeat the preceding measure content.": "直前の小節内容を繰り返す記号です。",
   "Basic checks are skipped for large files (limit: 500,000 characters). Highlighting and snippets are still available.": "大きなファイルのため、基本チェックを省略しています（50万文字まで）。色分けとスニペットは利用できます。",
-  "Open Fumen Cheat Sheet": "Fumen チートシートを開く",
+  "Open Fumen Cheat Sheet": "チートシートを開く",
   "Choose a template to insert": "挿入するひな形を選択",
   "Could not open the cheat sheet. Check that VS Code's built-in Markdown support is enabled.": "チートシートを開けませんでした。VS Code 標準の Markdown サポートが有効か確認してください。",
   "Open Official Website": "公式ページを開く",

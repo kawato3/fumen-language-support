@@ -83,6 +83,7 @@ test('translations preserve arguments, fallback messages and notation behavior',
   assert.match(diagnose(text, ja)[0]!.message, /閉じる/);
   assert.equal(ja(complete('%TI', 3)[0]!.detail), '曲名。ダブルクオートで囲みます。');
   assert.equal(ja(hover('[A]', 1)!.title), '構成記号');
+  assert.equal(ja('Open Fumen Cheat Sheet'), 'チートシートを開く');
   assert.equal(hover('| Cm7-5 |', 4), undefined);
   assert.throws(() => checkLayout({ name: 'PARAM', value: { paper_width: 1e9 } }, ja), /範囲外/);
   assert.throws(() => new CanvasBudget(1, ja).resize({}, 2, 2), /合計が大きすぎ/);
