@@ -1,15 +1,39 @@
-export interface WhitespaceEdit { start: number; end: number; text: string }
+import { orderSettings, parseSetting } from './setting-formatting';
 
-/** Conservative whitespace edits, with offsets in UTF-16 (as used by VS Code).
+export interface FormattingEdit { start: number; end: number; text: string }
+
+/** Conservative formatting edits, with offsets in UTF-16 (as used by VS Code).
  * Fumen's line breaks, commas and quoted/label text are notation, not whitespace.
  * Redundant blank lines may be removed, but one blank line remains a block boundary.
  * This is deliberately not a parser, chord normalizer or column-alignment tool.
  */
-export function formattingEdits(source: string): WhitespaceEdit[] {
+export function formattingEdits(source: string): FormattingEdit[] {
   if (source.length > 500_000) return [];
-  const edits: WhitespaceEdit[] = [];
+  const edits: FormattingEdit[] = [];
   const replace = (start: number, end: number, text: string): void => {
     if (source.slice(start, end) !== text) edits.push({ start, end, text });
+  };
+  const settings: { start: number; end: number; setting: ReturnType<typeof parseSetting> }[] = [];
+  const flushSettings = (): void => {
+    if (!settings.length) return;
+    const ordered = orderSettings(settings.map(line => line.setting));
+    settings.forEach((line, i) => {
+      const original = line.setting;
+      const target = ordered[i];
+      if (!original || !target) return;
+      const { afterPercent, name, beforeEquals, afterEquals, valueStart, value } = original;
+      let offset = line.start + 1;
+      replace(offset, offset + afterPercent.length, '');
+      offset += afterPercent.length;
+      replace(offset, offset + name.length, target.name);
+      offset += name.length;
+      replace(offset, offset + beforeEquals.length, '');
+      offset += beforeEquals.length + 1;
+      replace(offset, offset + afterEquals.length, '');
+      replace(line.start + valueStart, line.start + valueStart + value.length, target.value);
+      replace(line.start + valueStart + value.length, line.end, '');
+    });
+    settings.length = 0;
   };
   const bar = /(?:\.\/\|\/\.|:\|\|:?(?:x(?:\d+|X))?|\|\|[.:]?|\|)/y;
   let cursor = 0;
@@ -28,6 +52,7 @@ export function formattingEdits(source: string): WhitespaceEdit[] {
       continue;
     }
     if (char === '\r' || char === '\n') {
+      if (!lineHasToken) flushSettings();
       const newlineEnd = cursor + (char === '\r' && source[cursor + 1] === '\n' ? 2 : 1);
       // A backslash consumes its newline without counting it as a row break.
       // Collapsing the following blank lines could therefore merge Fumen blocks.
@@ -40,6 +65,10 @@ export function formattingEdits(source: string): WhitespaceEdit[] {
       lineHasToken = false;
       continue;
     }
+
+    // Only standalone, consecutive setting lines share a sortable run. Using
+    // this token scan also protects setting-looking lines inside multiline text.
+    if (char !== '%' || lineHasToken) flushSettings();
 
     bar.lastIndex = cursor;
     const boundary = bar.exec(source);
@@ -74,32 +103,15 @@ export function formattingEdits(source: string): WhitespaceEdit[] {
     }
 
     if (char === '%') {
-      const line = source.slice(start, cursor);
-      const setting = /^%([ \t]*)([A-Za-z_][A-Za-z_0-9]*)([ \t]*)=([ \t]*)/.exec(line);
-      if (setting) {
-        const [prefix, afterPercent = '', name = '', beforeEquals = '', afterEquals = ''] = setting;
-        const valueStart = start + prefix.length;
-        let valueEnd = cursor;
-        while (valueEnd > valueStart && /[ \t]/.test(source.charAt(valueEnd - 1))) --valueEnd;
-        try {
-          JSON.parse(source.slice(valueStart, valueEnd));
-          let offset = start + 1;
-          replace(offset, offset + afterPercent.length, '');
-          offset += afterPercent.length + name.length;
-          replace(offset, offset + beforeEquals.length, '');
-          offset += beforeEquals.length + 1;
-          replace(offset, offset + afterEquals.length, '');
-          replace(valueEnd, cursor, '');
-        } catch {
-          // Incomplete or invalid JSON stays byte-for-byte unchanged.
-        }
-      }
+      settings.push({ start, end: cursor, setting: parseSetting(source.slice(start, cursor)) });
+      if (lineHasToken) flushSettings();
     }
     previousEnd = cursor;
     previousBar = Boolean(boundary);
     lineHasToken = true;
     endsWithContinuation = char === '\\';
   }
+  flushSettings();
   replace(previousEnd, cursor, '');
-  return edits;
+  return edits.sort((a, b) => a.start - b.start);
 }

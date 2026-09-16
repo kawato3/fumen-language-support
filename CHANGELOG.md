@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4
+
+- Sort consecutive settings and top-level `%PARAM` fields with Format Document.
+- Simplify rendering-setting guidance in the cheat sheet and link to Fumen's API reference.
+
 ## 1.0.3
 
 - Add a searchable Fumen notation picker with editable snippets.

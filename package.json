@@ -3,7 +3,7 @@
   "displayName": "Fumen Language Support",
   "icon": "resources/images/icon.png",
   "description": "%description%",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publisher": "kawato3",
   "private": true,
   "license": "MIT",

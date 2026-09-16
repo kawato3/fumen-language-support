@@ -96,11 +96,18 @@ Other Fumen commands, including **Insert Notation…** and the cheat sheet, have
 
 User assignments override defaults. Installing this extension never edits your `keybindings.json`.
 
-## 8. Format whitespace
+## 8. Format the document
 
 Right-click the Fumen source and choose **Format Document**, or find that standard command in the Command Palette. Its default shortcut is `Shift+Option+F` on macOS, `Shift+Alt+F` on Windows, or `Ctrl+Shift+I` on Linux; press these keys together.
 
-The formatter spaces bar lines, reduces gaps between notation tokens to one space, removes trailing whitespace and normalizes `%NAME=value` assignments. Consecutive blank lines become one blank line; a single blank line is kept. Blank lines inside text/labels and immediately after a `\` line continuation are left alone to preserve the score's structure. Other line breaks, line-ending style, indentation, chord spelling, lyrics, annotations, labels and JSON value contents stay unchanged. Bar-column alignment and selection formatting are not included. Use **Undo** once to revert the format.
+The formatter spaces bar lines, reduces gaps between notation tokens to one space, removes trailing whitespace and normalizes `%NAME=value` assignments. Consecutive blank lines become one blank line; a single blank line is kept. Blank lines inside text/labels and immediately after a `\` line continuation are left alone to preserve the score's structure. Other line breaks, line-ending style, indentation, chord spelling, lyrics, annotations and labels stay unchanged. Bar-column alignment and selection formatting are not included. Use **Undo** once to revert the format.
+
+Consecutive setting lines are ordered as follows; missing entries are skipped:
+
+- Settings: `TITLE` → `SUB_TITLE` → `ARTIST` → `KEY` → `TRANSPOSE` → `KEY_TYPE` → `SHOW_STAFF` → `SHOW_FOOTER` → `PARAM`.
+- Top-level `%PARAM` fields: `paper_width` → `paper_height` → `minor_label` → `major_label` → `chord_suffix_style`.
+
+Unlisted names follow these entries, retaining their relative order. Settings never move across blank lines, sections, measures or other notation. `%PARAM` stays on one line; values, number spelling, escapes, nested objects and arrays are not rewritten. Runs containing invalid or duplicate assignments are not reordered, including their `%PARAM` fields. Duplicate keys within a JSON object prevent reordering that object. Assignments are never merged or removed; valid assignment spacing is still normalized in these cases.
 
 Unclosed text delimiters and documents above 500,000 characters are skipped; invalid JSON settings are left alone. The extension does not turn on automatic formatting. Your existing **Editor: Format On Save** setting is respected; if multiple formatters are installed, choose this extension through **Format Document With… → Configure Default Formatter…**. To change the shortcut, search Keyboard Shortcuts for `@command:editor.action.formatDocument`.
 

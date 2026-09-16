@@ -40,6 +40,9 @@ for (const locale of ['en', 'ja']) {
     assert.ok(source.includes('Fumen 1.3.3'));
     assert.ok(source.includes('Copyright (c) 2020 Hiroyuki Baba'));
     assert.ok(source.includes('https://hbjpn.github.io/fumen/cheatsheet/'));
+    const renderingReference = source.indexOf('https://hbjpn.github.io/fumen/api_reference/#renderparam');
+    assert.ok(renderingReference >= 0 && renderingReference < source.indexOf('<a id="extension-chord-display">'),
+      'The upstream rendering reference is separate from the extension-specific parameters');
     for (const field of ['minor_label', 'major_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
     assert.ok(source.includes('U+2013'));
     assert.ok(source.includes('U+0394'));
@@ -106,12 +109,15 @@ test('main documentation identifies the renderer addition as extension-specific'
   assert.ok(readFileSync('resources/images/chord-display-modes.png').length > 1_000, 'A rendered comparison image is included');
 });
 
-test('release metadata and changelog are prepared for version 1.0.3', () => {
+test('release metadata matches the latest changelog version', () => {
   const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
+  const lock = JSON.parse(readFileSync('package-lock.json', 'utf8'));
   const changelog = readFileSync('CHANGELOG.md', 'utf8');
 
-  assert.equal(manifest.version, '1.0.3');
-  assert.match(changelog, /^## 1\.0\.3$/m);
+  const latestVersion = /^## (\d+\.\d+\.\d+)$/m.exec(changelog)?.[1];
+  assert.equal(latestVersion, manifest.version);
+  assert.equal(lock.version, manifest.version);
+  assert.equal(lock.packages[''].version, manifest.version);
 });
 
 test('notation picker is documented as a native, non-musical insertion aid', () => {

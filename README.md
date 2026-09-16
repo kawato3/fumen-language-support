@@ -31,7 +31,7 @@ Requires VS Code **1.90 or later**. No separate Node.js, Fumen or font installat
 - Live, side-by-side previews using the bundled **Fumen 1.3.3** renderer, including unsaved edits.
 - An extension-specific chord-component display option in the bundled renderer: retain Fumen's compact layout or choose full-size inline symbols such as `Am7` and `AM7`. It is clearly separated from upstream Fumen settings in the [cheat sheet](docs/CHEATSHEET.md).
 - Offline cheat sheets and user guides in English and Japanese, with links to the official reference.
-- Conservative whitespace formatting through VS Code's standard **Format Document** command.
+- Conservative whitespace and setting-order formatting through VS Code's standard **Format Document** command.
 - A vector-friendly print view in Google Chrome, using Chrome's **Save as PDF** without a PDF library in the extension.
 
 The extension does **not** suggest chord names, judge chord progressions or validate beat counts. Fumen word-based suggestions are disabled by default to keep arbitrary chord names from being suggested. Your settings or other extensions may override this.
@@ -56,11 +56,13 @@ The preview uses Markdown's familiar shortcut: **Cmd+K, then V** on macOS, or **
 
 Other Fumen commands have no default key binding. Open **Keyboard Shortcuts** (`Cmd+K`, then `Cmd+S` on macOS; `Ctrl+K`, then `Ctrl+S` elsewhere), search for `Fumen`, and double-click a command to assign a key. User bindings override defaults; this extension never edits your `keybindings.json`.
 
-## Format whitespace
+## Format the document
 
 Right-click in a Fumen editor and choose **Format Document**, or use the Command Palette. The standard shortcut is **Shift+Option+F** on macOS, **Shift+Alt+F** on Windows, and **Ctrl+Shift+I** on Linux. These are simultaneous key combinations, not the preview's two-step shortcut.
 
-Formatting adds spaces around bar lines, reduces spaces/tabs between notation tokens to one space, removes trailing whitespace and normalizes setting assignments to `%NAME=value`. Runs of blank lines become one blank line; a single blank line is kept. Blank lines inside text/labels and immediately after a `\` line continuation are preserved, because changing them can affect the score. Other line breaks, line-ending style, indentation, chord spelling, lyrics, annotations, labels and JSON value contents are unchanged. It does not align bar columns or format a selection.
+Formatting adds spaces around bar lines, reduces spaces/tabs between notation tokens to one space, removes trailing whitespace and normalizes setting assignments to `%NAME=value`. Runs of blank lines become one blank line; a single blank line is kept. Blank lines inside text/labels and immediately after a `\` line continuation are preserved, because changing them can affect the score. Other line breaks, line-ending style, indentation, chord spelling, lyrics, annotations and labels are unchanged. It does not align bar columns or format a selection.
+
+Consecutive setting lines and top-level `%PARAM` fields follow a [fixed order](docs/QUICKSTART.md#8-format-the-document). Settings never move across blank lines, sections, measures or other notation. Missing settings are not added; unlisted names follow the listed ones in their original relative order. Values retain their original spelling, including numbers, escapes and nested JSON. Runs containing invalid or duplicate assignments are not reordered; duplicate JSON keys prevent reordering that object.
 
 Use normal **Undo** to revert the entire format. Unclosed text delimiters cause formatting to be skipped; invalid JSON settings are left alone. Documents above 500,000 characters are not formatted.
 
