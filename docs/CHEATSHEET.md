@@ -161,21 +161,15 @@ Write one `%NAME=value` setting per line. Values use JSON syntax; enclose string
 
 Omitting `SHOW_STAFF` also selects automatic display. The `AUTO` descriptions follow the Fumen 1.3.3 implementation. Set the original `%KEY` when transposing.
 
-The advanced `%PARAM` setting accepts a JSON object. For example, this changes paper width and height. The extension limits extreme image dimensions to keep the preview manageable.
+[Variables](https://hbjpn.github.io/fumen/variable/) · [Transposition](https://hbjpn.github.io/fumen/transpose/)
 
-```fumen
-%PARAM={"paper_width":800,"paper_height":1100}
-%TITLE="Paper settings example"
-
-[A]
-| C | Am7 | F | G7 ||.
-```
+`%PARAM` accepts a JSON object. For upstream Fumen rendering settings such as paper size, font size and margins, see [RenderParam in the official API reference](https://hbjpn.github.io/fumen/api_reference/#renderparam). This extension uses the A4 preset by default and limits extreme rendering settings.
 
 <a id="extension-chord-display"></a>
 
 ## Extension-specific chord component display
 
-**This section describes an addition made by Fumen Language Support; it is not part of the published Fumen 1.3.3 documentation or parameter set.** It is available only in the renderer bundled with this extension. Other Fumen applications and the official browser playground may ignore these three `%PARAM` members and use their normal chord appearance. The score's chord notation and musical meaning do not change; only the renderer's appearance changes. When the three members are omitted, the default values below apply. Remove these three members when you need to share a score without this extension-specific display choice.
+**This section describes an addition made by Fumen Language Support; it is not part of the published Fumen 1.3.3 documentation or parameter set.** The bundled renderer supports these three `%PARAM` members. Fumen applications without this renderer patch, including the official browser playground, may ignore them and use their normal chord appearance. The score's chord notation and musical meaning do not change; only the renderer's appearance changes. When the three members are omitted, the default values below apply. Remove these three members when you need to share a score without this extension-specific display choice.
 
 In Fumen's original compact appearance, the root note is full size while the following chord components are smaller and arranged above or below it. The original minor glyph is an en dash (`–`, U+2013), and the explicit major glyph is a Greek capital delta (`Δ`, U+0394), not the white triangle (`△`). This extension lets you preserve that compact style explicitly or use familiar full-size, baseline-aligned chord symbols such as `Am7` and `AM7`.
 
@@ -200,8 +194,6 @@ For conventional chord symbols, choose `m` and `M` and switch the whole suffix t
 ```
 
 `"inline"` is deliberately one switch: it applies consistently to every component after the root, including chord qualities, `7` and other extensions, altered fifths, `#11`/`b9` and other alterations, parentheses, and a right-positioned slash bass such as `/C`. There is no separate upper-versus-lower setting. If the existing Fumen `on_bass_style` is `"below"`, the bass remains below the chord as requested, but uses the ordinary inline font size.
-
-[Variables](https://hbjpn.github.io/fumen/variable/) · [Transposition](https://hbjpn.github.io/fumen/transpose/) · [Rendering parameters](https://hbjpn.github.io/fumen/api_reference/)
 
 ## Sources and scope
 

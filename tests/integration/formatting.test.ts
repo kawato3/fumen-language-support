@@ -43,6 +43,21 @@ export const formattingTests: IntegrationCase[] = [
     }
   },
   {
+    name: 'Standard Format Document orders settings within each run and supports one-step undo',
+    async run(fixture) {
+      const source = '% PARAM = {"minor_label":"m","paper_width":800}\r\n% TITLE = "🎵  Song"\r\n\r\n[A]\r\n|C|\r\n%SHOW_STAFF="YES"\r\n%TRANSPOSE=2\r\n|D|';
+      const expected = '%TITLE="🎵  Song"\r\n%PARAM={"paper_width":800,"minor_label":"m"}\r\n\r\n[A]\r\n| C |\r\n%TRANSPOSE=2\r\n%SHOW_STAFF="YES"\r\n| D |';
+      const editor = await fixture.editor(source);
+      const document = editor.document;
+      await vscode.commands.executeCommand('editor.action.formatDocument');
+      assert.equal(document.getText(), expected);
+      assert.equal(document.eol, vscode.EndOfLine.CRLF);
+      assert.equal((await editsFor(document))?.length ?? 0, 0, 'A second format is a no-op');
+      await vscode.commands.executeCommand('undo');
+      assert.equal(document.getText(), source, 'Sorting and whitespace changes undo together');
+    }
+  },
+  {
     name: 'Formatting is scoped to Fumen and does not enable automatic formatting',
     async run(fixture) {
       const plain = await fixture.editor('|C  D|', 'plaintext');
