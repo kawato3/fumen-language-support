@@ -3,9 +3,13 @@
 This extension bundles a browser distribution derived from
 [hbjpn/fumen 1.3.3](https://github.com/hbjpn/fumen/tree/v1.3.3), commit
 `f3d04a522c19236c81f553871d6aee665d9eda22`, as `resources/vendor/fumen.js`.
-It includes the local chord-component patch `10aa5970aef0c5daa53f0cf542bea4e88e58e639`:
-`minor_label`, `major_label` and `chord_suffix_style` select chord labels and
-compact or inline chord-component display. This extension-specific addition is
+It includes the independently maintained chord-component display patch:
+`minor_label`, `major_label`, `diminished_label`, `half_diminished_label`,
+`augmented_label` and `chord_suffix_style` select chord labels and
+compact or inline chord-component display. The `bar_number` option adds bounded,
+performance-order bar numbering at row starts without changing the parser;
+`bar_start` optionally changes its initial number from the default of one.
+These extension-specific additions are
 not part of the published Fumen 1.3.3 parameter set. The original license banner
 is preserved. No source map, playground page, analytics,
 URL-sharing code, or externally hosted script is loaded at runtime.

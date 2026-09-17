@@ -91,8 +91,10 @@ const queue = new RenderQueue<Input, HTMLElement>({
     replacePages(container);
     saved.lastGood = input.text;
     persist();
-    report(input, pages.childElementCount ? 'rendered' : 'empty', pages.childElementCount
-      ? t('Pages: {0} · Fumen 1.3.3', pages.childElementCount) : t("Enter a score to see its preview here."));
+    const message = pages.childElementCount
+      ? t('Pages: {0} · Fumen 1.3.3', pages.childElementCount) : t("Enter a score to see its preview here.");
+    report(input, pages.childElementCount ? 'rendered' : 'empty',
+      container.dataset.notice ? `${message} · ${container.dataset.notice}` : message);
   },
   failure(input, error) {
     const detail = (error instanceof Error ? error.message : String(error)).slice(0, 350);

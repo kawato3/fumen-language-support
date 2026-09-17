@@ -9,6 +9,23 @@ const SCORE = '%TITLE="未保存の日本語タイトル"\n[A]\n| C | Am7 | F | 
 
 export const previewTests: IntegrationCase[] = [
   {
+    name: 'Partial bar numbering stays rendered and its notice clears after repair',
+    async run(fixture) {
+      const source = '%PARAM={"bar_number":"on"}\n||: C | G :||xX\n| F |';
+      const document = (await fixture.editor(source)).document;
+      await vscode.commands.executeCommand('fumen.openPreview');
+      const partial = await fixture.previewState(document, 'rendered');
+      const notice = fixture.env.t('Bar numbers stop at an indefinite repeat; later visits are not numbered.');
+      assert.ok(partial.message.includes(notice), partial.message);
+      assert.equal(document.getText(), source, 'Numbering never edits the score');
+      await fixture.replace(document, readFileSync(path.join(fixture.env.extension.extensionPath,
+        'docs/examples/bar-numbers.fumen'), 'utf8'));
+      const repaired = await fixture.previewState(document, 'rendered', partial.revision);
+      assert.ok(repaired.pages > 0);
+      assert.ok(!repaired.message.includes(notice), 'The notice belongs only to the affected render');
+    }
+  },
+  {
     name: 'Text measurement cache is bounded across edits and normal settings still recover',
     async run(fixture) {
       const score = '%TITLE="Cache budget"\n[A]\n| C |';

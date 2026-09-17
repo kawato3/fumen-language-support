@@ -3,7 +3,7 @@
   "displayName": "Fumen Language Support",
   "icon": "resources/images/icon.png",
   "description": "%description%",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "publisher": "kawato3",
   "private": true,
   "license": "MIT",
@@ -206,7 +206,8 @@
     "vscode:prepublish": "npm run build",
     "package": "npm run check:publish && npm run check && node scripts/package.cjs",
     "check:publish": "node scripts/check-publish.cjs",
-    "test:print": "npm run build && node --test tests/browser/print.test.cjs"
+    "test:print": "npm run build && node --test tests/browser/print.test.cjs",
+    "test:renderer": "npm run build && node --test tests/browser/chord-labels.test.cjs tests/browser/bar-numbering.test.cjs"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

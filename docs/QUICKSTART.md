@@ -62,11 +62,19 @@ The editor's right-click menu also includes **Insert Notation…**, **Open Previ
 - Closing the preview stops rendering. After closing, renaming or replacing the source document, reopen the preview.
 - Use **Reload** if rendering does not resume after correcting the source.
 
-The bundled renderer is based on Fumen 1.3.3 and works offline, with no extra font installation. The default paper preset is A4; `%PARAM` takes precedence when specified. It also has an extension-specific chord-component display addition: `minor_label`, `major_label` and `chord_suffix_style` can select compact or ordinary-size inline chord symbols. These are not published Fumen 1.3.3 parameters and other Fumen tools may ignore them; see the separate [extension-specific cheat-sheet section](CHEATSHEET.md#extension-chord-display) before using them in shared scores.
+The bundled renderer is based on Fumen 1.3.3 and works offline, with no extra font installation. The default paper preset is A4; `%PARAM` takes precedence when specified. Extension-specific `minor_label`, `major_label`, `diminished_label`, `half_diminished_label` and `augmented_label` settings select the text for each chord quality; `chord_suffix_style` selects compact or ordinary-size inline placement. These standardize labels rather than preserving input spelling: `augmented_label:"aug"` displays both `Caug` and `C+` as `Caug`. No new input spellings are added. These are not published Fumen 1.3.3 parameters and other Fumen tools may ignore them; see the separate [extension-specific cheat-sheet section](CHEATSHEET.md#extension-chord-display) for defaults, examples and sharing limitations.
 
 ![The default compact rendering beside the extension-specific inline rendering](../resources/images/chord-display-modes.png)
 
 Limits are 100,000 characters, 100 pages and 32 million page pixels per render, with additional guards for extreme rendering parameters. A separate text-measurement cache is limited to 16 million pixels. If changing `%PARAM` text_size or pixel_ratio fills that cache, close and reopen the preview. Large scores may update slowly; these limits do not bound total process memory or execution time. Direct editing on the score and synchronized source/preview scrolling are not provided.
+
+To show performance-order bar numbers at row starts, add
+`%PARAM={"bar_number":"on"}` (or add `"bar_number":"on"` to your existing PARAM
+object). The default is off. Repeat visits appear together, for example `11,19`.
+The starting number defaults to `1`. To count a pickup as bar `0`, use
+`%PARAM={"bar_number":"on","bar_start":0}` in the initial settings.
+If numbering stops, the status explains why and the score remains printable.
+See [bar-number rules](CHEATSHEET.md#extension-bar-numbers).
 
 ## 6. Look up notation
 
@@ -105,7 +113,7 @@ The formatter spaces bar lines, reduces gaps between notation tokens to one spac
 Consecutive setting lines are ordered as follows; missing entries are skipped:
 
 - Settings: `TITLE` → `SUB_TITLE` → `ARTIST` → `KEY` → `TRANSPOSE` → `KEY_TYPE` → `SHOW_STAFF` → `SHOW_FOOTER` → `PARAM`.
-- Top-level `%PARAM` fields: `paper_width` → `paper_height` → `minor_label` → `major_label` → `chord_suffix_style`.
+- Top-level `%PARAM` fields: `paper_width` → `paper_height` → `minor_label` → `major_label` → `diminished_label` → `half_diminished_label` → `augmented_label` → `chord_suffix_style`.
 
 Unlisted names follow these entries, retaining their relative order. Settings never move across blank lines, sections, measures or other notation. `%PARAM` stays on one line; values, number spelling, escapes, nested objects and arrays are not rewritten. Runs containing invalid or duplicate assignments are not reordered, including their `%PARAM` fields. Duplicate keys within a JSON object prevent reordering that object. Assignments are never merged or removed; valid assignment spacing is still normalized in these cases.
 

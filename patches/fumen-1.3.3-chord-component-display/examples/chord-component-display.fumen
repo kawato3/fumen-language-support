@@ -1,10 +1,16 @@
 %TITLE="Chord component display"
 %SHOW_FOOTER="NO"
-%PARAM={"minor_label":"m","major_label":"M","chord_suffix_style":"inline"}
+%PARAM={"minor_label":"m","major_label":"M","diminished_label":"dim","half_diminished_label":"m7-5","augmented_label":"aug","chord_suffix_style":"inline"}
 
 [Inline symbols]
 | Am7(#11)/C | AM7/E | C-5 | D7,b9,#11 |
+| Cdim7 | Cm7-5 | Cm7b5 | Caug | C+ | Caug7 |
 
 [Original compact symbols]
-%PARAM={"minor_label":"–","major_label":"Δ","chord_suffix_style":"compact"}
+%PARAM={"minor_label":"–","major_label":"Δ","diminished_label":"O","half_diminished_label":"Ø","augmented_label":"+","chord_suffix_style":"compact"}
 | Am7(#11)/C | AM7/E | C-5 | D7,b9,#11 |
+| Cdim7 | Cm7-5 | Cm7b5 | Caug | C+ | Caug7 |
+
+[Compact letter labels]
+%PARAM={"minor_label":"m","major_label":"M","diminished_label":"dim","half_diminished_label":"m7-5","augmented_label":"aug","chord_suffix_style":"compact"}
+| Cdim7 | Cm7-5 | Cm7b5 | Caug | C+ | Caug7 |

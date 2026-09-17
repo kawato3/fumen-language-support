@@ -4,7 +4,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const base = 'https://raw.githubusercontent.com/hbjpn/fumen/f3d04a522c19236c81f553871d6aee665d9eda22/';
 const assets = [
-  ['fumen.js', null, '453f0b4ca6a9354619b1e289cdf5e2a1860a9bfb611c899b3a2b0807de4c88fa'],
+  ['fumen.js', null, '121636d3b8149553999d63da5549905a94531b398f0b93a25514108d27d65991'],
   ['FUMEN-LICENSE.txt', base + 'LICENSE.txt', 'c929baf8c1319dc5c7a2febbbc63abcff243ebdc0d2e1fedf989ff33b7181849'],
   ['OFL.txt', base + 'OFL.txt', '632bb8c8c187ad3385504addd36705148b29de24f67b3bdafb7efb11687eb7fc'],
   ['BABEL-LICENSE.txt', 'https://unpkg.com/@babel/polyfill@7.8.7/LICENSE', '117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76'],
@@ -35,6 +35,6 @@ async function main() {
     await fs.mkdir(directory, { recursive: true });
     for (const [target, bytes] of pending) await fs.writeFile(target, bytes, { flag: 'wx' });
   }
-  console.log(`Local Fumen 1.3.3 chord-component patch and third-party license hashes verified (${assets.length} files).`);
+  console.log(`Local Fumen 1.3.3 renderer patch and third-party license hashes verified (${assets.length} files).`);
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5
+
+- Add configurable diminished, half-diminished and augmented chord labels.
+- Add optional performance-order bar numbers with a configurable starting number.
+
 ## 1.0.4
 
 - Sort consecutive settings and top-level `%PARAM` fields with Format Document.

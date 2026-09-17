@@ -13394,7 +13394,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../common/common */ "./src/common/common.js");
 /* harmony import */ var _graphic__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./graphic */ "./src/renderer/graphic.js");
 /* harmony import */ var _presets__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./presets */ "./src/renderer/presets.js");
+/* harmony import */ var _bar_numbering_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./bar_numbering.mjs */ "./src/renderer/bar_numbering.mjs");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var methodName = context.method, method = delegate.iterator[methodName]; if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel; var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) keys.push(key); return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -13426,6 +13430,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
 /**
  * @typedef RenderParam
  * @global
@@ -13448,10 +13453,17 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  * @property {int} [y_artist_offset] Top offset for artist row
  * @property {int} [y_footer_offset] Bottom offset for footer
  * @property {String} [minor_label=–] Text to use for a minor triad.
+ * @property {String} [bar_number=off] on draws performance-order bar numbers at rendered row starts.
+ * @property {Number} [bar_start=1] Initial bar number; any safe integer, including zero or negative values.
  * @property {String} [major_label=Δ] Text to use for an explicit major triad.
+ * @property {String} [diminished_label=O] Text to use for a diminished triad (the default is capital O).
+ * @property {String} [half_diminished_label=Ø] Text replacing the whole minor-seventh-flat-fifth combination, independently of minor_label.
+ * @property {String} [augmented_label=+] Text to use for an augmented triad, for both aug and + input.
  * @property {String} [chord_suffix_style=compact] compact keeps the original small upper/lower suffixes; inline draws every root-following chord component at the normal size and baseline.
  */
 var SR_RENDER_PARAM = {
+  bar_number: "off",
+  bar_start: 1,
   // Paper setting
   paper_width: 375,
   // iPhone 8 etc, the top share as of 2020
@@ -13561,6 +13573,10 @@ var SR_RENDER_PARAM = {
   // en dash
   major_label: String.fromCharCode(0x0394),
   // Greek capital letter delta
+  diminished_label: "O",
+  // capital letter O, as in the original renderer
+  half_diminished_label: "Ø",
+  augmented_label: "+",
   chord_suffix_style: "compact",
   // compact|inline
 
@@ -14244,7 +14260,7 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
     value: function () {
       var _renderImpl = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(track, rparam) {
         var _this3 = this;
-        var param, page_width, page_content_width, show_footer, music_context, meas_row_list, accum_block_id, meas_row, meas_row_rg_ids, meas_row_block_ids, reharsal_groups, i, rg, blocks, bi, block_measures, ml, m, meas_row_list_inv, _loop4, _i2, _i3, _rg, _blocks, _bi, _block_measures, _ml, _m, y_stacks, next_reharsal_group_index, yse, y_base_screening, headerHeight, dammy_music_context, current_accum_block_id, reharsal_x_width_info, pei, row_elements_list, _ml2, _m2, elements, geret, yprof, x_width_info, page_height, pageOffset, start_pageidx, page_origin, canvas, y_base, max_header_height, headerH, pages, _pei, _row_elements_list3, ylimit, r, rb, songname, title, artist;
+        var param, page_width, page_content_width, show_footer, music_context, meas_row_list, accum_block_id, meas_row, meas_row_rg_ids, meas_row_block_ids, reharsal_groups, i, rg, blocks, bi, block_measures, ml, m, meas_row_list_inv, _loop4, _i2, _i3, _rg, _blocks, _bi, _block_measures, _ml, _m, y_stacks, next_reharsal_group_index, barNumbering, _measures$, measures, firstParam, start, result, yse, y_base_screening, headerHeight, dammy_music_context, current_accum_block_id, reharsal_x_width_info, pei, row_elements_list, _ml2, _m2, elements, geret, yprof, x_width_info, page_height, pageOffset, start_pageidx, page_origin, canvas, y_base, max_header_height, headerH, pages, _pei, _row_elements_list3, ylimit, r, rb, songname, title, artist;
         return _regeneratorRuntime().wrap(function _callee$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
@@ -14461,6 +14477,27 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
                 });
               });
 
+              // Number once per render, across all rows, even if some rows hide labels.
+              // Keep this state out of source nodes and cross-render measurement caches.
+              barNumbering = null;
+              if (y_stacks.some(function (row) {
+                return row.param.bar_number === "on";
+              })) {
+                measures = y_stacks.flatMap(function (row) {
+                  return row.cont;
+                }); // Use the first source measure's setting, not a merged row setting:
+                // later changes (even on the same row) must not restart numbering.
+                firstParam = (_measures$ = measures[0]) === null || _measures$ === void 0 ? void 0 : _measures$.getVariable("PARAM");
+                start = firstParam && Object.prototype.hasOwnProperty.call(firstParam, "bar_start") ? firstParam.bar_start : param.bar_start;
+                result = (0,_bar_numbering_mjs__WEBPACK_IMPORTED_MODULE_5__.numberBars)(measures, start);
+                music_context.bar_numbers = new Map(measures.map(function (measure, index) {
+                  return [measure, result.numbers[index]];
+                }));
+                barNumbering = {
+                  stop: result.stop
+                };
+              }
+
               // ---------------------
               // Stage 1 : Screening
               // ---------------------
@@ -14485,17 +14522,17 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
               current_accum_block_id = 0;
               reharsal_x_width_info = [];
               pei = 0;
-            case 38:
+            case 40:
               if (!(pei < yse.length)) {
-                _context2.next = 52;
+                _context2.next = 54;
                 break;
               }
               if (!(yse[pei].type == "titles")) {
-                _context2.next = 41;
+                _context2.next = 43;
                 break;
               }
-              return _context2.abrupt("continue", 49);
-            case 41:
+              return _context2.abrupt("continue", 51);
+            case 43:
               //let x = yse[pei].param.x_offset_left;
 
               if (!yse[pei].block_ids.includes(current_accum_block_id)) {
@@ -14529,11 +14566,11 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
                 // Per block optimization
                 this.determineRooms(yse[pei].param, reharsal_x_width_info, page_content_width);
               }
-            case 49:
+            case 51:
               ++pei;
-              _context2.next = 38;
+              _context2.next = 40;
               break;
-            case 52:
+            case 54:
               y_base_screening += param.y_offset_bottom; // Here y_base_screening means the height of the total score if single page applied.
               if (show_footer) y_base_screening += param.y_footer_offset;
 
@@ -14561,28 +14598,28 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
                 y: 0
               };
               if (!(this.context.pageidx % (param.ncol * param.nrow) == 0)) {
-                _context2.next = 72;
+                _context2.next = 74;
                 break;
               }
               canvas = this.canvas;
               if (!(canvas == null)) {
-                _context2.next = 66;
+                _context2.next = 68;
                 break;
               }
-              _context2.next = 65;
+              _context2.next = 67;
               return this.canvas_provider();
-            case 65:
+            case 67:
               canvas = _context2.sent;
-            case 66:
+            case 68:
               _graphic__WEBPACK_IMPORTED_MODULE_3__.setupHiDPICanvas(canvas, param.paper_width / param.text_size,
               // Internally, canvas size is set to this value * zoom, then eventually equals to param.paper_height.
               param.paper_height > 0 ? param.paper_height / param.text_size : y_base_screening, param.pixel_ratio, param.text_size);
               if (param.background_color) _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasRect(canvas, 0, 0, param.paper_width / param.text_size, param.paper_height > 0 ? param.paper_height / param.text_size : y_base_screening, param.background_color);
               this.context.current_canvas = canvas;
               this.hitManager.setGlobalScale(param.text_size, param.text_size);
-              _context2.next = 73;
+              _context2.next = 75;
               break;
-            case 72:
+            case 74:
               if (this.context.current_canvas.zoom != param.text_size) {
                 // text_size is changed  from the previous score drawing. This can happen when ncol and/or nrow > 1
                 // Only change the zooming configuration.
@@ -14593,7 +14630,7 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
                 param.pixel_ratio, param.text_size, true);
                 this.hitManager.setGlobalScale(param.text_size, param.text_size);
               }
-            case 73:
+            case 75:
               y_base = page_origin.y;
               max_header_height = this.drawheader(this.context.current_canvas, param, 2, page_origin.x + param.x_offset_left, page_content_width, track);
               if (max_header_height > 0) {
@@ -14611,60 +14648,60 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
                 canvas: this.context.current_canvas
               }];
               _pei = 0;
-            case 80:
+            case 82:
               if (!(_pei < yse.length)) {
-                _context2.next = 111;
+                _context2.next = 113;
                 break;
               }
               if (!(yse[_pei].type == "titles")) {
-                _context2.next = 84;
+                _context2.next = 86;
                 break;
               }
-              _context2.next = 108;
+              _context2.next = 110;
               break;
-            case 84:
+            case 86:
               if (!(yse[_pei].type == "meas")) {
-                _context2.next = 108;
+                _context2.next = 110;
                 break;
               }
               _row_elements_list3 = yse[_pei].cont;
               ylimit = this.canvas_provider != null ? page_origin.y + page_height - yse[_pei].param.y_offset_bottom - (show_footer ? yse[_pei].param.y_footer_offset : 0) : null;
               r = this.renderMeasureRow(track, page_origin.x + param.x_offset_left, this.context.current_canvas, _row_elements_list3, yse[_pei].pm, yse[_pei].nm, y_base, yse[_pei].param, yse[_pei].cont[0].getVariable("REHARSAL_MARK_POSITION") == "Inner", ylimit, music_context);
               if (r) {
-                _context2.next = 105;
+                _context2.next = 107;
                 break;
               }
               if (!(y_base == page_origin.y + yse[_pei].param.y_offset_top)) {
-                _context2.next = 91;
+                _context2.next = 93;
                 break;
               }
               throw "Paper height is too short to fit in single row";
-            case 91:
+            case 93:
               // increment the page
               ++this.context.pageidx;
               page_origin = pageOffset(this.context.pageidx);
               y_base = page_origin.y + yse[_pei].param.y_offset_top;
               if (!(this.context.pageidx % (param.ncol * param.nrow) == 0)) {
-                _context2.next = 101;
+                _context2.next = 103;
                 break;
               }
               this.hitManager.commit(this.context.current_canvas);
-              _context2.next = 98;
+              _context2.next = 100;
               return this.canvas_provider();
-            case 98:
+            case 100:
               this.context.current_canvas = _context2.sent;
               _graphic__WEBPACK_IMPORTED_MODULE_3__.setupHiDPICanvas(this.context.current_canvas, yse[_pei].param.paper_width / param.text_size, yse[_pei].param.paper_height / param.text_size, param.pixel_ratio, param.text_size);
               if (param.background_color) _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasRect(this.context.current_canvas, 0, 0, param.paper_width / param.text_size, param.paper_height / param.text_size, param.background_color);
-            case 101:
+            case 103:
               pages.push({
                 canvas: this.context.current_canvas
               });
 
               // try again next page
               _pei = _pei - 1;
-              _context2.next = 108;
+              _context2.next = 110;
               break;
-            case 105:
+            case 107:
               if (r.rm_detected) {
                 rb = [_row_elements_list3[0], _row_elements_list3[_row_elements_list3.length - 1]];
                 if (_row_elements_list3[0].renderprop.rg_from_here) rb[0] = _row_elements_list3[0].renderprop.rg_from_here;
@@ -14672,11 +14709,11 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
               }
               this.hitManager.add(this.context.current_canvas, new _graphic__WEBPACK_IMPORTED_MODULE_3__.BoundingBox(0, r.mu_y, param.paper_width / param.text_size, r.y_base - r.mu_y), new _common_common__WEBPACK_IMPORTED_MODULE_2__.GenericRow("BODY", [_row_elements_list3[0], _row_elements_list3[_row_elements_list3.length - 1]]));
               y_base = r.y_base;
-            case 108:
+            case 110:
               ++_pei;
-              _context2.next = 80;
+              _context2.next = 82;
               break;
-            case 111:
+            case 113:
               if (show_footer) {
                 songname = null;
                 title = track.getVariable("TITLE");
@@ -14698,10 +14735,12 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
               // Increment for next session(if any)
               ++this.context.pageidx;
               this.hitManager.commit(this.context.current_canvas);
-              return _context2.abrupt("return", {
+              return _context2.abrupt("return", _objectSpread({
                 pages: _common_common__WEBPACK_IMPORTED_MODULE_2__.shallowcopy(pages)
-              });
-            case 115:
+              }, barNumbering ? {
+                barNumbering: barNumbering
+              } : {}));
+            case 117:
             case "end":
               return _context2.stop();
           }
@@ -15321,6 +15360,11 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
       if (row_elements_list[0].renderprop.left_margin != null) {
         x += row_elements_list[0].renderprop.left_margin;
       }
+      if (param.bar_number === "on") {
+        var _music_context$bar_nu;
+        var numbers = (_music_context$bar_nu = music_context.bar_numbers) === null || _music_context$bar_nu === void 0 ? void 0 : _music_context$bar_nu.get(row_elements_list[0]);
+        if (numbers !== null && numbers !== void 0 && numbers.length) _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(paper, x - 4, y_body_or_rs_base, numbers.join(","), param.base_font_size * 0.35, "rt");
+      }
 
       // For each measure in this row
       var _loop6 = function _loop6(ml) {
@@ -15863,8 +15907,35 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
           lower_width = B * space_char_width;
         }
       }
+
+      // Resolve labels once for both layouts, using the renderer's defaults.
+      // Empty strings are intentional; only non-string values fall back.
+      var labelFor = function labelFor(name) {
+        return typeof param[name] == "string" ? param[name] : SR_RENDER_PARAM[name];
+      };
+      var minorLabel = labelFor("minor_label");
+      var majorLabel = labelFor("major_label");
+      var diminishedLabel = labelFor("diminished_label");
+      var halfDiminishedLabel = labelFor("half_diminished_label");
+      var augmentedLabel = labelFor("augmented_label");
+
+      // Replace only m7b5 with the half-diminished label. Keep additional
+      // qualities, suspensions, additions and alterations in either layout.
+      if (ce._halfdim_exists) {
+        _3rdelem = _3rdelem.filter(function (e) {
+          return !(e.type == "triad" && e.value == "m");
+        });
+        _6791113suselem = _6791113suselem.filter(function (e) {
+          return !(e.type == "dig" && e.value == "7");
+        });
+        _5thelem = _5thelem.filter(function (e) {
+          return !(e.type == "tension" && e.value == "b" && e.param == "5");
+        });
+      }
       if (param.chord_suffix_style == "inline") {
-        var inline_width = lower_width;
+        // Compact rows can overlap horizontally, but an inline suffix
+        // must start after the entire root, including its accidental.
+        var inline_width = Math.max(lower_width, upper_width);
         var drawInlineText = function drawInlineText(text) {
           var r = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + inline_width, y + param.row_height / 2 + chord_offset_on_bass, text, B, "lm", null, !draw);
           inline_width += r.width;
@@ -15877,21 +15948,21 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
           }
           inline_width += B * 0.25;
         };
-        var minorLabel = typeof param.minor_label == "string" ? param.minor_label : String.fromCharCode(0x2013);
-        var majorLabel = typeof param.major_label == "string" ? param.major_label : String.fromCharCode(0x0394);
-        if (ce._halfdim_exists) {
-          drawInlineText(String.fromCharCode(0x00d8));
-        } else {
-          _3rdelem.forEach(function (e) {
-            if (e.type == "M") drawInlineText(majorLabel);else if (e.type == "triad" && e.value == "m") drawInlineText(minorLabel);else if (e.type == "triad" && e.value == "dim") drawInlineText(String.fromCharCode(0x004f));
-          });
-          _6791113suselem.forEach(function (e) {
-            if (e.type == "dig") drawInlineText(e.value);else if (e.type == "sus") drawInlineText(e.type + (e.param ? e.param : ""));else if (e.type == "tension" && e.value == "add") drawInlineText(e.value + (e.param ? e.param : ""));
-          });
-          _5thelem.forEach(function (e) {
-            if (e.type == "tension" && e.value == "b") drawInlineText("-5");else if (e.type == "tension" && e.value == "#") drawInlineText("+5");else if (e.type == "triad" && e.value == "+") drawInlineText("+");
-          });
-        }
+        if (ce._halfdim_exists) drawInlineText(halfDiminishedLabel);
+        _3rdelem.forEach(function (e) {
+          if (e.type == "M") drawInlineText(majorLabel);else if (e.type == "triad" && e.value == "m") drawInlineText(minorLabel);else if (e.type == "triad" && e.value == "dim") drawInlineText(diminishedLabel);
+        });
+        // In a single-line layout, the augmented quality precedes the
+        // extension (Caug7 / C+7), just like minor and diminished labels.
+        _5thelem.forEach(function (e) {
+          if (e.type == "triad" && e.value == "+") drawInlineText(augmentedLabel);
+        });
+        _6791113suselem.forEach(function (e) {
+          if (e.type == "dig") drawInlineText(e.value);else if (e.type == "sus") drawInlineText(e.type + (e.param ? e.param : ""));else if (e.type == "tension" && e.value == "add") drawInlineText(e.value + (e.param ? e.param : ""));
+        });
+        _5thelem.forEach(function (e) {
+          if (e.type == "tension" && e.value == "b") drawInlineText("-5");else if (e.type == "tension" && e.value == "#") drawInlineText("+5");
+        });
         if (_alteredelem.length > 0) {
           drawInlineText("(");
           _alteredelem.forEach(function (e, index) {
@@ -15927,123 +15998,105 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
           bb: bb
         };
       }
-
-      // Half diminish is firstly rendered
-      if (ce._halfdim_exists) {
-        // Remove m7 and -5
-        _3rdelem = _3rdelem.filter(function (e) {
-          return !(e.type == "triad" && e.value == "m");
-        });
-        _6791113suselem = _6791113suselem.filter(function (e) {
-          return !(e.type == "dig" && e.value == "7");
-        });
-        _5thelem = _5thelem.filter(function (e) {
-          return !(e.type == "tension" && e.value == "b");
-        });
-        var _r32 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + lower_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + lower_onbass_y_offset, String.fromCharCode(0x00d8), B * 0.5, "lb", B * 0.5, !draw);
-        lower_width += _r32.width;
-        bb.add_BB(_r32.bb);
-      }
-      var drawChordQualityLabel = function drawChordQualityLabel(defaultLabel, configuredLabel) {
-        return _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + lower_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + lower_onbass_y_offset, typeof configuredLabel == "string" ? configuredLabel : defaultLabel, B * 0.5, "lb", B * 0.5, !draw);
+      var lowerLabelY = y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + lower_onbass_y_offset;
+      var upperLabelY = y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset;
+      var drawCompactLabel = function drawCompactLabel(label, offset, baseline) {
+        // Preserve the original width limit for symbols. Words must use
+        // their natural width in both the measurement and drawing passes.
+        var r = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + offset, baseline, label, B * 0.5, "lb", label.length > 1 ? null : B * 0.5, !draw);
+        bb.add_BB(r.bb);
+        return r.width;
       };
+      if (ce._halfdim_exists) {
+        lower_width += drawCompactLabel(halfDiminishedLabel, lower_width, lowerLabelY);
+      }
       _3rdelem.forEach(function (e) {
         if (e.type == "M" /* && _6791113suselem.length > 0*/) {
-          var _r33 = drawChordQualityLabel(String.fromCharCode(0x0394), param.major_label);
-          lower_width += _r33.width;
-          bb.add_BB(_r33.bb);
+          lower_width += drawCompactLabel(majorLabel, lower_width, lowerLabelY);
         } else if (e.type == "triad" && e.value == "m") {
-          var _r34 = drawChordQualityLabel(String.fromCharCode(0x2013), param.minor_label);
-          lower_width += _r34.width;
-          bb.add_BB(_r34.bb);
+          lower_width += drawCompactLabel(minorLabel, lower_width, lowerLabelY);
         } else if (e.type == "triad" && e.value == "dim") {
-          var _r35 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + lower_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + lower_onbass_y_offset, String.fromCharCode(0x004f), B * 0.5, "lb", B * 0.5, !draw);
-          lower_width += _r35.width;
-          bb.add_BB(_r35.bb);
-        } else {
-          // Unkown type
+          lower_width += drawCompactLabel(diminishedLabel, lower_width, lowerLabelY);
         }
       });
       _6791113suselem.forEach(function (e) {
         if (e.type == "dig") {
-          var _r36 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + lower_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + lower_onbass_y_offset, e.value, B * 0.5, "lb", B * 0.5, !draw);
-          lower_width += _r36.width;
-          bb.add_BB(_r36.bb);
+          var _r32 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + lower_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + lower_onbass_y_offset, e.value, B * 0.5, "lb", B * 0.5, !draw);
+          lower_width += _r32.width;
+          bb.add_BB(_r32.bb);
         } else if (e.type == "sus") {
-          var _r37 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + lower_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + lower_onbass_y_offset, e.type + (e.param ? e.param : ""), B * 0.5, "lb", B * 0.8, !draw);
-          lower_width += _r37.width;
-          bb.add_BB(_r37.bb);
+          var _r33 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + lower_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + lower_onbass_y_offset, e.type + (e.param ? e.param : ""), B * 0.5, "lb", B * 0.8, !draw);
+          lower_width += _r33.width;
+          bb.add_BB(_r33.bb);
         } else if (e.type == "tension" && e.value == "add") {
-          var _r38 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + lower_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + lower_onbass_y_offset, e.value + (e.param ? e.param : ""), B * 0.5, "lb", B * 0.8, !draw);
-          lower_width += _r38.width;
-          bb.add_BB(_r38.bb);
+          var _r34 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + lower_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + lower_onbass_y_offset, e.value + (e.param ? e.param : ""), B * 0.5, "lb", B * 0.8, !draw);
+          lower_width += _r34.width;
+          bb.add_BB(_r34.bb);
         }
       });
       _5thelem.forEach(function (e) {
         if (e.type == "tension" && e.value == "b") {
-          var _r39 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + upper_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, "-5", B * 0.5, "lb", B * 0.5, !draw);
-          upper_width += _r39.width;
-          bb.add_BB(_r39.bb);
+          var _r35 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + upper_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, "-5", B * 0.5, "lb", B * 0.5, !draw);
+          upper_width += _r35.width;
+          bb.add_BB(_r35.bb);
         } else if (e.type == "tension" && e.value == "#") {
-          var _r40 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + upper_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, "+5", B * 0.5, "lb", B * 0.5, !draw);
-          upper_width += _r40.width;
-          bb.add_BB(_r40.bb);
+          var _r36 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + upper_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, "+5", B * 0.5, "lb", B * 0.5, !draw);
+          upper_width += _r36.width;
+          bb.add_BB(_r36.bb);
         } else if (e.type == "triad" && e.value == "+") {
-          var _r41 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + upper_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, "+", B * 0.5, "lb", B * 0.5, !draw);
-          upper_width += _r41.width;
-          bb.add_BB(_r41.bb);
+          upper_width += drawCompactLabel(augmentedLabel, upper_width, upperLabelY);
         }
       });
       if (_alteredelem.length > 0) {
         var tensions_pos = Math.max(upper_width, lower_width); // Assume onbass below does not exceed lower_width
-        var _r42 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + tensions_pos, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, "(", B * 0.5, "lb", B * 0.5, !draw);
-        tensions_width += _r42.width;
-        bb.add_BB(_r42.bb);
+        var _r37 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + tensions_pos, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, "(", B * 0.5, "lb", B * 0.5, !draw);
+        tensions_width += _r37.width;
+        bb.add_BB(_r37.bb);
         var h = _graphic__WEBPACK_IMPORTED_MODULE_3__.getCharProfile(B * 0.5, null, canvas.ratio, canvas.zoom).height;
         _alteredelem.forEach(function (e, index) {
           if (e.type == "tension" && (e.value == "b" || e.value == "#")) {
             if (draw) {
-              var _r43 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasImage(canvas, _graphic__WEBPACK_IMPORTED_MODULE_3__.G_imgmap[e.value == "b" ? "uni266D" : "uni266F"],
+              var _r38 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasImage(canvas, _graphic__WEBPACK_IMPORTED_MODULE_3__.G_imgmap[e.value == "b" ? "uni266D" : "uni266F"],
               // flat.svg,
               x + tensions_pos + tensions_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, B * 0.2, h, "lb");
-              bb.add_BB(_r43.bb);
+              bb.add_BB(_r38.bb);
             }
             tensions_width += B * 0.2;
-            var _r44 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + tensions_pos + tensions_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, e.param, B * 0.5, "lb", B * 0.5, !draw);
-            tensions_width += _r44.width;
-            bb.add_BB(_r44.bb);
+            var _r39 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + tensions_pos + tensions_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, e.param, B * 0.5, "lb", B * 0.5, !draw);
+            tensions_width += _r39.width;
+            bb.add_BB(_r39.bb);
           } else if (e.type == "tension" && e.value == "omit") {
-            var _r45 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + tensions_pos + tensions_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, e.value + e.param,
+            var _r40 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + tensions_pos + tensions_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, e.value + e.param,
             // take same appropach as sus/add.
             B * 0.5, "lb", B * 0.9,
             // "omit" is 4 chars then expand a little bit
             !draw);
-            tensions_width += _r45.width;
-            bb.add_BB(_r45.bb);
+            tensions_width += _r40.width;
+            bb.add_BB(_r40.bb);
           }
           if (index != _alteredelem.length - 1) {
-            var _r46 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + tensions_pos + tensions_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, ", ", B * 0.5, "lb", B * 0.5, !draw);
-            tensions_width += _r46.width;
-            bb.add_BB(_r46.bb);
+            var _r41 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + tensions_pos + tensions_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, ", ", B * 0.5, "lb", B * 0.5, !draw);
+            tensions_width += _r41.width;
+            bb.add_BB(_r41.bb);
           }
         });
-        _r42 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + tensions_pos + tensions_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, ")", B * 0.5, "lb", B * 0.5, !draw);
-        tensions_width += _r42.width;
-        bb.add_BB(_r42.bb);
+        _r37 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + tensions_pos + tensions_width, y + param.row_height / 2 + chord_offset_on_bass + upper_tension_y_offset, ")", B * 0.5, "lb", B * 0.5, !draw);
+        tensions_width += _r37.width;
+        bb.add_BB(_r37.bb);
       }
       if (onbass != null) {
         var on_bass_below_a_margin = param.on_bass_style == "below" ? 1 : 0;
         var onbass_pos = param.on_bass_style == "below" ? x : x + lower_width;
         var on_bass_y_offset = param.on_bass_style == "below" ? 0 : lower_onbass_y_offset;
-        var _r47 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, onbass_pos, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + on_bass_below_a_margin + on_bass_y_offset, "/" + onbass[0], B * 0.45, param.on_bass_style == "below" ? "lt" : "lb", B * 0.5, !draw);
-        onbass_width += _r47.width;
-        bb.add_BB(_r47.bb);
+        var _r42 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, onbass_pos, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + on_bass_below_a_margin + on_bass_y_offset, "/" + onbass[0], B * 0.45, param.on_bass_style == "below" ? "lt" : "lb", B * 0.5, !draw);
+        onbass_width += _r42.width;
+        bb.add_BB(_r42.bb);
         if (onbass.length == 2) {
           if (onbass[1] == "b") {
             if (draw) {
               var _rd = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasImage(canvas, _graphic__WEBPACK_IMPORTED_MODULE_3__.G_imgmap.uni266D,
               // flat.svg
-              onbass_pos + onbass_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + on_bass_below_a_margin + on_bass_y_offset, B * 0.2, _r47.height, param.on_bass_style == "below" ? "lt" : "lb", true);
+              onbass_pos + onbass_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + on_bass_below_a_margin + on_bass_y_offset, B * 0.2, _r42.height, param.on_bass_style == "below" ? "lt" : "lb", true);
               bb.add_BB(_rd.bb);
             }
             onbass_width += B * 0.2;
@@ -16051,7 +16104,7 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
             if (draw) {
               var _rd2 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasImage(canvas, _graphic__WEBPACK_IMPORTED_MODULE_3__.G_imgmap.uni266F,
               // sharp.svg 
-              onbass_pos + onbass_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + on_bass_below_a_margin + on_bass_y_offset, B * 0.2, _r47.height, param.on_bass_style == "below" ? "lt" : "lb", true);
+              onbass_pos + onbass_width, y + param.row_height / 2 + rootCharHeight / 2 + chord_offset_on_bass + on_bass_below_a_margin + on_bass_y_offset, B * 0.2, _r42.height, param.on_bass_style == "below" ? "lt" : "lb", true);
               bb.add_BB(_rd2.bb);
             }
             onbass_width += B * 0.2;
@@ -16138,8 +16191,8 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
           w = 1 + (nline - 1) * barintv;
           for (var li = 0; li < nline; ++li) {
             if (draw) {
-              var _r48 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + li * barintv, y_body_base, x + li * barintv, y_body_base + row_height);
-              bb.add_BB(_r48.bb);
+              var _r43 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + li * barintv, y_body_base, x + li * barintv, y_body_base + row_height);
+              bb.add_BB(_r43.bb);
             }
           }
           actual_boundary = x + (nline - 1) * barintv;
@@ -16149,16 +16202,16 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
           w = 8;
           actual_boundary = x;
           if (draw) {
-            var _r49 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x, y_body_base, x, y_body_base + row_height, {
+            var _r44 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x, y_body_base, x, y_body_base + row_height, {
               width: 2
             });
-            bb.add_BB(_r49.bb);
-            _r49 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + 3, y_body_base, x + 3, y_body_base + row_height);
-            bb.add_BB(_r49.bb);
-            _r49 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + 7, y_body_base + row_height / 4 * 1.5, 1);
-            bb.add_BB(_r49.bb);
-            _r49 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + 7, y_body_base + row_height / 4 * 2.5, 1);
-            bb.add_BB(_r49.bb);
+            bb.add_BB(_r44.bb);
+            _r44 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + 3, y_body_base, x + 3, y_body_base + row_height);
+            bb.add_BB(_r44.bb);
+            _r44 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + 7, y_body_base + row_height / 4 * 1.5, 1);
+            bb.add_BB(_r44.bb);
+            _r44 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + 7, y_body_base + row_height / 4 * 2.5, 1);
+            bb.add_BB(_r44.bb);
           }
           break;
         case "e":
@@ -16167,24 +16220,24 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
           actual_boundary = x + w;
           xshift = side == "end" ? 0 : 0;
           if (draw) {
-            var _r50 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + xshift, y_body_base + row_height / 4 * 1.5, 1);
-            bb.add_BB(_r50.bb);
-            _r50 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + xshift, y_body_base + row_height / 4 * 2.5, 1);
-            bb.add_BB(_r50.bb);
-            _r50 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + xshift + 4, y_body_base, x + xshift + 4, y_body_base + row_height);
-            bb.add_BB(_r50.bb);
-            _r50 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + xshift + 7, y_body_base, x + xshift + 7, y_body_base + row_height, {
+            var _r45 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + xshift, y_body_base + row_height / 4 * 1.5, 1);
+            bb.add_BB(_r45.bb);
+            _r45 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + xshift, y_body_base + row_height / 4 * 2.5, 1);
+            bb.add_BB(_r45.bb);
+            _r45 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + xshift + 4, y_body_base, x + xshift + 4, y_body_base + row_height);
+            bb.add_BB(_r45.bb);
+            _r45 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + xshift + 7, y_body_base, x + xshift + 7, y_body_base + row_height, {
               width: 2
             });
-            bb.add_BB(_r50.bb);
+            bb.add_BB(_r45.bb);
           }
           if (e0.times !== null && (e0.ntimes || e0.times != 2)) {
             var stimes = e0.ntimes == true ? "X" : "" + e0.times;
             if (draw) {
-              var _r51 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + xshift + w, y_body_base + row_height + param.xtimes_mark_y_margin, "(" + stimes + " times)", param.base_font_size / 2, "rt", null, null, {
+              var _r46 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + xshift + w, y_body_base + row_height + param.xtimes_mark_y_margin, "(" + stimes + " times)", param.base_font_size / 2, "rt", null, null, {
                 font: param.repeat_mark_font
               });
-              bb2.add_BB(_r51.bb);
+              bb2.add_BB(_r46.bb);
             }
           }
           break;
@@ -16193,33 +16246,33 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
           w = 15;
           actual_boundary = x + w / 2;
           if (draw) {
-            var _r52 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x, y_body_base + row_height / 4 * 1.5, 1);
-            bb.add_BB(_r52.bb);
-            _r52 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x, y_body_base + row_height / 4 * 2.5, 1);
-            bb.add_BB(_r52.bb);
-            _r52 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + 4, y_body_base, x + 4, y_body_base + row_height);
-            bb.add_BB(_r52.bb);
-            _r52 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + 7, y_body_base, x + 7, y_body_base + row_height, {
+            var _r47 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x, y_body_base + row_height / 4 * 1.5, 1);
+            bb.add_BB(_r47.bb);
+            _r47 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x, y_body_base + row_height / 4 * 2.5, 1);
+            bb.add_BB(_r47.bb);
+            _r47 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + 4, y_body_base, x + 4, y_body_base + row_height);
+            bb.add_BB(_r47.bb);
+            _r47 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + 7, y_body_base, x + 7, y_body_base + row_height, {
               width: 2
             });
-            bb.add_BB(_r52.bb);
-            _r52 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + 10, y_body_base, x + 10, y_body_base + row_height);
-            bb.add_BB(_r52.bb);
+            bb.add_BB(_r47.bb);
+            _r47 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + 10, y_body_base, x + 10, y_body_base + row_height);
+            bb.add_BB(_r47.bb);
           }
           if (e0.times !== null && (e0.ntimes || e0.times != 2)) {
             var _stimes = e0.ntimes == true ? "X" : "" + e0.times;
             if (draw) {
-              var _r53 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + 8, y_body_base + row_height + param.xtimes_mark_y_margin, "(" + _stimes + " times)", param.base_font_size / 2, "rt", null, null, {
+              var _r48 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(canvas, x + 8, y_body_base + row_height + param.xtimes_mark_y_margin, "(" + _stimes + " times)", param.base_font_size / 2, "rt", null, null, {
                 font: param.repeat_mark_font
               });
-              bb2.add_BB(_r53.bb);
+              bb2.add_BB(_r48.bb);
             }
           }
           if (draw) {
-            var _r54 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + 14, y_body_base + row_height / 4 * 1.5, 1);
-            bb.add_BB(_r54.bb);
-            _r54 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + 14, y_body_base + row_height / 4 * 2.5, 1);
-            bb.add_BB(_r54.bb);
+            var _r49 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + 14, y_body_base + row_height / 4 * 1.5, 1);
+            bb.add_BB(_r49.bb);
+            _r49 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasCircle(canvas, x + 14, y_body_base + row_height / 4 * 2.5, 1);
+            bb.add_BB(_r49.bb);
           }
           break;
         case "f":
@@ -16228,12 +16281,12 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
           xshift = side == "end" ? 0 : 0;
           actual_boundary = x + w;
           if (draw) {
-            var _r55 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + xshift, y_body_base, x + xshift, y_body_base + row_height);
-            bb.add_BB(_r55.bb);
-            _r55 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + xshift + 3, y_body_base, x + xshift + 3, y_body_base + row_height, {
+            var _r50 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + xshift, y_body_base, x + xshift, y_body_base + row_height);
+            bb.add_BB(_r50.bb);
+            _r50 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasLine(canvas, x + xshift + 3, y_body_base, x + xshift + 3, y_body_base + row_height, {
               width: 2
             });
-            bb.add_BB(_r55.bb);
+            bb.add_BB(_r50.bb);
           }
           break;
         case "r":
@@ -18734,6 +18787,392 @@ var Renderer = /*#__PURE__*/function () {
   }]);
   return Renderer;
 }();
+
+/***/ }),
+
+/***/ "./src/renderer/bar_numbering.mjs":
+/*!****************************************!*\
+  !*** ./src/renderer/bar_numbering.mjs ***!
+  \****************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "numberBars": () => (/* binding */ numberBars)
+/* harmony export */ });
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+// Pure performance-order numbering; kept separate from engraving and playback.
+// No source-node mutation, DOM, timers, persistent cache or expanded repeat tree.
+var MAX_STEPS = 10000;
+var kind = function kind(node) {
+  return node === null || node === void 0 ? void 0 : node.getElementName();
+};
+var positiveInteger = function positiveInteger(value) {
+  return Number.isSafeInteger(value) && value > 0;
+};
+var begins = function begins(node) {
+  return ['LoopBeginMark', 'LoopBothMark'].includes(kind(node));
+};
+var ends = function ends(node) {
+  return ['LoopEndMark', 'LoopBothMark'].includes(kind(node));
+};
+var key = function key(node) {
+  var _node$number;
+  return (_node$number = node.number) !== null && _node$number !== void 0 ? _node$number : '';
+};
+function endingRanges(text) {
+  var ranges = [];
+  var _iterator = _createForOfIteratorHelper(text.split(',')),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var _match$;
+      var part = _step.value;
+      var match = /^\s*(\d+)\.?\s*(?:-\s*(\d+)\.?)?\s*$/.exec(part);
+      if (!match) return null;
+      var first = Number(match[1]),
+        last = Number((_match$ = match[2]) !== null && _match$ !== void 0 ? _match$ : match[1]);
+      if (!positiveInteger(first) || !positiveInteger(last) || last < first) return null;
+      ranges.push([first, last]);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return ranges;
+}
+function prepare(measures) {
+  var bars = measures.map(function (measure) {
+    var _byType$get;
+    var nodes = measure.childNodes;
+    var byType = new Map();
+    var contentError = null,
+      entryError = null;
+    var _iterator2 = _createForOfIteratorHelper(nodes),
+      _step2;
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var node = _step2.value;
+        var type = kind(node);
+        if (!['LoopIndicator', 'LongRest', 'Segno', 'Coda', 'ToCoda', 'DalSegno', 'DaCapo', 'Fine'].includes(type)) continue;
+        if (byType.has(type)) {
+          if (type === 'LoopIndicator') entryError = 'unsupported-ending';else contentError = 'invalid-navigation';
+        }
+        byType.set(type, node);
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+    var jump = (_byType$get = byType.get('DalSegno')) !== null && _byType$get !== void 0 ? _byType$get : byType.get('DaCapo');
+    if (byType.has('DalSegno') && byType.has('DaCapo') || jump && (byType.has('ToCoda') || byType.has('Fine'))) contentError = 'invalid-navigation';
+    return {
+      first: nodes[0],
+      last: nodes[nodes.length - 1],
+      entryError: entryError,
+      contentError: contentError,
+      jump: jump,
+      ending: byType.get('LoopIndicator'),
+      rest: byType.get('LongRest'),
+      segno: byType.get('Segno'),
+      coda: byType.get('Coda'),
+      toCoda: byType.get('ToCoda'),
+      fine: byType.has('Fine'),
+      loop: null
+    };
+  });
+  var stack = [],
+    loops = [],
+    starts = new Map(),
+    finishes = new Map();
+  var segnos = new Map(),
+    codas = new Map();
+  function target(map, node, index) {
+    if (node) map.set(key(node), map.has(key(node)) ? null : index);
+  }
+  bars.forEach(function (bar, index) {
+    var _bars, _stack, _bars2;
+    // A boundary can be represented on either or both adjacent measures,
+    // especially across a source newline. Process each side exactly once.
+    if (begins(bar.first) || begins((_bars = bars[index - 1]) === null || _bars === void 0 ? void 0 : _bars.last)) {
+      var _stack$0$start, _stack$;
+      var loop = {
+        start: index,
+        outerStart: (_stack$0$start = (_stack$ = stack[0]) === null || _stack$ === void 0 ? void 0 : _stack$.start) !== null && _stack$0$start !== void 0 ? _stack$0$start : index,
+        end: null,
+        children: [],
+        endings: []
+      };
+      if (stack.length) stack[stack.length - 1].children.push(loop);
+      stack.push(loop);
+      loops.push(loop);
+      starts.set(index, loop);
+    }
+    bar.loop = (_stack = stack[stack.length - 1]) !== null && _stack !== void 0 ? _stack : null;
+    var end = ends(bar.last) ? bar.last : ends((_bars2 = bars[index + 1]) === null || _bars2 === void 0 ? void 0 : _bars2.first) ? bars[index + 1].first : null;
+    if (end) {
+      var _loop = stack.pop();
+      if (!_loop && loops.length === 0) {
+        _loop = {
+          start: 0,
+          outerStart: 0,
+          end: null,
+          children: [],
+          endings: []
+        };
+        loops.push(_loop);
+        starts.set(0, _loop);
+        for (var i = 0; i <= index; i++) bars[i].loop = _loop;
+      }
+      if (!_loop) bar.endError = true;else {
+        Object.assign(_loop, {
+          end: index,
+          times: end.times,
+          indefinite: end.ntimes
+        });
+        finishes.set(index, _loop);
+      }
+    }
+    target(segnos, bar.segno, index);
+    target(codas, bar.coda, index);
+  });
+  for (var _i = 0, _stack2 = stack; _i < _stack2.length; _i++) {
+    var loop = _stack2[_i];
+    bars[loop.start].entryError = 'invalid-repeat';
+  }
+  bars.forEach(function (bar, index) {
+    var _ref, _starts$get;
+    if (!bar.ending) return;
+    // A final alternative may immediately follow the repeat-end measure.
+    var loop = (_ref = (_starts$get = starts.get(index)) !== null && _starts$get !== void 0 ? _starts$get : finishes.get(index - 1)) !== null && _ref !== void 0 ? _ref : bar.loop;
+    var ranges = endingRanges(bar.ending.indstr);
+    if (!loop || !ranges) bar.entryError = 'unsupported-ending';else {
+      bar.ending = {
+        loop: loop,
+        ranges: ranges,
+        next: null
+      };
+      var previous = loop.endings[loop.endings.length - 1];
+      if (previous !== undefined) bars[previous].ending.next = index;
+      loop.endings.push(index);
+    }
+  });
+  return {
+    bars: bars,
+    starts: starts,
+    finishes: finishes,
+    segnos: segnos,
+    codas: codas,
+    hasJumps: bars.some(function (bar) {
+      return bar.jump;
+    })
+  };
+}
+
+/** Return every known visit number per measure and an optional partial-result reason.
+ * The starting number may be any safe integer; invalid values use one.
+ */
+function numberBars(measures) {
+  var _returnJourney3;
+  var start = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+  var _prepare = prepare(measures),
+    bars = _prepare.bars,
+    starts = _prepare.starts,
+    finishes = _prepare.finishes,
+    segnos = _prepare.segnos,
+    codas = _prepare.codas,
+    hasJumps = _prepare.hasJumps;
+  var numbers = measures.map(function () {
+    return [];
+  });
+  var passes = new Map(),
+    takenJumps = new Set();
+  var position = 0,
+    nextNumber = Number.isSafeInteger(start) ? start : 1;
+  var steps = 0,
+    returnJourney = null,
+    stop = null;
+  var halt = function halt(reason) {
+    stop = {
+      reason: reason,
+      measure: position
+    };
+  };
+  var passOf = function passOf(loop) {
+    var _returnJourney, _passes$get;
+    return (_returnJourney = returnJourney) !== null && _returnJourney !== void 0 && _returnJourney.straight ? loop.times : (_passes$get = passes.get(loop)) !== null && _passes$get !== void 0 ? _passes$get : 1;
+  };
+  function step() {
+    if (steps++ < MAX_STEPS) return true;
+    halt('visit-limit');
+    return false;
+  }
+  function resetChildren(loop) {
+    // Iterate lazily: both a wide subtree and a deep one must obey the same
+    // budget, without recursion or input-sized argument/temporary arrays.
+    var pending = [loop.children.values()];
+    while (pending.length) {
+      var next = pending[pending.length - 1].next();
+      if (next.done) {
+        pending.pop();
+        continue;
+      }
+      if (!step()) return false;
+      var child = next.value;
+      passes["delete"](child);
+      if (child.children.length) pending.push(child.children.values());
+    }
+    return true;
+  }
+  function finishRepeat(loop) {
+    if (loop.indefinite) {
+      halt('indefinite-repeat');
+      return;
+    }
+    if (!positiveInteger(loop.times)) {
+      halt('invalid-repeat');
+      return;
+    }
+    var pass = passOf(loop);
+    if (pass < loop.times) {
+      passes.set(loop, pass + 1);
+      if (resetChildren(loop)) position = loop.start;
+    } else position = loop.end + 1;
+  }
+  function navigate(bar) {
+    var _returnJourney2;
+    if (bar.fine && (!returnJourney && !hasJumps || returnJourney && (returnJourney.phase === 'coda' || returnJourney.al !== 'Coda'))) {
+      position = bars.length;
+      returnJourney = null;
+      return true;
+    }
+    if (bar.toCoda && ((_returnJourney2 = returnJourney) === null || _returnJourney2 === void 0 ? void 0 : _returnJourney2.phase) === 'return' && returnJourney.al !== 'Fine' && (returnJourney.al !== 'Coda' || returnJourney.coda === key(bar.toCoda))) {
+      var destination = codas.get(key(bar.toCoda));
+      if (!Number.isInteger(destination) || destination <= position) halt('invalid-navigation');else {
+        position = destination;
+        // The requested transfer is consumed, not converted into a bare
+        // return that could authorize unrelated To Coda instructions.
+        returnJourney.phase = 'coda';
+        passes.clear();
+      }
+      return true;
+    }
+    if (bar.jump && !takenJumps.has(position)) {
+      var _target$segno$opt, _target$segno, _kind;
+      var _destination = kind(bar.jump) === 'DaCapo' ? 0 : segnos.get(key(bar.jump));
+      if (!Number.isInteger(_destination) || _destination > position) {
+        halt('invalid-navigation');
+        return true;
+      }
+      var target = bars[_destination];
+      var withRepeat = kind(bar.jump) === 'DalSegno' && /^with\s+repeat$/.test((_target$segno$opt = (_target$segno = target.segno) === null || _target$segno === void 0 ? void 0 : _target$segno.opt) !== null && _target$segno$opt !== void 0 ? _target$segno$opt : '');
+      if (withRepeat && target.loop && target.loop.outerStart !== _destination) {
+        halt('invalid-navigation');
+        return true;
+      }
+      takenJumps.add(position);
+      returnJourney = {
+        straight: !withRepeat,
+        al: (_kind = kind(bar.jump.al)) !== null && _kind !== void 0 ? _kind : null,
+        coda: bar.jump.al ? key(bar.jump.al) : null,
+        phase: 'return'
+      };
+      passes.clear();
+      position = _destination;
+      return true;
+    }
+    return false;
+  }
+  while (position < bars.length && !stop) {
+    if (!step()) break;
+    var bar = bars[position];
+    // Validate the route selector before using it; validate measure content
+    // only after selection, because unplayed endings cannot affect the route.
+    if (bar.entryError) {
+      halt(bar.entryError);
+      break;
+    }
+    var _start = starts.get(position);
+    if (_start && !passes.has(_start)) passes.set(_start, 1);
+    if (bar.ending) {
+      var _bar$ending = bar.ending,
+        loop = _bar$ending.loop,
+        ranges = _bar$ending.ranges,
+        next = _bar$ending.next;
+      var pass = passOf(loop);
+      var matches = false;
+      var _iterator3 = _createForOfIteratorHelper(ranges),
+        _step3;
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var _step3$value = _slicedToArray(_step3.value, 2),
+            first = _step3$value[0],
+            last = _step3$value[1];
+          if (!step()) break;
+          if (first <= pass && pass <= last) {
+            matches = true;
+            break;
+          }
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+      if (stop) break;
+      if (!matches) {
+        if (position > loop.end) halt('unsupported-ending');else if (next !== null && next <= loop.end) position = next;else finishRepeat(loop);
+        continue;
+      }
+    }
+    if (bar.contentError) {
+      halt(bar.contentError);
+      break;
+    }
+    var span = bar.rest ? bar.rest.longrestlen : 1;
+    if (!positiveInteger(span)) {
+      halt('invalid-rest');
+      break;
+    }
+    if (!Number.isSafeInteger(nextNumber)) {
+      halt('counter-limit');
+      break;
+    }
+    numbers[position].push(nextNumber);
+    nextNumber += span;
+    if (bar.endError) {
+      halt('invalid-repeat');
+      break;
+    }
+    // Navigation and repeat-end on the same bar have ambiguous precedence.
+    var end = finishes.get(position);
+    if (end && (bar.jump || bar.toCoda || bar.fine)) {
+      halt('invalid-navigation');
+      break;
+    }
+    if (navigate(bar)) continue;
+    if (end) finishRepeat(end);else position++;
+  }
+  if (!stop && ((_returnJourney3 = returnJourney) === null || _returnJourney3 === void 0 ? void 0 : _returnJourney3.phase) === 'return' && (returnJourney.al === 'Fine' || returnJourney.al === 'Coda')) {
+    stop = {
+      reason: 'invalid-navigation',
+      measure: bars.length - 1
+    };
+  }
+  return {
+    numbers: numbers,
+    stop: stop
+  };
+}
 
 /***/ })
 

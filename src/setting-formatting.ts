@@ -1,5 +1,5 @@
 const settingOrder = ['TITLE', 'SUB_TITLE', 'ARTIST', 'KEY', 'TRANSPOSE', 'KEY_TYPE', 'SHOW_STAFF', 'SHOW_FOOTER', 'PARAM'];
-const paramOrder = ['paper_width', 'paper_height', 'minor_label', 'major_label', 'chord_suffix_style'];
+const paramOrder = ['paper_width', 'paper_height', 'minor_label', 'major_label', 'diminished_label', 'half_diminished_label', 'augmented_label', 'chord_suffix_style'];
 
 function rank(name: string, order: readonly string[]): number {
   const index = order.indexOf(name);

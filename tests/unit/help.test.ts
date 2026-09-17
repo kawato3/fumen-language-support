@@ -43,7 +43,10 @@ for (const locale of ['en', 'ja']) {
     const renderingReference = source.indexOf('https://hbjpn.github.io/fumen/api_reference/#renderparam');
     assert.ok(renderingReference >= 0 && renderingReference < source.indexOf('<a id="extension-chord-display">'),
       'The upstream rendering reference is separate from the extension-specific parameters');
-    for (const field of ['minor_label', 'major_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
+    for (const field of ['minor_label', 'major_label', 'diminished_label', 'half_diminished_label', 'augmented_label', 'chord_suffix_style']) {
+      const row = source.split('\n').find(line => line.startsWith(`| \`${field}\` |`));
+      assert.ok(row?.includes(locale === 'ja' ? '**既定:' : '**Default:'), `Documented default: ${field}`);
+    }
     assert.ok(source.includes('U+2013'));
     assert.ok(source.includes('U+0394'));
     assert.ok(source.includes('extension-chord-display'));
@@ -92,7 +95,7 @@ test('main documentation identifies the renderer addition as extension-specific'
   const english = readFileSync('README.md', 'utf8');
   const japanese = readFileSync('docs/README.ja.md', 'utf8');
   for (const source of [english, japanese]) {
-    for (const field of ['minor_label', 'major_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
+    for (const field of ['minor_label', 'major_label', 'diminished_label', 'half_diminished_label', 'augmented_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
   }
   assert.ok(english.includes('extension-specific'));
   assert.ok(japanese.includes('独自'));
@@ -135,20 +138,47 @@ test('the reusable Fumen patch is documented, version-pinned and excluded from t
   const directory = 'patches/fumen-1.3.3-chord-component-display';
   const english = readFileSync(`${directory}/README.md`, 'utf8');
   const japanese = readFileSync(`${directory}/README.ja.md`, 'utf8');
-  const patch = readFileSync(`${directory}/0001-fumen-1.3.3-chord-component-display.patch`, 'utf8');
+  const patch = readFileSync(`${directory}/0001-fumen-1.3.3-chord-component-display-1.0.5.patch`, 'utf8');
   const example = readFileSync(`${directory}/examples/chord-component-display.fumen`, 'utf8');
   for (const source of [english, japanese]) {
     assert.ok(source.includes('f3d04a522c19236c81f553871d6aee665d9eda22'));
-    for (const field of ['minor_label', 'major_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
+    for (const field of ['minor_label', 'major_label', 'diminished_label', 'half_diminished_label', 'augmented_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
   }
-  assert.ok(patch.startsWith('From e0d08758ee51f967f7b8d07852a264f96bd5ae28 '));
+  assert.ok(patch.startsWith('diff --git '), 'A cumulative diff applicable with git apply');
+  assert.ok(!patch.includes('diff --git a/src/parser/'), 'Display settings must not extend the parser');
   assert.ok(patch.includes('src/renderer/default_renderer.js'));
-  assert.ok((patch.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) ?? [])
-    .every(email => /@users\.noreply\.github\.com$/i.test(email)),
-    'Patch email addresses must use GitHub noreply');
+  assert.doesNotMatch(patch, /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
+    'The reusable patch must not contain email addresses');
   const checksum = createHash('sha256').update(patch).digest('hex');
   assert.ok(english.includes(checksum));
   assert.ok(japanese.includes(checksum));
   assert.ok(example.includes('"chord_suffix_style":"inline"'));
   assert.ok(!readFileSync('.vscodeignore', 'utf8').includes('!patches/'), 'The developer patch stays out of the VSIX');
+});
+
+test('the reusable patch distributes the exact renderer bundled with the extension', () => {
+  const patch = readFileSync('patches/fumen-1.3.3-chord-component-display/0001-fumen-1.3.3-chord-component-display-1.0.5.patch', 'utf8');
+  const target = /^diff --git a\/dist\/fumen\.js b\/dist\/fumen\.js\nindex [a-f0-9]{40}\.\.([a-f0-9]{40}) 100644$/m.exec(patch);
+  assert.ok(target, 'Generate the patch with git diff --full-index so its bundle identity is verifiable');
+  const bundle = readFileSync('resources/vendor/fumen.js');
+  const blobId = createHash('sha1').update(`blob ${bundle.length}\0`).update(bundle).digest('hex');
+  assert.equal(target[1], blobId, 'The standalone patch and extension must render with the same library');
+});
+
+test('the published 1.0.3 patch is retained byte-for-byte under its versioned name', () => {
+  const bytes = readFileSync('patches/fumen-1.3.3-chord-component-display/0001-fumen-1.3.3-chord-component-display-1.0.3.patch');
+  assert.equal(createHash('sha256').update(bytes).digest('hex'),
+    '70cc019dfb1dd2921fe897d2ace21ecf1af75cd8f84b3a0ac2855ffe1f285032');
+});
+
+test('bar numbers are documented as an opt-in, bounded, extension-specific feature', () => {
+  for (const suffix of ['', '.ja']) {
+    const sheet = readFileSync(`docs/CHEATSHEET${suffix}.md`, 'utf8');
+    assert.ok(sheet.includes('"bar_number":"on"'));
+    assert.ok(sheet.includes('"bar_start":0'));
+    assert.match(sheet, /\*\*`bar_start`[^\n]*`1`/);
+    assert.ok(sheet.includes('"off"'));
+    assert.ok(sheet.includes('xX') && sheet.includes('10,000'));
+    assert.equal((sheet.match(/id="extension-bar-numbers"/g) || []).length, 1);
+  }
 });

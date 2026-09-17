@@ -1,0 +1,16 @@
+%TITLE="Bar Number Study"
+%SUB_TITLE="Performance order, including repeats"
+%SHOW_FOOTER="NO"
+%PARAM={"bar_number":"on"}
+
+[A]
+||: C | G | Am | F |
+| C | G | [1.] Dm | G :||
+>| [2.] F | C ||.
+
+[B]
+| <S> F | G <to Coda> |
+| Am | G <D.S. al Coda> |
+
+[Coda]
+| <Coda> C | F | G | C ||.

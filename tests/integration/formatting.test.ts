@@ -39,14 +39,16 @@ export const formattingTests: IntegrationCase[] = [
       assert.equal(document.eol, vscode.EndOfLine.CRLF);
       assert.equal((await editsFor(document))?.length ?? 0, 0, 'A second format is a no-op');
       await vscode.commands.executeCommand('undo');
-      assert.equal(document.getText(), source, 'The entire format is undone in one step');
+      // The workbench command can finish before its document-change event
+      // reaches the extension host. Still issue exactly one undo.
+      await waitFor(() => document.getText() === source, 'The entire format is undone in one step');
     }
   },
   {
     name: 'Standard Format Document orders settings within each run and supports one-step undo',
     async run(fixture) {
-      const source = '% PARAM = {"minor_label":"m","paper_width":800}\r\n% TITLE = "🎵  Song"\r\n\r\n[A]\r\n|C|\r\n%SHOW_STAFF="YES"\r\n%TRANSPOSE=2\r\n|D|';
-      const expected = '%TITLE="🎵  Song"\r\n%PARAM={"paper_width":800,"minor_label":"m"}\r\n\r\n[A]\r\n| C |\r\n%TRANSPOSE=2\r\n%SHOW_STAFF="YES"\r\n| D |';
+      const source = '% PARAM = {"augmented_label":"aug","minor_label":"m","half_diminished_label":"m7-5","paper_width":800,"diminished_label":"dim"}\r\n% TITLE = "🎵  Song"\r\n\r\n[A]\r\n|C|\r\n%SHOW_STAFF="YES"\r\n%TRANSPOSE=2\r\n|D|';
+      const expected = '%TITLE="🎵  Song"\r\n%PARAM={"paper_width":800,"minor_label":"m","diminished_label":"dim","half_diminished_label":"m7-5","augmented_label":"aug"}\r\n\r\n[A]\r\n| C |\r\n%TRANSPOSE=2\r\n%SHOW_STAFF="YES"\r\n| D |';
       const editor = await fixture.editor(source);
       const document = editor.document;
       await vscode.commands.executeCommand('editor.action.formatDocument');
@@ -54,7 +56,7 @@ export const formattingTests: IntegrationCase[] = [
       assert.equal(document.eol, vscode.EndOfLine.CRLF);
       assert.equal((await editsFor(document))?.length ?? 0, 0, 'A second format is a no-op');
       await vscode.commands.executeCommand('undo');
-      assert.equal(document.getText(), source, 'Sorting and whitespace changes undo together');
+      await waitFor(() => document.getText() === source, 'Sorting and whitespace changes undo together');
     }
   },
   {

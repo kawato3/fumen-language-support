@@ -74,6 +74,7 @@ async function prepare(): Promise<void> {
   ready = true;
   button.disabled = false;
   document.body.dataset.state = 'ready';
-  status.textContent = t('Ready to print: {0} pages.', recordings.length);
+  const message = t('Ready to print: {0} pages.', recordings.length);
+  status.textContent = container.dataset.notice ? `${message} ${container.dataset.notice}` : message;
 }
 void prepare().catch(fail);

@@ -3,9 +3,10 @@ import { MeasurementCacheBudget } from './measurement-budget.js';
 import { Translator } from '../localization.js';
 
 interface Track { childNodes?: Track[]; name?: string; value?: unknown; getVariable(name: string): unknown }
+interface RenderResult { barNumbering?: { stop: { reason: string; measure: number } | null } }
 declare const Fumen: {
   Parser: new (error: (message: string) => void) => { parse(text: string): Track | null };
-  DefaultRenderer: new (provider: () => HTMLCanvasElement, options: object) => { render(track: Track): Promise<unknown> };
+  DefaultRenderer: new (provider: () => HTMLCanvasElement, options: object) => { render(track: Track): Promise<RenderResult> };
 };
 
 export function releasePages(container: HTMLElement): void {
@@ -53,10 +54,18 @@ export class ScoreRenderer {
         container.append(canvas);
         return canvas;
       }, { preset: 'A4' });
-      await Promise.race([
+      const result = await Promise.race([
         renderer.render(track),
         new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error(t('Rendering did not finish. Try Reload.'))), 15_000); })
       ]);
+      const stop = result.barNumbering?.stop;
+      if (stop) {
+        container.dataset.notice = stop.reason === 'indefinite-repeat'
+          ? t('Bar numbers stop at an indefinite repeat; later visits are not numbered.')
+          : ['visit-limit', 'counter-limit'].includes(stop.reason)
+            ? t('Bar numbering reached its safety limit; later visits are not numbered.')
+            : t('Bar numbering stopped at source measure {0}: the performance order could not be determined.', stop.measure + 1);
+      }
       for (const canvas of container.querySelectorAll('canvas')) {
         const width = parseFloat(canvas.style.width), height = parseFloat(canvas.style.height);
         if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0 || width > 8192 || height > 16384) {

@@ -89,6 +89,53 @@ test('bundled notation and multiple pages replay without changing any rendered p
   assert.deepEqual(await page.locator('canvas').evaluateAll(cs => cs.map(c => c.toDataURL())), original);
 });
 
+test('custom chord labels survive vector-print replay in both layouts', async t => {
+  for (const style of ['compact', 'inline']) {
+    const parameters = { minor_label: 'min', major_label: 'maj', diminished_label: 'dim', half_diminished_label: 'm7-5', augmented_label: 'aug', chord_suffix_style: style };
+    const page = await open(t, '%PARAM=' + JSON.stringify(parameters) + '\n| C#dim7 | Dbm7-5(b9)/G | F#aug7 | C+ |\n| Cm7 | CM7 |');
+    assert.equal(await page.locator('body').getAttribute('data-state'), 'ready', await page.locator('#status').innerText());
+    const original = await page.locator('canvas').evaluateAll(cs => cs.map(c => c.toDataURL()));
+    const calls = await page.evaluate(() => {
+      const calls = [];
+      const original = CanvasRenderingContext2D.prototype.fillText;
+      CanvasRenderingContext2D.prototype.fillText = function (text) {
+        calls.push(String(text));
+        return original.apply(this, arguments);
+      };
+      try { window.dispatchEvent(new Event('beforeprint')); }
+      finally { CanvasRenderingContext2D.prototype.fillText = original; }
+      return calls;
+    });
+    for (const label of ['min', 'maj', 'dim', 'm7-5', 'aug']) assert.ok(calls.includes(label), label);
+    assert.deepEqual(await page.locator('canvas').evaluateAll(cs => cs.map(c => c.toDataURL())), original);
+  }
+});
+
+for (const [start, expected] of [[1, ['1,3', '5']], [0, ['0,2', '4']], [-10, ['-10,-8', '-6']]])
+test(`bar numbers starting at ${start} survive vector replay and remain printable in both languages`, async t => {
+  for (const language of ['en', 'ja']) {
+    const page = await open(t, '%PARAM=' + JSON.stringify({ bar_number: 'on', bar_start: start }) +
+      '\n||: C | G :||\n||: F | C :||xX\n| G |', language);
+    assert.equal(await page.locator('body').getAttribute('data-state'), 'ready');
+    assert.ok(await page.locator('#print').isEnabled());
+    assert.match(await page.locator('#status').innerText(), language === 'ja' ? /回数未定/ : /indefinite repeat/);
+    const original = await page.locator('canvas').evaluateAll(cs => cs.map(c => c.toDataURL()));
+    const labels = await page.evaluate(() => {
+      const labels = [];
+      const original = CanvasRenderingContext2D.prototype.fillText;
+      CanvasRenderingContext2D.prototype.fillText = function (text) {
+        if (this.textAlign === 'right' && /^-?\d+(,-?\d+)*$/.test(text)) labels.push(String(text));
+        return original.apply(this, arguments);
+      };
+      try { window.dispatchEvent(new Event('beforeprint')); }
+      finally { CanvasRenderingContext2D.prototype.fillText = original; }
+      return labels;
+    });
+    assert.deepEqual(labels, expected);
+    assert.deepEqual(await page.locator('canvas').evaluateAll(cs => cs.map(c => c.toDataURL())), original);
+  }
+});
+
 test('unsupported browsers show a useful error instead of promising vector output', async t => {
   const page = await open(t, score, 'en', {userAgent: 'Mozilla/5.0 Safari/605.1.15'});
   assert.equal(await page.locator('body').getAttribute('data-state'), 'error');

@@ -29,7 +29,7 @@ Requires VS Code **1.90 or later**. No separate Node.js, Fumen or font installat
 - A native, searchable notation picker for score structure, signs, rhythm, text and common score settings.
 - Hover explanations, a direct link to the bundled cheat sheet and basic checks for malformed settings or missing delimiters.
 - Live, side-by-side previews using the bundled **Fumen 1.3.3** renderer, including unsaved edits.
-- An extension-specific chord-component display option in the bundled renderer: retain Fumen's compact layout or choose full-size inline symbols such as `Am7` and `AM7`. It is clearly separated from upstream Fumen settings in the [cheat sheet](docs/CHEATSHEET.md).
+- Extension-specific chord labels and layout: choose symbols or text such as `Am7`, `AM7`, `Cdim`, `Cm7-5` and `Caug`, in a compact or full-size inline layout. These settings are separate from upstream Fumen settings in the [cheat sheet](docs/CHEATSHEET.md).
 - Offline cheat sheets and user guides in English and Japanese, with links to the official reference.
 - Conservative whitespace and setting-order formatting through VS Code's standard **Format Document** command.
 - A vector-friendly print view in Google Chrome, using Chrome's **Save as PDF** without a PDF library in the extension.
@@ -74,13 +74,21 @@ The preview updates after about 300 ms without typing. It follows the document f
 
 Rendering is local and uses no network service. Source text is sent to a sandboxed webview as data, never interpolated into HTML. The bundled renderer and licenses are version/hash pinned. The A4 preset is the default; `%PARAM` can override it within safety limits.
 
-The bundled renderer is based on Fumen 1.3.3 and has one clearly scoped extension-specific display addition: `minor_label`, `major_label` and `chord_suffix_style`. They choose chord labels and either the original compact layout or an ordinary-size inline layout for all components after a root note. These are not published Fumen 1.3.3 parameters; another Fumen tool may ignore them. The [cheat sheet's extension-specific section](docs/CHEATSHEET.md#extension-chord-display) explains the visual difference, exact defaults and portable-sharing caveat.
+The bundled renderer is based on Fumen 1.3.3 with extension-specific display settings: `minor_label`, `major_label`, `diminished_label`, `half_diminished_label`, `augmented_label` and `chord_suffix_style`. They select labels by chord quality and either a compact or ordinary-size inline layout. This standardizes labels rather than preserving input spelling: selecting `"aug"` displays both `Caug` and `C+` as `Caug`. It does not add new input notation, and omitted settings retain the original compact appearance. These are not published Fumen 1.3.3 parameters; another Fumen tool may ignore them. The [cheat sheet's extension-specific section](docs/CHEATSHEET.md#extension-chord-display) explains the visual difference, exact defaults and portable-sharing caveat.
 
 ![The same chords in Fumen's default compact layout and this extension's inline layout](resources/images/chord-display-modes.png)
 
 Very large scores or extreme rendering parameters may exceed safety limits and show an error instead of rendering. Split unusually large scores into smaller files.
 
 Editing by clicking the score and synchronized source/preview scrolling are not included. Upstream renderer error details are shown as received, while the extension's own messages follow the display language.
+
+With `%PARAM={"bar_number":"on"}`, small **performance-order bar numbers** appear
+at each row start, including repeat visits such as `11,19`. The default is off.
+The starting number defaults to `1`; add `"bar_start":0` to the initial PARAM
+to count a pickup as bar `0`.
+This is also an extension-specific renderer feature. Indefinite repeats or an
+unclear performance order stop numbering, not score rendering; see the
+[rules and limitations](docs/CHEATSHEET.md#extension-bar-numbers).
 
 ## Print or save as PDF
 
