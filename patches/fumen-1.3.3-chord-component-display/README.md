@@ -24,9 +24,9 @@ The patch applies only to this exact upstream base:
 | Upstream tag | `v1.3.3` |
 | Upstream commit | `f3d04a522c19236c81f553871d6aee665d9eda22` |
 | Patch file | [`0001-fumen-1.3.3-chord-component-display-1.0.5.patch`](0001-fumen-1.3.3-chord-component-display-1.0.5.patch) |
-| SHA-256 | `cc044049ac62660e49acd9d6f5fd6393ab5ba7e9b25743a195e0a3206c2446f1` |
+| SHA-256 | `3bcb1dd67f9d2cbfd8240b1b003e2cc67a6e1164c8f0770ce9c290e17bd9209f` |
 
-Do not apply it blindly to another Fumen release. Rebase and retest the patch against a newer upstream revision instead. The patch includes both `src/renderer/default_renderer.js` and the built `dist/fumen.js`, so browser deployments that use the checked-in distribution can use the result without a separate build.
+Do not apply it blindly to another Fumen release. Rebase and retest the patch against a newer upstream revision instead. The patch includes source code, tests, build configuration and documentation, but no generated `dist/` files. **Build after applying it:** the upstream `dist/fumen.js` and its source map remain unchanged until you rebuild.
 
 ## Apply
 
@@ -42,7 +42,7 @@ git apply /path/to/0001-fumen-1.3.3-chord-component-display-1.0.5.patch
 
 This is a cumulative diff against unmodified v1.3.3, not an incremental update over an older copy of this patch. It does not create a commit; commit the changes yourself if needed.
 
-After installing the upstream development dependencies, run the patch's focused renderer test:
+Install the upstream development dependencies, then build and test:
 
 ```sh
 npm ci
@@ -50,7 +50,22 @@ npm run test:chord-labels
 npm run test:bar-numbers
 ```
 
-The test verifies the original compact defaults, custom labels in both layouts, equivalent input spellings, transposition, extensions, alterations and slash basses. It observes actual Canvas text drawing, not pixel-level engraving quality.
+`test:chord-labels` runs Webpack before the test, regenerating both `dist/fumen.js`
+and `dist/fumen.js.map`. Use that rebuilt JavaScript in your application; if you
+distribute a source map, use the newly generated one alongside it.
+
+The tests verify the original compact defaults, custom labels in both layouts, equivalent input spellings, transposition, extensions, alterations, slash basses and bar numbering. Chord tests observe actual Canvas text drawing, not pixel-level engraving quality.
+
+To verify that your build matches the renderer bundled with extension 1.0.5, run:
+
+```sh
+git hash-object dist/fumen.js
+```
+
+Expected Git blob ID: `8bfb817f8e9ad6c42f313d6be96e013e9819189b`.
+If it differs, check the upstream revision, patch and locked dependencies before
+deploying. The extension's renderer has not changed; only the patch's distribution
+format has changed from including generated files to requiring a local build.
 
 ## Renderer parameters
 

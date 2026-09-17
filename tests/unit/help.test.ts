@@ -156,13 +156,21 @@ test('the reusable Fumen patch is documented, version-pinned and excluded from t
   assert.ok(!readFileSync('.vscodeignore', 'utf8').includes('!patches/'), 'The developer patch stays out of the VSIX');
 });
 
-test('the reusable patch distributes the exact renderer bundled with the extension', () => {
+test('the reusable patch excludes generated distribution files', () => {
   const patch = readFileSync('patches/fumen-1.3.3-chord-component-display/0001-fumen-1.3.3-chord-component-display-1.0.5.patch', 'utf8');
-  const target = /^diff --git a\/dist\/fumen\.js b\/dist\/fumen\.js\nindex [a-f0-9]{40}\.\.([a-f0-9]{40}) 100644$/m.exec(patch);
-  assert.ok(target, 'Generate the patch with git diff --full-index so its bundle identity is verifiable');
+  assert.doesNotMatch(patch, /^diff --git a\/dist\//m,
+    'Rebuild distribution files after applying the source patch');
+});
+
+test('patch instructions require a build and identify the expected bundled renderer', () => {
   const bundle = readFileSync('resources/vendor/fumen.js');
   const blobId = createHash('sha1').update(`blob ${bundle.length}\0`).update(bundle).digest('hex');
-  assert.equal(target[1], blobId, 'The standalone patch and extension must render with the same library');
+  for (const suffix of ['', '.ja']) {
+    const instructions = readFileSync(`patches/fumen-1.3.3-chord-component-display/README${suffix}.md`, 'utf8');
+    assert.ok(instructions.includes('npm ci\nnpm run test:chord-labels\nnpm run test:bar-numbers'));
+    assert.ok(instructions.includes('git hash-object dist/fumen.js'));
+    assert.ok(instructions.includes(blobId), 'The expected build must match the bundled renderer');
+  }
 });
 
 test('the published 1.0.3 patch is retained byte-for-byte under its versioned name', () => {
