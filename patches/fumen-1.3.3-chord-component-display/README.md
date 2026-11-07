@@ -4,15 +4,18 @@ English | [日本語](README.ja.md)
 
 This directory distributes a renderer patch for [hbjpn/fumen](https://github.com/hbjpn/fumen) **v1.3.3**. It matches the bundled renderer in this repository, packaged separately so another Fumen-based application can opt in to the same chord-symbol appearance. Use a repository release tag when you need the patch matching an older extension release.
 
-These are **not** official Fumen features or changes to Fumen notation. The patch
-adds chord-display settings and opt-in performance-order bar numbers. An unpatched
-renderer ignores these additional `%PARAM` members and keeps its usual appearance.
+These are **not** official Fumen features. The patch adds chord-display settings and opt-in
+performance-order bar numbers; an unpatched renderer ignores these additional `%PARAM` members
+and keeps its usual appearance. It also extends the notation in three small ways that an
+unpatched renderer reads differently (see [Lyrics on rhythm slashes and rests](#lyrics-on-rhythm-slashes-and-rests),
+[Escaping a slash in lyrics](#escaping-a-slash-in-lyrics) and [Add tensions](#add-tensions)).
 
 Patch filenames use the extension release that introduces their contents, not a
-separate patch version. The `1.0.5` file matches extension version 1.0.5;
-the unchanged [1.0.3 patch](0001-fumen-1.3.3-chord-component-display-1.0.3.patch)
-remains available for the older major/minor-label and suffix-style functionality.
-Do not apply both patches: each is cumulative against unmodified upstream.
+separate patch version. The `1.0.6` file matches extension version 1.0.6;
+the unchanged [1.0.5 patch](0001-fumen-1.3.3-chord-component-display-1.0.5.patch)
+and [1.0.3 patch](0001-fumen-1.3.3-chord-component-display-1.0.3.patch)
+remain available for the older functionality.
+Do not apply more than one patch: each is cumulative against unmodified upstream.
 
 ## Compatibility
 
@@ -23,8 +26,8 @@ The patch applies only to this exact upstream base:
 | Upstream repository | `https://github.com/hbjpn/fumen.git` |
 | Upstream tag | `v1.3.3` |
 | Upstream commit | `f3d04a522c19236c81f553871d6aee665d9eda22` |
-| Patch file | [`0001-fumen-1.3.3-chord-component-display-1.0.5.patch`](0001-fumen-1.3.3-chord-component-display-1.0.5.patch) |
-| SHA-256 | `3bcb1dd67f9d2cbfd8240b1b003e2cc67a6e1164c8f0770ce9c290e17bd9209f` |
+| Patch file | [`0001-fumen-1.3.3-chord-component-display-1.0.6.patch`](0001-fumen-1.3.3-chord-component-display-1.0.6.patch) |
+| SHA-256 | `449a0c91ad996b19941981176f9d393a5103fda6348b2ab3969c72275ad81969` |
 
 Do not apply it blindly to another Fumen release. Rebase and retest the patch against a newer upstream revision instead. The patch includes source code, tests, build configuration and documentation, but no generated `dist/` files. **Build after applying it:** the upstream `dist/fumen.js` and its source map remain unchanged until you rebuild.
 
@@ -36,8 +39,8 @@ Clone Fumen, check out the exact base revision, then validate and apply the patc
 git clone https://github.com/hbjpn/fumen.git
 cd fumen
 git checkout f3d04a522c19236c81f553871d6aee665d9eda22
-git apply --check /path/to/0001-fumen-1.3.3-chord-component-display-1.0.5.patch
-git apply /path/to/0001-fumen-1.3.3-chord-component-display-1.0.5.patch
+git apply --check /path/to/0001-fumen-1.3.3-chord-component-display-1.0.6.patch
+git apply /path/to/0001-fumen-1.3.3-chord-component-display-1.0.6.patch
 ```
 
 This is a cumulative diff against unmodified v1.3.3, not an incremental update over an older copy of this patch. It does not create a commit; commit the changes yourself if needed.
@@ -48,24 +51,25 @@ Install the upstream development dependencies, then build and test:
 npm ci
 npm run test:chord-labels
 npm run test:bar-numbers
+npm run test:notation-extensions
 ```
 
 `test:chord-labels` runs Webpack before the test, regenerating both `dist/fumen.js`
 and `dist/fumen.js.map`. Use that rebuilt JavaScript in your application; if you
 distribute a source map, use the newly generated one alongside it.
 
-The tests verify the original compact defaults, custom labels in both layouts, equivalent input spellings, transposition, extensions, alterations, slash basses and bar numbering. Chord tests observe actual Canvas text drawing, not pixel-level engraving quality.
+The tests verify the original compact defaults, custom labels in both layouts, equivalent input spellings, transposition, extensions, alterations, slash basses, bar numbering, lyrics on rhythm slashes and rests, slash escapes in lyrics and the added tensions. Chord tests observe actual Canvas text drawing, not pixel-level engraving quality.
 
-To verify that your build matches the renderer bundled with extension 1.0.5, run:
+To verify that your build matches the renderer bundled with extension 1.0.6, run:
 
 ```sh
 git hash-object dist/fumen.js
 ```
 
-Expected Git blob ID: `8bfb817f8e9ad6c42f313d6be96e013e9819189b`.
+Expected Git blob ID: `bf57a05c408e145a55ae5e82d29e294e7d57c33a`.
 If it differs, check the upstream revision, patch and locked dependencies before
-deploying. The extension's renderer has not changed; only the patch's distribution
-format has changed from including generated files to requiring a local build.
+deploying. Build inside the cloned repository with its own `node_modules`: the bundle
+records module paths, so a linked or relocated `node_modules` produces a different file.
 
 ## Renderer parameters
 
@@ -119,6 +123,30 @@ zero-based source-measure index. Reasons are `indefinite-repeat`, `invalid-repea
 `unsupported-ending`, `invalid-rest`, `invalid-navigation`, `visit-limit` and
 `counter-limit`. A stop leaves the known numbers and ordinary score drawing intact.
 The extension translates this status; another host can display its own notice.
+
+## Lyrics on rhythm slashes and rests
+
+If no chord follows the atmark in the measure, a lyric is attached to the first rhythm slash (`./.`) or rest after it and drawn below it, as for a chord.
+A chord that follows still takes the lyric, as before. The published Fumen 1.3.3 silently drops such a lyric.
+While the 5 lines are shown, a rest or rhythm slash that follows a chord in the same measure is drawn with that chord, and its lyric is not drawn.
+
+```fumen
+| C | `still here`@ ./. | `two/lines`@ r:1 |
+```
+
+## Escaping a slash in lyrics
+
+In a lyric, `\/` is an ordinary slash and `\\` an ordinary backslash. Any other backslash is kept, and an unescaped `/` still starts the next row.
+The published Fumen 1.3.3 splits at every `/`; only lyrics that contain `\/` or `\\` change with this patch.
+
+```fumen
+| `and\/or`@ C | `one/two`@ D |
+```
+
+## Add tensions
+
+`add4`, `add11` and `add13` are accepted like `add2` and `add9` (`Cadd4`, `C7add13(b9)`).
+The published Fumen 1.3.3 draws them as plain text, without transposition or the label settings above.
 
 ## License and attribution
 

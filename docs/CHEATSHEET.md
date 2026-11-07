@@ -130,6 +130,8 @@ Numbered signs include `<S2>`, `<Coda2>`, `<to Coda2>` and `<D.S.2>`. See the [o
 | `'annotation'` | Above the chord area, left-aligned within the measure. |
 | `'softly'@ C7` | Annotation attached above the following chord. |
 | `` `lyrics`@ C7 `` | Lyrics attached below the following chord. Use backticks. |
+| `` `lyrics`@ ./. `` | Extension-specific: with no chord after the atmark in the measure, lyrics go below the first rhythm slash (`./.`) or rest instead. |
+| `` `and\/or`@ C `` | Extension-specific: in lyrics, `\/` is an ordinary slash and `\\` an ordinary backslash. An unescaped `/` starts a new line. |
 | `,` | Horizontal space roughly the width of one chord. |
 
 ```fumen

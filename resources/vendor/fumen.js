@@ -10346,16 +10346,27 @@ var Rest = /*#__PURE__*/function (_Element5) {
         note_profiles: null
       }];
       this.renderprop = {};
+      this.lyric = null; // Lyric attached with "`lyric`@" before the rest
+    }
+  }, {
+    key: "setLyric",
+    value: function setLyric(lyric) {
+      this.lyric = lyric;
     }
   }, {
     key: "exportCode",
     value: function exportCode() {
-      return "r:".concat(this.length_s);
+      return (this.lyric ? this.lyric.exportCode() + "@ " : "") + "r:".concat(this.length_s);
     }
   }, {
     key: "clone",
     value: function clone() {
-      return new Rest(this.length_s);
+      var n = new Rest(this.length_s);
+      if (this.lyric) {
+        n.lyric = this.lyric.clone();
+        n.lyric.setCodeDependency(n);
+      }
+      return n;
     }
   }]);
   return Rest;
@@ -10376,6 +10387,7 @@ var Simile = /*#__PURE__*/function (_Element6) {
     _this5.numslash = numslash;
     _this5.renderprop = {};
     _this5.note_group_list = null;
+    _this5.lyric = null; // Lyric attached with "`lyric`@" before the simile
     return _this5;
   }
   _createClass(Simile, [{
@@ -10384,14 +10396,24 @@ var Simile = /*#__PURE__*/function (_Element6) {
       return "Simile";
     }
   }, {
+    key: "setLyric",
+    value: function setLyric(lyric) {
+      this.lyric = lyric;
+    }
+  }, {
     key: "exportCode",
     value: function exportCode() {
-      return "." + "/".repeat(this.numslash) + ".";
+      return (this.lyric ? this.lyric.exportCode() + "@ " : "") + "." + "/".repeat(this.numslash) + ".";
     }
   }, {
     key: "clone",
     value: function clone() {
-      return new Simile(this.numslash);
+      var n = new Simile(this.numslash);
+      if (this.lyric) {
+        n.lyric = this.lyric.clone();
+        n.lyric.setCodeDependency(n);
+      }
+      return n;
     }
   }]);
   return Simile;
@@ -10627,7 +10649,7 @@ var Chord = /*#__PURE__*/function (_Element7) {
     ROOT ::= ( A|B|C|D|E|F|G ) ("#"|"b") ?
     TENSIONLIST ::= TENSIONGROUP | TENSIONGROUP ","? TENSIONLIST
     TENSIONGROUP ::= TENSION | "(" TENSIONLIST ")" 
-    TENSION ::= ( ("+" ("5"|"9"|"11")) | ("-" ("5"|"9"|"13")) | ("b" ("5"|"9"|"13")) | ("#" ("5"|"9"|"11")) | ("omit" ("3" | "5")) | ("add" ("2"|"9")) )
+    TENSION ::= ( ("+" ("5"|"9"|"11")) | ("-" ("5"|"9"|"13")) | ("b" ("5"|"9"|"13")) | ("#" ("5"|"9"|"11")) | ("omit" ("3" | "5")) | ("add" ("2"|"4"|"9"|"11"|"13")) )
     */
   }], [{
     key: "parseChordMids",
@@ -10812,8 +10834,8 @@ var Chord = /*#__PURE__*/function (_Element7) {
         return null;
       }
       function tension(ps) {
-        var ds = ["omit3", "omit5", "add9", "add2", "#11", "+11", "b13", "-13", "#9", "+9", "b9", "-9", "+5", "#5", "-5", "b5"];
-        var th = [4, 4, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // type and digit split pos
+        var ds = ["omit3", "omit5", "add9", "add2", "add4", "add11", "add13", "#11", "+11", "b13", "-13", "#9", "+9", "b9", "-9", "+5", "#5", "-5", "b5"];
+        var th = [4, 4, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // type and digit split pos
         if (ps.length == 0) return null;
         var r = charStartsWithAmong(ps, ds);
         if (r) {
@@ -12112,6 +12134,30 @@ var Lyric = /*#__PURE__*/function (_Element21) {
     value: function exportCode() {
       return "`" + this.lyric + "`";
     } // TODO : quote considrtaion
+    /**
+     * Rows of the lyric. Rows are separated by "/". A backslash escapes a following "/" or
+     * backslash so that it is kept as a character: \/ is a slash and \\ is a backslash.
+     * A backslash before any other character is kept as it is. The source text is not changed,
+     * so exportCode() returns what was written.
+     */
+  }, {
+    key: "getRows",
+    value: function getRows() {
+      var rows = [""];
+      for (var i = 0; i < this.lyric.length; ++i) {
+        var c = this.lyric[i];
+        var next = this.lyric[i + 1];
+        if (c == "\\" && (next == "/" || next == "\\")) {
+          rows[rows.length - 1] += next;
+          ++i;
+        } else if (c == "/") {
+          rows.push("");
+        } else {
+          rows[rows.length - 1] += c;
+        }
+      }
+      return rows;
+    }
   }, {
     key: "remove",
     value: function remove() {
@@ -12892,6 +12938,19 @@ var Parser = /*#__PURE__*/function () {
           }
         }
       };
+
+      // A lyric whose atmark is followed by no chord in this measure is attached to the first
+      // simile or rest after the atmark, instead of being dropped. A following chord still wins.
+      var lyric_fallback = null;
+      var attachLyricToFallback = function attachLyricToFallback(elem_list, target) {
+        var lyric = elem_list.filter(function (e) {
+          return e instanceof _common_common__WEBPACK_IMPORTED_MODULE_1__.Lyric;
+        }).pop();
+        if (lyric) {
+          lyric.setCodeDependency(target);
+          target.setLyric(lyric);
+        }
+      };
       while (loop_flg) {
         var r = this.nextToken(s);
         var m = null;
@@ -12905,6 +12964,7 @@ var Parser = /*#__PURE__*/function () {
             if (atmark_associated_elements.length > 0) {
               associator(atmark_associated_elements, chord);
               atmark_associated_elements = [];
+              lyric_fallback = null;
             }
             measure.appendChild(chord);
             s = r.s;
@@ -12948,6 +13008,7 @@ var Parser = /*#__PURE__*/function () {
             // Analyze Rest symbol firstly, if not it is chord.
             var rr = this.parseRest(r.token, r.type, r.s);
             if (rr.rest !== null) {
+              if (atmark_associated_elements.length > 0 && !lyric_fallback) lyric_fallback = rr.rest;
               measure.appendChild(rr.rest);
               s = rr.s;
               cur_syncopation = null; // Cancel it
@@ -12962,6 +13023,7 @@ var Parser = /*#__PURE__*/function () {
             if (atmark_associated_elements.length > 0) {
               associator(atmark_associated_elements, r.chord);
               atmark_associated_elements = [];
+              lyric_fallback = null;
             }
             if (cur_syncopation) {
               //cur_syncopation.setCodeDependency(r.chord);
@@ -12975,6 +13037,7 @@ var Parser = /*#__PURE__*/function () {
           case TOKEN_PERIOD:
             // Only simile symbol at this moment
             r = this.parseInMeasSimile(r.token, r.type, r.s);
+            if (r.simile && atmark_associated_elements.length > 0 && !lyric_fallback) lyric_fallback = r.simile;
             measure.appendChild(r.simile);
             s = r.s;
             break;
@@ -13044,6 +13107,9 @@ var Parser = /*#__PURE__*/function () {
             this.onParseError("ERROR_WHILE_PARSE_MEASURE");
             break;
         }
+      }
+      if (lyric_fallback && atmark_associated_elements.length > 0) {
+        attachLyricToFallback(atmark_associated_elements, lyric_fallback);
       }
       return {
         measure: measure,
@@ -14828,7 +14894,12 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
             }
             if (e.lyric && !e.isSyncopatedSource()) {
               yprof.ml.detected = true;
-              lyric_rows = Math.max(e.lyric.lyric.split("/").length, lyric_rows);
+              lyric_rows = Math.max(e.lyric.getRows().length, lyric_rows);
+            }
+          } else if (e instanceof _common_common__WEBPACK_IMPORTED_MODULE_2__.Simile || e instanceof _common_common__WEBPACK_IMPORTED_MODULE_2__.Rest) {
+            if (e.lyric) {
+              yprof.ml.detected = true;
+              lyric_rows = Math.max(e.lyric.getRows().length, lyric_rows);
             }
           } else if (e instanceof _common_common__WEBPACK_IMPORTED_MODULE_2__.Lyric) {
             throw "Illegal parsing";
@@ -15090,7 +15161,7 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
               _this5.hitManager.add(paper, r.bb.scale(_draw_scale, 1), e0.exceptinal_comment);
             }
             if (draw && e0.lyric !== null) {
-              var llist = e0.lyric.lyric.split("/");
+              var llist = e0.lyric.getRows();
               for (var li = 0; li < llist.length; ++li) {
                 var _r2 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(paper, x / _draw_scale, yprof.ml.y + li * param.ml_row_height, llist[li], param.base_font_size / 3, "lt");
                 _this5.hitManager.add(paper, _r2.bb.scale(_draw_scale, 1), e0.lyric);
@@ -15102,6 +15173,9 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
             cr = {
               width: 0
             };
+            if ((e0 instanceof _common_common__WEBPACK_IMPORTED_MODULE_2__.Rest || e0 instanceof _common_common__WEBPACK_IMPORTED_MODULE_2__.Simile) && e0.lyric) {
+              _this5.drawElementLyric(paper, x, yprof, e0.lyric, _draw_scale, param, draw);
+            }
           }
           if (draw) {
             // Unscale for chord area
@@ -15176,7 +15250,7 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
                 _this5.hitManager.add(paper, _r3.bb.scale(_draw_scale2, 1), e.exceptinal_comment);
               }
               if (draw && e.lyric !== null && !e.isSyncopatedSource()) {
-                var llist = e.lyric.lyric.split("/");
+                var llist = e.lyric.getRows();
                 for (var li = 0; li < llist.length; ++li) {
                   var _r4 = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(paper, x / _draw_scale2, yprof.ml.y + li * param.ml_row_height, llist[li], param.base_font_size / 3, "lt");
                   _this5.hitManager.add(paper, _r4.bb.scale(_draw_scale2, 1), e.lyric);
@@ -15205,6 +15279,9 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
                 _elem_width2 = _scale12[1];
               }
               var _cr2 = _this5.renderRest(e, paper, draw, x / _draw_scale3, y_body_or_rs_base, "l", yprof.rs.detected ? param.rs_area_height : param.row_height, yprof.rs.detected ? param.rs_area_height : param.base_body_height, param);
+              if (e.lyric) {
+                _this5.drawElementLyric(paper, x, yprof, e.lyric, _draw_scale3, param, draw);
+              }
               if (draw) {
                 x += _elem_width2;
                 _this5.hitManager.add(paper, _cr2.bb.scale(_draw_scale3, 1), e);
@@ -15228,6 +15305,9 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
                 _elem_width3 = _scale14[1];
               }
               var _cr3 = _this5.renderSimileMark(draw, paper, x / _draw_scale4, y_body_or_rs_base, yprof.rs.detected ? param.rs_area_height : param.row_height, yprof.rs.detected ? param.rs_area_height : param.base_body_height, e.numslash, false, "l");
+              if (e.lyric) {
+                _this5.drawElementLyric(paper, x, yprof, e.lyric, _draw_scale4, param, draw);
+              }
               if (draw) {
                 x += _elem_width3;
                 _this5.hitManager.add(paper, _cr3.bb.scale(_draw_scale4, 1), e);
@@ -15562,12 +15642,18 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
             var _fx2 = meas_end_x - footer_width;
             var cr = _this6.renderRest(_e3, paper, true, (_sx2 + _fx2) / 2, y_body_or_rs_base, "c", yprof.rs.detected ? param.rs_area_height : param.row_height, yprof.rs.detected ? param.rs_area_height : param.base_body_height, param);
             _this6.hitManager.add(paper, cr.bb, _e3);
+            if (_e3.lyric) {
+              _this6.drawElementLyric(paper, _sx2, yprof, _e3.lyric, 1, param, true);
+            }
           } else if (_e3 instanceof _common_common__WEBPACK_IMPORTED_MODULE_2__.Simile) {
             // Simile mark in measure wide element if there is no other body elements in this measure
             var _sx3 = meas_start_x + header_width; // header_width does not include header_body_margin
             var _fx3 = meas_end_x - footer_width;
             var _r17 = _this6.renderSimileMark(true, paper, (_sx3 + _fx3) / 2, y_body_or_rs_base, yprof.rs.detected ? param.rs_area_height : param.row_height, yprof.rs.detected ? param.rs_area_height : param.base_body_height, _e3.numslash, false, "c");
             _this6.hitManager.add(paper, _r17.bb, _e3);
+            if (_e3.lyric) {
+              _this6.drawElementLyric(paper, _sx3, yprof, _e3.lyric, 1, param, true);
+            }
           } else {
             throw "Unkown measure wide instance detected";
           }
@@ -15773,6 +15859,23 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
       return {
         bb: new _graphic__WEBPACK_IMPORTED_MODULE_3__.BoundingBox(x, y_body_or_rs_base, w, row_height)
       };
+    }
+
+    /**
+     * Draws a lyric attached to an element other than a chord (a rest or a simile).
+     * Lyric rows are separated by "/", as for chords. x is the left edge of the element
+     * before scaling.
+     */
+  }, {
+    key: "drawElementLyric",
+    value: function drawElementLyric(paper, x, yprof, lyric, draw_scale, param) {
+      var draw = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : true;
+      if (!draw) return;
+      var llist = lyric.getRows();
+      for (var li = 0; li < llist.length; ++li) {
+        var r = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasText(paper, x / draw_scale, yprof.ml.y + li * param.ml_row_height, llist[li], param.base_font_size / 3, "lt");
+        this.hitManager.add(paper, r.bb.scale(draw_scale, 1), lyric);
+      }
     }
   }, {
     key: "renderSimileMark",

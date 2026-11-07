@@ -138,14 +138,15 @@ test('the reusable Fumen patch is documented, version-pinned and excluded from t
   const directory = 'patches/fumen-1.3.3-chord-component-display';
   const english = readFileSync(`${directory}/README.md`, 'utf8');
   const japanese = readFileSync(`${directory}/README.ja.md`, 'utf8');
-  const patch = readFileSync(`${directory}/0001-fumen-1.3.3-chord-component-display-1.0.5.patch`, 'utf8');
+  const patch = readFileSync(`${directory}/0001-fumen-1.3.3-chord-component-display-1.0.6.patch`, 'utf8');
   const example = readFileSync(`${directory}/examples/chord-component-display.fumen`, 'utf8');
   for (const source of [english, japanese]) {
     assert.ok(source.includes('f3d04a522c19236c81f553871d6aee665d9eda22'));
     for (const field of ['minor_label', 'major_label', 'diminished_label', 'half_diminished_label', 'augmented_label', 'chord_suffix_style']) assert.ok(source.includes(field), field);
   }
   assert.ok(patch.startsWith('diff --git '), 'A cumulative diff applicable with git apply');
-  assert.ok(!patch.includes('diff --git a/src/parser/'), 'Display settings must not extend the parser');
+  assert.ok(patch.includes('diff --git a/src/parser/parser.js'), 'Lyrics on rhythm slashes and rests extend the parser');
+  assert.ok(patch.includes('diff --git a/test/notation-extensions.test.js'));
   assert.ok(patch.includes('src/renderer/default_renderer.js'));
   assert.doesNotMatch(patch, /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
     'The reusable patch must not contain email addresses');
@@ -157,7 +158,7 @@ test('the reusable Fumen patch is documented, version-pinned and excluded from t
 });
 
 test('the reusable patch excludes generated distribution files', () => {
-  const patch = readFileSync('patches/fumen-1.3.3-chord-component-display/0001-fumen-1.3.3-chord-component-display-1.0.5.patch', 'utf8');
+  const patch = readFileSync('patches/fumen-1.3.3-chord-component-display/0001-fumen-1.3.3-chord-component-display-1.0.6.patch', 'utf8');
   assert.doesNotMatch(patch, /^diff --git a\/dist\//m,
     'Rebuild distribution files after applying the source patch');
 });
@@ -167,9 +168,22 @@ test('patch instructions require a build and identify the expected bundled rende
   const blobId = createHash('sha1').update(`blob ${bundle.length}\0`).update(bundle).digest('hex');
   for (const suffix of ['', '.ja']) {
     const instructions = readFileSync(`patches/fumen-1.3.3-chord-component-display/README${suffix}.md`, 'utf8');
-    assert.ok(instructions.includes('npm ci\nnpm run test:chord-labels\nnpm run test:bar-numbers'));
+    assert.ok(instructions.includes('npm ci\nnpm run test:chord-labels\nnpm run test:bar-numbers\nnpm run test:notation-extensions'));
     assert.ok(instructions.includes('git hash-object dist/fumen.js'));
     assert.ok(instructions.includes(blobId), 'The expected build must match the bundled renderer');
+  }
+});
+
+test('the published 1.0.5 patch is retained byte-for-byte under its versioned name', () => {
+  const bytes = readFileSync('patches/fumen-1.3.3-chord-component-display/0001-fumen-1.3.3-chord-component-display-1.0.5.patch');
+  assert.equal(createHash('sha256').update(bytes).digest('hex'),
+    '3bcb1dd67f9d2cbfd8240b1b003e2cc67a6e1164c8f0770ce9c290e17bd9209f');
+});
+
+test('the lyric and tension additions are documented in both patch READMEs', () => {
+  for (const suffix of ['', '.ja']) {
+    const instructions = readFileSync(`patches/fumen-1.3.3-chord-component-display/README${suffix}.md`, 'utf8');
+    for (const token of ['`./.`', '`\\/`', 'add4', 'add11', 'add13']) assert.ok(instructions.includes(token), token);
   }
 });
 
