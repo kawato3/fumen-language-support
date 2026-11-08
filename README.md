@@ -30,6 +30,7 @@ Requires VS Code **1.90 or later**. No separate Node.js, Fumen or font installat
 - Hover explanations, a direct link to the bundled cheat sheet and basic checks for malformed settings or missing delimiters.
 - Live, side-by-side previews using the bundled **Fumen 1.3.3** renderer, including unsaved edits.
 - Extension-specific chord labels and layout: choose symbols or text such as `Am7`, `AM7`, `Cdim`, `Cm7-5` and `Caug`, in a compact or full-size inline layout. These settings are separate from upstream Fumen settings in the [cheat sheet](docs/CHEATSHEET.md).
+- Extension-specific notation in the bundled renderer: lyrics on rhythm slashes (`./.`) and rests, a `\/` escape for a slash in lyrics, `add4`, `add11` and `add13` tensions, and time signatures such as `(12/8)`. Other Fumen tools may not draw them; see the [cheat sheet](docs/CHEATSHEET.md).
 - Offline cheat sheets and user guides in English and Japanese, with links to the official reference.
 - Conservative whitespace and setting-order formatting through VS Code's standard **Format Document** command.
 - A vector-friendly print view in Google Chrome, using Chrome's **Save as PDF** without a PDF library in the extension.

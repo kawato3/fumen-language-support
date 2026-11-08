@@ -6,9 +6,9 @@ This directory distributes a renderer patch for [hbjpn/fumen](https://github.com
 
 These are **not** official Fumen features. The patch adds chord-display settings and opt-in
 performance-order bar numbers; an unpatched renderer ignores these additional `%PARAM` members
-and keeps its usual appearance. It also extends the notation in three small ways that an
+and keeps its usual appearance. It also extends the notation in four small ways that an
 unpatched renderer reads differently (see [Lyrics on rhythm slashes and rests](#lyrics-on-rhythm-slashes-and-rests),
-[Escaping a slash in lyrics](#escaping-a-slash-in-lyrics) and [Add tensions](#add-tensions)).
+[Escaping a slash in lyrics](#escaping-a-slash-in-lyrics), [Add tensions](#add-tensions) and [Time signature numerals](#time-signature-numerals)).
 
 Patch filenames use the extension release that introduces their contents, not a
 separate patch version. The `1.0.6` file matches extension version 1.0.6;
@@ -27,7 +27,7 @@ The patch applies only to this exact upstream base:
 | Upstream tag | `v1.3.3` |
 | Upstream commit | `f3d04a522c19236c81f553871d6aee665d9eda22` |
 | Patch file | [`0001-fumen-1.3.3-chord-component-display-1.0.6.patch`](0001-fumen-1.3.3-chord-component-display-1.0.6.patch) |
-| SHA-256 | `449a0c91ad996b19941981176f9d393a5103fda6348b2ab3969c72275ad81969` |
+| SHA-256 | `e1e9cde7c68fc429e9af3207588fa191e8154b00441a82a3b1152b6a1af97b2c` |
 
 Do not apply it blindly to another Fumen release. Rebase and retest the patch against a newer upstream revision instead. The patch includes source code, tests, build configuration and documentation, but no generated `dist/` files. **Build after applying it:** the upstream `dist/fumen.js` and its source map remain unchanged until you rebuild.
 
@@ -58,7 +58,7 @@ npm run test:notation-extensions
 and `dist/fumen.js.map`. Use that rebuilt JavaScript in your application; if you
 distribute a source map, use the newly generated one alongside it.
 
-The tests verify the original compact defaults, custom labels in both layouts, equivalent input spellings, transposition, extensions, alterations, slash basses, bar numbering, lyrics on rhythm slashes and rests, slash escapes in lyrics and the added tensions. Chord tests observe actual Canvas text drawing, not pixel-level engraving quality.
+The tests verify the original compact defaults, custom labels in both layouts, equivalent input spellings, transposition, extensions, alterations, slash basses, bar numbering, lyrics on rhythm slashes and rests, slash escapes in lyrics, the added tensions and multi-digit time signatures. Chord tests observe actual Canvas text drawing, not pixel-level engraving quality.
 
 To verify that your build matches the renderer bundled with extension 1.0.6, run:
 
@@ -66,7 +66,7 @@ To verify that your build matches the renderer bundled with extension 1.0.6, run
 git hash-object dist/fumen.js
 ```
 
-Expected Git blob ID: `bf57a05c408e145a55ae5e82d29e294e7d57c33a`.
+Expected Git blob ID: `dd8b0f55b4ae260d80b824bc03091193e7bb9a20`.
 If it differs, check the upstream revision, patch and locked dependencies before
 deploying. Build inside the cloned repository with its own `node_modules`: the bundle
 records module paths, so a linked or relocated `node_modules` produces a different file.
@@ -147,6 +147,11 @@ The published Fumen 1.3.3 splits at every `/`; only lyrics that contain `\/` or 
 
 `add4`, `add11` and `add13` are accepted like `add2` and `add9` (`Cadd4`, `C7add13(b9)`).
 The published Fumen 1.3.3 draws them as plain text, without transposition or the label settings above.
+
+## Time signature numerals
+
+Numerals with more than one digit are drawn, one glyph per digit: `(12/8)`, `(3/16)`, `(12/16)`. The shorter numeral is centred on the longer one.
+Single-digit signatures are drawn exactly as before. The published Fumen 1.3.3 documents single digits only, and fails to draw the whole score for `(12/8)`.
 
 ## License and attribution
 

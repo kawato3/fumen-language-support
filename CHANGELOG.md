@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.6
+
+- Draw a lyric attached to a rhythm slash (`./.`) or a rest instead of dropping it.
+- Add `\/` and `\\` escapes to write a slash and a backslash in lyrics.
+- Accept `add4`, `add11` and `add13` as chord tensions.
+- Draw time signatures with more than one digit, such as `(12/8)`, which previously stopped the whole preview from rendering.
+
 ## 1.0.5
 
 - Add configurable diminished, half-diminished and augmented chord labels.

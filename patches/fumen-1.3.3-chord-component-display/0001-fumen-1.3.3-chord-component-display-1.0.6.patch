@@ -68,6 +68,20 @@ index 6cf6821..4e0e4e3 100644
 +| -------- | ----------- |
 +| \`still here\`@ ./. | A lyric below a rhythm slash. |
 +| \`and\\/or\`@ C | One row, "and/or". |
+diff --git a/docsrc/docs/time-sign.md b/docsrc/docs/time-sign.md
+index 9229ec0..82b45ab 100644
+--- a/docsrc/docs/time-sign.md
++++ b/docsrc/docs/time-sign.md
+@@ -10,3 +10,9 @@
+ | (4/4) A | (3/4) B | (6/8) C |
+ <!-- fumen:end -->
+ 
++## Extension-specific numerals
++
++This section describes the independently maintained Fumen Language Support patch, not the published Fumen 1.3.3.
++
++The patch draws numerals with more than one digit, such as `(12/8)` and `(3/16)`, one glyph per digit; the shorter numeral is centred on the longer one.
++The published Fumen 1.3.3 fails to draw the whole score for them.
 diff --git a/package.json b/package.json
 index 0a5e199..186e1b1 100644
 --- a/package.json
@@ -469,7 +483,7 @@ index 0000000..5e1474a
 +    return { numbers, stop };
 +}
 diff --git a/src/renderer/default_renderer.js b/src/renderer/default_renderer.js
-index 56d514e..a4efa15 100644
+index 56d514e..a45173b 100644
 --- a/src/renderer/default_renderer.js
 +++ b/src/renderer/default_renderer.js
 @@ -8,6 +8,7 @@ import { Renderer } from "./renderer";
@@ -561,7 +575,17 @@ index 56d514e..a4efa15 100644
                              lyric_rows
                          );
                      }
-@@ -1706,7 +1747,7 @@ export class DefaultRenderer extends Renderer {
+@@ -1490,7 +1531,8 @@ export class DefaultRenderer extends Renderer {
+                     all_fixed_width_details.push({type:"fixed", f:r.width});
+                     e.renderprop = { w: r.width };
+                 } else if (e instanceof common.Time) {
+-                    let w = 12;
++                    // One glyph per digit: the width grows with the longer numeral.
++                    let w = 12 * Math.max(String(e.numer).length, String(e.denom).length);
+                     meas_fixed_width += w;
+                     all_fixed_width_details.push({type:"fixed", f:w});
+                     e.renderprop = { w: w };
+@@ -1706,7 +1748,7 @@ export class DefaultRenderer extends Renderer {
                          this.hitManager.add(paper, r.bb.scale(draw_scale,1), e0.exceptinal_comment);
                      }
                      if (draw && e0.lyric !== null) {
@@ -570,7 +594,7 @@ index 56d514e..a4efa15 100644
                          for (var li = 0; li < llist.length; ++li) {
                              let r = graphic.canvasText(
                                  paper,
-@@ -1723,7 +1764,9 @@ export class DefaultRenderer extends Renderer {
+@@ -1723,7 +1765,9 @@ export class DefaultRenderer extends Renderer {
                  } else { // Rest or Simile or SyncopatedSource chord
                      // Rest is drawn in render_rs_area function in RS area
                      cr = {width:0};
@@ -581,7 +605,7 @@ index 56d514e..a4efa15 100644
                  }
  
                  if(draw){
-@@ -1822,7 +1865,7 @@ export class DefaultRenderer extends Renderer {
+@@ -1822,7 +1866,7 @@ export class DefaultRenderer extends Renderer {
                              this.hitManager.add(paper, r.bb.scale(draw_scale,1), e.exceptinal_comment);
                          }
                          if (draw && e.lyric !== null && !e.isSyncopatedSource()) {
@@ -590,7 +614,7 @@ index 56d514e..a4efa15 100644
                              for (var li = 0; li < llist.length; ++li) {
                                  let r = graphic.canvasText(
                                      paper,
-@@ -1863,6 +1906,9 @@ export class DefaultRenderer extends Renderer {
+@@ -1863,6 +1907,9 @@ export class DefaultRenderer extends Renderer {
                              yprof.rs.detected ? param.rs_area_height : param.base_body_height,
                              param
                          );
@@ -600,7 +624,7 @@ index 56d514e..a4efa15 100644
                          if(draw){
                              x += elem_width;
                              this.hitManager.add(paper, cr.bb.scale(draw_scale,1), e);
-@@ -1891,6 +1937,10 @@ export class DefaultRenderer extends Renderer {
+@@ -1891,6 +1938,10 @@ export class DefaultRenderer extends Renderer {
                              "l"
                          );
  
@@ -611,7 +635,7 @@ index 56d514e..a4efa15 100644
                          if(draw){
                              x += elem_width;
                              this.hitManager.add(paper, cr.bb.scale(draw_scale,1), e);
-@@ -2033,6 +2083,12 @@ export class DefaultRenderer extends Renderer {
+@@ -2033,6 +2084,12 @@ export class DefaultRenderer extends Renderer {
              x += row_elements_list[0].renderprop.left_margin;
          }
  
@@ -624,7 +648,46 @@ index 56d514e..a4efa15 100644
          // For each measure in this row
          for (let ml = 0; ml < row_elements_list.length; ++ml) {
              // measure object
-@@ -2405,6 +2461,9 @@ export class DefaultRenderer extends Renderer {
+@@ -2162,22 +2219,26 @@ export class DefaultRenderer extends Renderer {
+                     let cont_height = yprof.rs.detected ?param.rs_area_height : chord_str_height;
+                     let left_margin = 2;
+                     
+-                    let rd = graphic.canvasImage(paper, 
+-                        graphic.G_imgmap["uniE08"+e.numer],// numbers
+-                        x + left_margin, 
++                    let numer_x = x + left_margin;
++                    let denom_x = x + left_margin;
++                    if (String(e.numer).length > 1 || String(e.denom).length > 1) {
++                        // Numerals of different lengths are centred on each other.
++                        let numer_w = this.timeNumeralWidth(paper, e.numer, cont_height/2);
++                        let denom_w = this.timeNumeralWidth(paper, e.denom, cont_height/2);
++                        let widest = Math.max(numer_w, denom_w);
++                        numer_x += (widest - numer_w) / 2;
++                        denom_x += (widest - denom_w) / 2;
++                    }
++                    let rd = this.renderTimeNumeral(paper, e.numer,
++                        numer_x,
+                         y_body_or_rs_base + row_height/2, 
+-                        null, 
+                         cont_height/2,
+-                        "lb",
+-                        true);
+-                    let rn = graphic.canvasImage(paper, 
+-                        graphic.G_imgmap["uniE08"+e.denom],// numbers
+-                        x + left_margin, 
++                        "lb");
++                    let rn = this.renderTimeNumeral(paper, e.denom,
++                        denom_x,
+                         y_body_or_rs_base + row_height/2, 
+-                        null, 
+                         cont_height/2,
+-                        "lt",
+-                        true);
++                        "lt");
+                     x += e.renderprop.w;
+                     this.hitManager.add(paper, rd.bb.add_BB(rn.bb), e);
+                 }
+@@ -2405,6 +2466,9 @@ export class DefaultRenderer extends Renderer {
                          param
                      );
                      this.hitManager.add(paper, cr.bb, e);
@@ -634,7 +697,7 @@ index 56d514e..a4efa15 100644
                  } else if (e instanceof common.Simile) {
                      // Simile mark in measure wide element if there is no other body elements in this measure
                      let sx =
-@@ -2423,6 +2482,9 @@ export class DefaultRenderer extends Renderer {
+@@ -2423,6 +2487,9 @@ export class DefaultRenderer extends Renderer {
                          "c"
                      );
                      this.hitManager.add(paper, r.bb, e);
@@ -644,10 +707,36 @@ index 56d514e..a4efa15 100644
                  } else {
                      throw "Unkown measure wide instance detected";
                  }
-@@ -2697,6 +2759,27 @@ export class DefaultRenderer extends Renderer {
+@@ -2697,6 +2764,53 @@ export class DefaultRenderer extends Renderer {
          return { bb: new graphic.BoundingBox(x,y_body_or_rs_base, w, row_height)};
      }
  
++    /**
++     * Draws a time signature numeral, one glyph per digit from left to right.
++     * Returns the bounding box of what is drawn.
++     */
++    renderTimeNumeral(paper, text, x, y, height, align) {
++        let bb = new graphic.BoundingBox(x, y, 0, 0);
++        String(text).split("").forEach(c => {
++            let img = graphic.G_imgmap["uniE08" + c];
++            if (!img) return; // Not a digit: nothing to draw.
++            let r = graphic.canvasImage(paper, img, x, y, null, height, align, true);
++            x += r.bb.width();
++            bb.add_BB(r.bb);
++        });
++        return { bb: bb };
++    }
++
++    /** The width renderTimeNumeral would draw. */
++    timeNumeralWidth(paper, text, height) {
++        let w = 0;
++        String(text).split("").forEach(c => {
++            let img = graphic.G_imgmap["uniE08" + c];
++            if (img) w += graphic.canvasImage(paper, img, 0, 0, null, height, "lt", false).bb.width();
++        });
++        return w;
++    }
++
 +    /**
 +     * Draws a lyric attached to an element other than a chord (a rest or a simile).
 +     * Lyric rows are separated by "/", as for chords. x is the left edge of the element
@@ -672,7 +761,7 @@ index 56d514e..a4efa15 100644
      renderSimileMark(
          draw,
          paper,
-@@ -2896,69 +2979,159 @@ export class DefaultRenderer extends Renderer {
+@@ -2896,69 +3010,159 @@ export class DefaultRenderer extends Renderer {
              }
          }
  
@@ -882,7 +971,7 @@ index 56d514e..a4efa15 100644
              }
          });
          _6791113suselem.forEach(e => {
-@@ -3031,18 +3204,7 @@ export class DefaultRenderer extends Renderer {
+@@ -3031,18 +3235,7 @@ export class DefaultRenderer extends Renderer {
                  upper_width += r.width;
                  bb.add_BB(r.bb);
              } else if (e.type == "triad" && e.value == "+") {
@@ -1342,10 +1431,10 @@ index b91048d..061b09f 100644
  
 diff --git a/test/notation-extensions.test.js b/test/notation-extensions.test.js
 new file mode 100644
-index 0000000..f668bb8
+index 0000000..86f91ae
 --- /dev/null
 +++ b/test/notation-extensions.test.js
-@@ -0,0 +1,189 @@
+@@ -0,0 +1,224 @@
 +const assert = require("node:assert/strict");
 +const fs = require("node:fs");
 +const path = require("node:path");
@@ -1454,6 +1543,34 @@ index 0000000..f668bb8
 +    }
 +}
 +
++// Returns how many images (time signature digits, rests, marks) the score draws.
++async function drawnImages(browser, code) {
++    const page = await browser.newPage();
++    try {
++        await page.addScriptTag({ path: path.join(distDirectory, "fumen.js") });
++        return await page.evaluate(async code => {
++            let images = 0;
++            const drawImage = CanvasRenderingContext2D.prototype.drawImage;
++            CanvasRenderingContext2D.prototype.drawImage = function() {
++                if (this.canvas.dataset.score) images += 1;
++                return drawImage.apply(this, arguments);
++            };
++            const track = new Fumen.Parser().parse('%SHOW_FOOTER="NO"\n' + code);
++            if (!track) throw new Error("Invalid test score");
++            const renderer = new Fumen.DefaultRenderer(() => {
++                const canvas = document.createElement("canvas");
++                canvas.dataset.score = "true";
++                document.body.append(canvas);
++                return canvas;
++            });
++            await renderer.render(track);
++            return images;
++        }, code);
++    } finally {
++        await page.close();
++    }
++}
++
 +(async () => {
 +    const browser = await puppeteer.launch(browserLaunchOptions());
 +    try {
@@ -1518,6 +1635,13 @@ index 0000000..f668bb8
 +        // A lyric without "@" is still not attached to anything (upstream behaviour is unchanged).
 +        const stray = await parsedLyrics(browser, "| `x` | ./. |");
 +        assert.deepEqual(stray.found, [{ kind: "Simile", lyric: null, linked: null }]);
++
++        // Time signatures with more than one digit are drawn, one glyph per digit.
++        const single = await drawnImages(browser, "| (4/4) C |");
++        assert.equal(await drawnImages(browser, "| (12/8) C |"), single + 1, "12 has two digits");
++        assert.equal(await drawnImages(browser, "| (12/16) C |"), single + 2, "both numerals have two digits");
++        assert.equal(await drawnImages(browser, "| (3/16) C |"), single + 1);
++        assert.equal(await drawnImages(browser, "| (3/4) C | (12/8) D |"), single + single + 1);
 +
 +        // Added chord tensions.
 +        const chords = ["Cadd4", "Cadd11", "Cadd13", "Cm7add11", "C7add13(b9)", "Cadd9", "Cadd2", "Cadd12", "Cadd1"];

@@ -59,7 +59,7 @@
     "text": {
       "patterns": [
         { "name": "string.quoted.single.annotation.fumen", "begin": "'", "end": "'" },
-        { "name": "string.quoted.other.lyric.fumen", "begin": "`", "end": "`" },
+        { "name": "string.quoted.other.lyric.fumen", "begin": "`", "end": "`", "patterns": [{ "name": "constant.character.escape.lyric.fumen", "match": "\\\\[\\\\/]" }] },
         { "name": "string.quoted.double.text.fumen", "begin": "\"", "end": "\"" }
       ]
     },

@@ -10,7 +10,8 @@ compact or inline chord-component display. The `bar_number` option adds bounded,
 performance-order bar numbering at row starts; `bar_start` optionally changes its
 initial number from the default of one. The patch also lets a lyric be attached to
 a rhythm slash or a rest, adds a `\/` escape for a slash in lyrics, and accepts
-`add4`, `add11` and `add13` as chord tensions.
+`add4`, `add11` and `add13` as chord tensions. It draws time signatures whose
+numerals have more than one digit.
 These extension-specific additions are
 not part of the published Fumen 1.3.3 parameter set. The original license banner
 is preserved. No source map, playground page, analytics,

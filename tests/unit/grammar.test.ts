@@ -27,6 +27,8 @@ test('TextMate grammar highlights settings, chords, rhythm and Japanese text', a
       ['| C7#9#13:4. |', 'C7', 'support.type.chord.fumen'],
       ['| C7#9#13:4. |', ':4.', 'constant.numeric.duration.fumen'],
       ['| `歌詞 %TITLE`@ C |', '%TITLE', 'string.quoted.other.lyric.fumen'],
+      ['| `and\\/or`@ C |', '\\/', 'constant.character.escape.lyric.fumen'],
+      ['| `a\\\\b`@ C |', '\\\\', 'constant.character.escape.lyric.fumen'],
       ["| '注記 <D.S.>' C |", '<D.S.>', 'string.quoted.single.annotation.fumen'],
       ['| C :||x3', ':||x3', 'keyword.control.bar.fumen'],
       ['>| C |', '>', 'keyword.control.alignment.fumen'],

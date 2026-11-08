@@ -14989,7 +14989,8 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
               w: r.width
             };
           } else if (e instanceof _common_common__WEBPACK_IMPORTED_MODULE_2__.Time) {
-            var w = 12;
+            // One glyph per digit: the width grows with the longer numeral.
+            var w = 12 * Math.max(String(e.numer).length, String(e.denom).length);
             meas_fixed_width += w;
             all_fixed_width_details.push({
               type: "fixed",
@@ -15523,12 +15524,18 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
             var row_height = yprof.rs.detected ? param.rs_area_height : param.row_height;
             var cont_height = yprof.rs.detected ? param.rs_area_height : chord_str_height;
             var left_margin = 2;
-            var rd = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasImage(paper, _graphic__WEBPACK_IMPORTED_MODULE_3__.G_imgmap["uniE08" + e.numer],
-            // numbers
-            x + left_margin, y_body_or_rs_base + row_height / 2, null, cont_height / 2, "lb", true);
-            var rn = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasImage(paper, _graphic__WEBPACK_IMPORTED_MODULE_3__.G_imgmap["uniE08" + e.denom],
-            // numbers
-            x + left_margin, y_body_or_rs_base + row_height / 2, null, cont_height / 2, "lt", true);
+            var numer_x = x + left_margin;
+            var denom_x = x + left_margin;
+            if (String(e.numer).length > 1 || String(e.denom).length > 1) {
+              // Numerals of different lengths are centred on each other.
+              var numer_w = _this6.timeNumeralWidth(paper, e.numer, cont_height / 2);
+              var denom_w = _this6.timeNumeralWidth(paper, e.denom, cont_height / 2);
+              var widest = Math.max(numer_w, denom_w);
+              numer_x += (widest - numer_w) / 2;
+              denom_x += (widest - denom_w) / 2;
+            }
+            var rd = _this6.renderTimeNumeral(paper, e.numer, numer_x, y_body_or_rs_base + row_height / 2, cont_height / 2, "lb");
+            var rn = _this6.renderTimeNumeral(paper, e.denom, denom_x, y_body_or_rs_base + row_height / 2, cont_height / 2, "lt");
             x += e.renderprop.w;
             _this6.hitManager.add(paper, rd.bb.add_BB(rn.bb), e);
           }
@@ -15859,6 +15866,38 @@ var DefaultRenderer = /*#__PURE__*/function (_Renderer) {
       return {
         bb: new _graphic__WEBPACK_IMPORTED_MODULE_3__.BoundingBox(x, y_body_or_rs_base, w, row_height)
       };
+    }
+
+    /**
+     * Draws a time signature numeral, one glyph per digit from left to right.
+     * Returns the bounding box of what is drawn.
+     */
+  }, {
+    key: "renderTimeNumeral",
+    value: function renderTimeNumeral(paper, text, x, y, height, align) {
+      var bb = new _graphic__WEBPACK_IMPORTED_MODULE_3__.BoundingBox(x, y, 0, 0);
+      String(text).split("").forEach(function (c) {
+        var img = _graphic__WEBPACK_IMPORTED_MODULE_3__.G_imgmap["uniE08" + c];
+        if (!img) return; // Not a digit: nothing to draw.
+        var r = _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasImage(paper, img, x, y, null, height, align, true);
+        x += r.bb.width();
+        bb.add_BB(r.bb);
+      });
+      return {
+        bb: bb
+      };
+    }
+
+    /** The width renderTimeNumeral would draw. */
+  }, {
+    key: "timeNumeralWidth",
+    value: function timeNumeralWidth(paper, text, height) {
+      var w = 0;
+      String(text).split("").forEach(function (c) {
+        var img = _graphic__WEBPACK_IMPORTED_MODULE_3__.G_imgmap["uniE08" + c];
+        if (img) w += _graphic__WEBPACK_IMPORTED_MODULE_3__.canvasImage(paper, img, 0, 0, null, height, "lt", false).bb.width();
+      });
+      return w;
     }
 
     /**

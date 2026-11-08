@@ -51,6 +51,7 @@ A quick reference for the bundled **Fumen 1.3.3**, available offline. Chord name
 | `C/D` | Slash chord. The bass note follows `/`. |
 | `/D` | Bass note only. |
 | `(4/4)` | Time signature, written inside a measure. |
+| `(12/8)` | Extension-specific: numerals with more than one digit are drawn. The published Fumen fails to render the score. |
 | `C:4` | Chord with a quarter-note duration; displays staff and rhythm slashes. |
 | `C:4.` | Dotted quarter note. `C:4..` is double-dotted. |
 | `:4` | Duration without a chord name. |
