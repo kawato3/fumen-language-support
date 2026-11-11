@@ -11,7 +11,9 @@ performance-order bar numbering at row starts; `bar_start` optionally changes it
 initial number from the default of one. The patch also lets a lyric be attached to
 a rhythm slash or a rest, adds a `\/` escape for a slash in lyrics, and accepts
 `add4`, `add11` and `add13` as chord tensions. It draws time signatures whose
-numerals have more than one digit.
+numerals have more than one digit. Lowercase `maj` is accepted as an alias for the
+major mark `M`, with the source spelling preserved on export; quoted text retains
+its original interpretation.
 These extension-specific additions are
 not part of the published Fumen 1.3.3 parameter set. The original license banner
 is preserved. No source map, playground page, analytics,

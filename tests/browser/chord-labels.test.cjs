@@ -55,7 +55,9 @@ async function render(source, parameters = {}) {
         widths.push({ draw, width: result.width });
         return result;
       };
+      const exported = track.exportCode();
       await renderer.render(track);
+      if (track.exportCode() !== exported) throw new Error('Rendering modified the exported score');
       return { calls, images, widths };
     }, { source, parameters });
     assert.deepEqual(errors, []);
@@ -66,6 +68,18 @@ async function render(source, parameters = {}) {
 }
 
 for (const style of ['compact', 'inline']) {
+  test(`${style}: major aliases match M with default labels and with custom labels plus transposition`, async () => {
+    const source = '| Cmaj | Fmaj7 | Bbmaj9 | Cmaj7/G | Cmmaj7 | Cmaj13add11:4 |';
+    for (const [transpose, parameters] of [[0, {}], [2, { major_label: 'maj' }]]) {
+      const score = `%KEY="C"\n%TRANSPOSE=${transpose}\n${source}`;
+      const options = { ...parameters, chord_suffix_style: style };
+      const actual = await render(score, options);
+      assert.deepEqual(actual, await render(score.replace(/maj/g, 'M'), options));
+      assert.ok(actual.calls.some(call => call.text === (transpose ? 'D' : 'C')));
+      assert.ok(actual.calls.some(call => call.text === (transpose ? '/A' : '/G')));
+    }
+  });
+
   test(`${style}: defaults and invalid label types preserve existing symbols`, async () => {
     const source = '| Cm | CM | Cdim7 | Cm7-5 | Caug | C+ |';
     const baseline = await render(source, { chord_suffix_style: style });
@@ -128,6 +142,13 @@ for (const style of ['compact', 'inline']) {
     }
   });
 }
+
+test('mixed maj/M spellings preserve both attached lyrics and annotations, and quoted text', async () => {
+  const { calls } = await render("| 'first'@ `verse1`@ CM7:2 'second'@ `verse2`@ Cmaj7:2 | \"Cmaj7\" |");
+  for (const text of ['first', 'verse1', 'second', 'verse2', 'Cmaj7']) {
+    assert.ok(calls.some(call => call.text === text), text);
+  }
+});
 
 test('label settings remain local to their setting scope', async () => {
   const { calls } = await render('| Cdim |\n%PARAM={"diminished_label":"dim"}\n| Cdim |\n%PARAM={}\n| Cdim |');

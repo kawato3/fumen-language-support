@@ -36,7 +36,7 @@ test('setting values replace whole JSON strings without duplicate quotes', () =>
 });
 
 test('free text and musical values never offer chord or setting completions', () => {
-  for (const text of ['| C¦ |', '| Cm7¦ |', '| C7#9#13¦ |', '| Bb/Ab¦ |', '%TITLE="C¦"', '%KEY="C¦"', '%TRANSPOSE="D¦"', '| `歌詞 %¦`@ C |', "| '注記 <¦' C |", '[サビ %¦]']) {
+  for (const text of ['| C¦ |', '| Cm7¦ |', '| Cmmaj7/G¦ |', '| C7#9#13¦ |', '| Bb/Ab¦ |', '%TITLE="C¦"', '%KEY="C¦"', '%TRANSPOSE="D¦"', '| `歌詞 %¦`@ C |', "| '注記 <¦' C |", '[サビ %¦]']) {
     assert.deepEqual(at(text).suggestions, [], text);
   }
 });
@@ -58,7 +58,7 @@ test('sign completion cannot consume a closing angle bracket belonging to later 
 });
 
 test('duration completions work on chords, rests, duration-only slashes and syncopation', () => {
-  for (const input of ['| C:¦ |', '| r:¦ |', '| :¦ |', '| <:¦ C |']) {
+  for (const input of ['| C:¦ |', '| Cmmaj7/G:¦ |', '| r:¦ |', '| :¦ |', '| <:¦ C |']) {
     assert.ok(at(input).suggestions.some(item => item.label === '4'), input);
   }
   assert.equal(replace('| C:¦8~ |', '4'), '| C:4~ |');
@@ -98,6 +98,7 @@ test('diagnostics identify unmatched notation, not music', () => {
   assert.equal(diagnose(']')[0]?.code, 'unexpected-delimiter');
   assert.equal(diagnose(')')[0]?.code, 'unexpected-delimiter');
   assert.deepEqual(diagnose('| C7(b9,#11) Cm7-5 C7#9#13 /Ab |'), []);
+  assert.deepEqual(diagnose('| Cmaj7/G Cmmaj7 Cm7 CM7 |'), []);
   assert.deepEqual(diagnose('| C:3 r:128 | <D.S.2 al Coda2> |'), []);
   assert.deepEqual(diagnose('| C D E F G A B | [any ending] C |'), []);
 });

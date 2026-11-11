@@ -10428,8 +10428,10 @@ var Chord = /*#__PURE__*/function (_Element7) {
   var _super8 = _createSuper(Chord);
   function Chord(chord_str) {
     var _this6;
+    var allowMajorAlias = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
     _classCallCheck(this, Chord);
     _this6 = _super8.call(this);
+    _this6.allowMajorAlias = allowMajorAlias;
     _this6.init(chord_str);
     return _this6;
   }
@@ -10441,7 +10443,7 @@ var Chord = /*#__PURE__*/function (_Element7) {
   }, {
     key: "clone",
     value: function clone() {
-      var n = new Chord(this.chord_str);
+      var n = new Chord(this.chord_str, this.allowMajorAlias);
       if (this.exceptinal_comment) {
         n.exceptinal_comment = this.exceptinal_comment.clone();
         n.exceptinal_comment.setCodeDependency(n);
@@ -10456,7 +10458,7 @@ var Chord = /*#__PURE__*/function (_Element7) {
     key: "setSyncopationAndGetShadowChord",
     value: function setSyncopationAndGetShadowChord(se) {
       this.syncopationElement = se;
-      var n = new Chord(this.chord_str);
+      var n = new Chord(this.chord_str, this.allowMajorAlias);
       if (this.exceptinal_comment) {
         n.exceptinal_comment = this.exceptinal_comment; // Just use reference
         //n.exceptinal_comment.setCodeDependency(n); // Chord dependency is kept for source chord.
@@ -10503,7 +10505,8 @@ var Chord = /*#__PURE__*/function (_Element7) {
         this.base_sharp_flat = m[8];
         this.mid_elems = null;
         if (this.mid_str !== undefined) {
-          var ret = Chord.parseChordMids(this.mid_str);
+          // Quoted text keeps the pre-alias grammar, including its clone/export behavior.
+          var ret = !this.allowMajorAlias && this.mid_str.includes("maj") ? null : Chord.parseChordMids(this.mid_str);
           if (ret !== null) {
             this.mid_elems = ret[0];
             this.mid_elem_objs = ret[1];
@@ -10645,7 +10648,7 @@ var Chord = /*#__PURE__*/function (_Element7) {
 
     // More sophiscated method based on BNF based parsing
     /*
-    CHORD ::= ROOT ( "m" | "dim"|"aug"|"+")? "M"? ("5" | "6"|"7"|"9"|"11"|"13"|"69")? ("sus" ("4"|"2")? )?  ","? TENSIONLIST* ( EOF | ":" | "/" )
+    CHORD ::= ROOT ( "m" | "dim"|"aug"|"+")? ("M"|"maj")? ("5" | "6"|"7"|"9"|"11"|"13"|"69")? ("sus" ("4"|"2")? )?  ","? TENSIONLIST* ( EOF | ":" | "/" )
     ROOT ::= ( A|B|C|D|E|F|G ) ("#"|"b") ?
     TENSIONLIST ::= TENSIONGROUP | TENSIONGROUP ","? TENSIONLIST
     TENSIONGROUP ::= TENSION | "(" TENSIONLIST ")" 
@@ -10700,6 +10703,8 @@ var Chord = /*#__PURE__*/function (_Element7) {
         return null;
       }
       function triad(ps) {
+        // Leave the complete major alias for M(), rather than consuming its initial m.
+        if (ps.startsWith("maj")) return null;
         var ts = ["min", "dim", "aug", "mi", "m", "+"];
         var r = charStartsWithAmong(ps, ts);
         if (r) {
@@ -10714,13 +10719,14 @@ var Chord = /*#__PURE__*/function (_Element7) {
         return null;
       }
       function M(ps) {
-        if (ps.length >= 1 && ps[0] == "M") {
-          // TODO:maj
+        var r = charStartsWithAmong(ps, ["maj", "M"]);
+        if (r) {
+          // Keep the input spelling for export; chordMidSerialize normalizes the semantic type.
           return {
-            s: ps.substr(1),
+            s: ps.substr(r.s.length),
             structure: {
               type: "M",
-              value: ps[0]
+              value: r.s
             }
           };
         }
@@ -12960,7 +12966,8 @@ var Parser = /*#__PURE__*/function () {
             s = r.s;
             break;
           case TOKEN_STRING:
-            var chord = new _common_common__WEBPACK_IMPORTED_MODULE_1__.Chord(r.token);
+            // Keep the original quoted-text grammar: a quoted maj name stays plain text.
+            var chord = new _common_common__WEBPACK_IMPORTED_MODULE_1__.Chord(r.token, false);
             if (atmark_associated_elements.length > 0) {
               associator(atmark_associated_elements, chord);
               atmark_associated_elements = [];

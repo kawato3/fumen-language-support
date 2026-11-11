@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.7
+
+- Accept lowercase `maj` wherever the major mark `M` is supported, including slash chords and minor-major chords. Use the configured chord labels and layout, support transposition, and preserve the input spelling when exporting scores.
+- Keep lyrics, annotations and quoted text unchanged when using the new alias.
+
 ## 1.0.6
 
 - Draw a lyric attached to a rhythm slash (`./.`) or a rest instead of dropping it.

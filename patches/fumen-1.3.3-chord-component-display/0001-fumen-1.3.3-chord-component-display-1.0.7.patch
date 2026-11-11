@@ -1,0 +1,1826 @@
+diff --git a/docsrc/docs/chord.md b/docsrc/docs/chord.md
+index 90fd022..347056f 100644
+--- a/docsrc/docs/chord.md
++++ b/docsrc/docs/chord.md
+@@ -14,6 +14,7 @@ Chord symbol indicates the chord names. Various chord name types as shown in the
+ | C6 CM6 | Major sixth chord |
+ | C69 | Six nineth chord |
+ | Cadd9 Cadd2| Add nineth and second chord |
++| Cadd4 Cadd11 Cadd13 | Add fourth, eleventh and thirteenth chord. (Extension-specific; plain text in the published Fumen 1.3.3.) |
+ | Comit3 Comit5 | Omit chord |
+ | Csus4 Csus2 | Suspended 4th and suspended 2th chord |
+ | C+ | Augmented 5th chord |
+@@ -24,6 +25,47 @@ Chord symbol indicates the chord names. Various chord name types as shown in the
+ | C/D | On chord or slash chord. No space shall be put between root part and bass note part. |
+ | /D | No root note part but only bass note part(incl. slash) specifies the context where only bass note is changed while root note is maintained. |
+ 
++## Extension-specific major alias
++
++Lowercase `maj` is an alias wherever the major mark `M` is accepted: `Cmaj`,
++`Cmaj7`, `Bbmaj9`, `Cmaj7/G` and `Cmmaj7` have the same meaning as `CM`,
++`CM7`, `BbM9`, `CM7/G` and `CmM7`. The parser preserves the original spelling
++for export. Rendering uses `major_label` and `chord_suffix_style`, and transposition
++works as for `M`. Lyrics, annotations and quoted text keep their original interpretation;
++`"Cmaj7"` remains plain text. This alias belongs to the independently maintained
++Fumen Language Support patch, not the published Fumen 1.3.3.
++
++## Extension-specific chord component labels and layout
++
++This section describes the independently maintained Fumen Language Support patch, not the published Fumen 1.3.3 API.
++
++The renderer can change chord-symbol labels without changing chord notation, parsing, or transposition. The default settings below reproduce the original compact rendering. The minor default is an en dash (`–`, U+2013); the major default is a Greek capital delta (`Δ`, U+0394), not the white triangle character (`△`).
++
++| Parameter | Default | Description |
++| --- | --- | --- |
++| `minor_label` | `"–"` | Text used for a minor triad. |
++| `major_label` | `"Δ"` | Text used for an explicit major mark. |
++| `diminished_label` | `"O"` | Text used for a diminished triad. The default is capital O; choose `"dim"` for letters. |
++| `half_diminished_label` | `"Ø"` | Text replacing the whole minor-seventh-flat-fifth combination. Choose `"m7-5"` for both `Cm7-5` and `Cm7b5`. Independent of `minor_label`. |
++| `augmented_label` | `"+"` | Text used for an augmented triad. Choose `"aug"` for both `Caug` and `C+`. |
++| `chord_suffix_style` | `"compact"` | `"compact"` keeps Fumen's small upper/lower components. `"inline"` draws every component after the root at the normal size and baseline. |
++
++```fumen
++%PARAM={"minor_label":"–","major_label":"Δ","diminished_label":"O","half_diminished_label":"Ø","augmented_label":"+","chord_suffix_style":"compact"}
++| Am7(#11)/C | AM7/E | Cdim7 | Cm7-5 | Caug | C+ |
++```
++
++For letter-based inline chord symbols, select the labels and inline style. This applies consistently to chord qualities, extensions, fifths, parenthesized alterations, and a right-positioned slash bass.
++
++```fumen
++%PARAM={"minor_label":"m","major_label":"M","diminished_label":"dim","half_diminished_label":"m7-5","augmented_label":"aug","chord_suffix_style":"inline"}
++| Am7(#11)/C | AM7/E | Cdim7 | Cm7-5 | Caug | C+ |
++```
++
++These labels standardize each chord quality, not the source spelling. They do not add input notation such as `CØ` or `C°`; use `Cm7-5` and `Cdim`. Non-string labels fall back to their defaults. The whole half-diminished label uses one size and baseline, including in compact mode. All multi-character quality labels, including `"min"` and `"maj"`, use their natural width. Inline augmented labels precede extensions (`Caug7` / `C+7`).
++
++When `on_bass_style` is `"below"`, the bass remains below the chord as requested, but uses the inline font size when `chord_suffix_style` is `"inline"`.
++
+ 
+ Also, chord symbols can be specified followed by duration indicator. Please see the section of [duration indicator](duration-indicator.md).
+ 
+diff --git a/docsrc/docs/text.md b/docsrc/docs/text.md
+index 6cf6821..4e0e4e3 100644
+--- a/docsrc/docs/text.md
++++ b/docsrc/docs/text.md
+@@ -19,3 +19,15 @@ Several types of text drawings are defined.
+ | `Text`@A `below`@B `the chord/2nd line/3rd line`@ C 'Both'@ `Side`@ D|
+ | , B C D | E  F , G |
+ <!-- fumen:end -->
++
++## Extension-specific lyric rules
++
++These rules belong to the independently maintained Fumen Language Support patch, not the published Fumen 1.3.3.
++
++If no chord follows the atmark in the measure, a lyric is attached to the first rhythm slash (`./.`) or rest after it and drawn below it. The published Fumen drops it.
++In a lyric, `\/` is an ordinary slash and `\\` an ordinary backslash; any other backslash is kept, and an unescaped `/` still starts a new row.
++
++| Markdown | Description |
++| -------- | ----------- |
++| \`still here\`@ ./. | A lyric below a rhythm slash. |
++| \`and\\/or\`@ C | One row, "and/or". |
+diff --git a/docsrc/docs/time-sign.md b/docsrc/docs/time-sign.md
+index 9229ec0..82b45ab 100644
+--- a/docsrc/docs/time-sign.md
++++ b/docsrc/docs/time-sign.md
+@@ -10,3 +10,9 @@
+ | (4/4) A | (3/4) B | (6/8) C |
+ <!-- fumen:end -->
+ 
++## Extension-specific numerals
++
++This section describes the independently maintained Fumen Language Support patch, not the published Fumen 1.3.3.
++
++The patch draws numerals with more than one digit, such as `(12/8)` and `(3/16)`, one glyph per digit; the shorter numeral is centred on the longer one.
++The published Fumen 1.3.3 fails to draw the whole score for them.
+diff --git a/package.json b/package.json
+index 0a5e199..04fb428 100644
+--- a/package.json
++++ b/package.json
+@@ -5,6 +5,10 @@
+   "main": "index.js",
+   "scripts": {
+     "build": "source build.sh",
++    "test:chord-labels": "webpack && node test/chord-labels.test.js",
++    "test:bar-numbers": "node --test test/bar-numbering.test.mjs",
++    "test:notation-extensions": "node test/notation-extensions.test.js",
++    "test:maj-alias": "node --test test/maj-alias.test.js",
+     "watch": "webpack -d --devtool eval-source-map --watch"
+   },
+   "repository": {
+diff --git a/src/common/common.js b/src/common/common.js
+index 52e4223..7ce11fc 100644
+--- a/src/common/common.js
++++ b/src/common/common.js
+@@ -441,12 +441,21 @@ export class Rest extends Element{
+             { lengthIndicator: Chord.parseLengthIndicator(length_s), note_profiles: null }
+         ];
+         this.renderprop = {};
++        this.lyric = null; // Lyric attached with "`lyric`@" before the rest
+     }
++    setLyric(lyric) { this.lyric = lyric; }
+     exportCode(){
+-        return `r:${this.length_s}`;
++        return (this.lyric ? this.lyric.exportCode() + "@ " : "") + `r:${this.length_s}`;
+     }
+ 
+-    clone(){ return new Rest(this.length_s); }
++    clone(){
++        let n = new Rest(this.length_s);
++        if(this.lyric){
++            n.lyric = this.lyric.clone();
++            n.lyric.setCodeDependency(n);
++        }
++        return n;
++    }
+ }
+ 
+ /**
+@@ -460,12 +469,21 @@ export class Simile extends Element{
+         this.numslash = numslash;
+         this.renderprop = {};
+         this.note_group_list = null;
++        this.lyric = null; // Lyric attached with "`lyric`@" before the simile
+     }
+     getElementName() { return "Simile"; }
++    setLyric(lyric) { this.lyric = lyric; }
+     exportCode(){
+-        return "."+("/".repeat(this.numslash))+".";
++        return (this.lyric ? this.lyric.exportCode() + "@ " : "") + "."+("/".repeat(this.numslash))+".";
++    }
++    clone(){
++        let n = new Simile(this.numslash);
++        if(this.lyric){
++            n.lyric = this.lyric.clone();
++            n.lyric.setCodeDependency(n);
++        }
++        return n;
+     }
+-    clone(){ return new Simile(this.numslash); }
+ }
+ 
+ /**
+@@ -473,13 +491,14 @@ export class Simile extends Element{
+  * @extends Element
+  */
+ export class Chord extends Element {
+-    constructor(chord_str) {
++    constructor(chord_str, allowMajorAlias = true) {
+         super();
++        this.allowMajorAlias = allowMajorAlias;
+         this.init(chord_str);
+     }
+     getElementName() { return "Chord"; }
+     clone(){
+-        let n = new Chord(this.chord_str);
++        let n = new Chord(this.chord_str, this.allowMajorAlias);
+         if(this.exceptinal_comment){
+             n.exceptinal_comment = this.exceptinal_comment.clone();
+             n.exceptinal_comment.setCodeDependency(n);
+@@ -493,7 +512,7 @@ export class Chord extends Element {
+     setSyncopationAndGetShadowChord(se){
+         this.syncopationElement = se;
+ 
+-        let n = new Chord(this.chord_str);
++        let n = new Chord(this.chord_str, this.allowMajorAlias);
+         if(this.exceptinal_comment){
+             n.exceptinal_comment = this.exceptinal_comment; // Just use reference
+             //n.exceptinal_comment.setCodeDependency(n); // Chord dependency is kept for source chord.
+@@ -545,7 +564,9 @@ export class Chord extends Element {
+ 
+             this.mid_elems = null;
+             if (this.mid_str !== undefined) {
+-                var ret = Chord.parseChordMids(this.mid_str);
++                // Quoted text keeps the pre-alias grammar, including its clone/export behavior.
++                var ret = !this.allowMajorAlias && this.mid_str.includes("maj")
++                    ? null : Chord.parseChordMids(this.mid_str);
+                 if (ret !== null) {
+                     this.mid_elems = ret[0];
+                     this.mid_elem_objs = ret[1];
+@@ -689,11 +710,11 @@ export class Chord extends Element {
+ 
+     // More sophiscated method based on BNF based parsing
+     /*
+-    CHORD ::= ROOT ( "m" | "dim"|"aug"|"+")? "M"? ("5" | "6"|"7"|"9"|"11"|"13"|"69")? ("sus" ("4"|"2")? )?  ","? TENSIONLIST* ( EOF | ":" | "/" )
++    CHORD ::= ROOT ( "m" | "dim"|"aug"|"+")? ("M"|"maj")? ("5" | "6"|"7"|"9"|"11"|"13"|"69")? ("sus" ("4"|"2")? )?  ","? TENSIONLIST* ( EOF | ":" | "/" )
+     ROOT ::= ( A|B|C|D|E|F|G ) ("#"|"b") ?
+     TENSIONLIST ::= TENSIONGROUP | TENSIONGROUP ","? TENSIONLIST
+     TENSIONGROUP ::= TENSION | "(" TENSIONLIST ")" 
+-    TENSION ::= ( ("+" ("5"|"9"|"11")) | ("-" ("5"|"9"|"13")) | ("b" ("5"|"9"|"13")) | ("#" ("5"|"9"|"11")) | ("omit" ("3" | "5")) | ("add" ("2"|"9")) )
++    TENSION ::= ( ("+" ("5"|"9"|"11")) | ("-" ("5"|"9"|"13")) | ("b" ("5"|"9"|"13")) | ("#" ("5"|"9"|"11")) | ("omit" ("3" | "5")) | ("add" ("2"|"4"|"9"|"11"|"13")) )
+     */
+     static parseChordMids(s){
+         function parse(ps){
+@@ -724,6 +745,8 @@ export class Chord extends Element {
+             return null;
+         }
+         function triad(ps){
++            // Leave the complete major alias for M(), rather than consuming its initial m.
++            if(ps.startsWith("maj")) return null;
+             let ts = ["min", "dim","aug", "mi", "m", "+"];
+             let r = charStartsWithAmong(ps, ts);
+             if(r){
+@@ -732,8 +755,10 @@ export class Chord extends Element {
+             return null;
+         }
+         function M(ps){
+-            if(ps.length >= 1 && ps[0] == "M"){ // TODO:maj
+-                return {s:ps.substr(1), structure:{type:"M",value:ps[0]}};
++            let r = charStartsWithAmong(ps, ["maj", "M"]);
++            if(r){
++                // Keep the input spelling for export; chordMidSerialize normalizes the semantic type.
++                return {s:ps.substr(r.s.length), structure:{type:"M",value:r.s}};
+             }
+             return null;
+         }
+@@ -806,8 +831,8 @@ export class Chord extends Element {
+             return null;
+         }
+         function tension(ps){
+-            let ds = ["omit3","omit5","add9","add2","#11","+11","b13","-13","#9","+9","b9","-9","+5","#5","-5","b5"];
+-            let th = [ 4,      4,      3,     3,     1,    1,    1,    1,    1,   1,   1,   1,   1,   1,   1,   1  ]; // type and digit split pos
++            let ds = ["omit3","omit5","add9","add2","add4","add11","add13","#11","+11","b13","-13","#9","+9","b9","-9","+5","#5","-5","b5"];
++            let th = [ 4,      4,      3,     3,     3,     3,      3,      1,    1,    1,    1,    1,   1,   1,   1,   1,   1,   1,   1  ]; // type and digit split pos
+             if(ps.length == 0) return null;
+             let r = charStartsWithAmong(ps, ds);
+             if(r){
+@@ -1594,6 +1619,28 @@ export class Lyric extends Element {
+     getElementName() { return "Lyric"; }
+     setCodeDependency(v){ this.chorddep = v; }
+     exportCode(){ return "`"+this.lyric+"`"; } // TODO : quote considrtaion
++    /**
++     * Rows of the lyric. Rows are separated by "/". A backslash escapes a following "/" or
++     * backslash so that it is kept as a character: \/ is a slash and \\ is a backslash.
++     * A backslash before any other character is kept as it is. The source text is not changed,
++     * so exportCode() returns what was written.
++     */
++    getRows(){
++        let rows = [""];
++        for(let i = 0; i < this.lyric.length; ++i){
++            let c = this.lyric[i];
++            let next = this.lyric[i + 1];
++            if(c == "\\" && (next == "/" || next == "\\")){
++                rows[rows.length - 1] += next;
++                ++i;
++            }else if(c == "/"){
++                rows.push("");
++            }else{
++                rows[rows.length - 1] += c;
++            }
++        }
++        return rows;
++    }
+     remove(){
+         if(this.chorddep){
+             this.chorddep.lyric = null;
+diff --git a/src/parser/parser.js b/src/parser/parser.js
+index 8e89df8..f503428 100644
+--- a/src/parser/parser.js
++++ b/src/parser/parser.js
+@@ -482,6 +482,17 @@ export class Parser {
+             }
+         };
+ 
++        // A lyric whose atmark is followed by no chord in this measure is attached to the first
++        // simile or rest after the atmark, instead of being dropped. A following chord still wins.
++        var lyric_fallback = null;
++        var attachLyricToFallback = function(elem_list, target){
++            let lyric = elem_list.filter(e => e instanceof common.Lyric).pop();
++            if(lyric){
++                lyric.setCodeDependency(target);
++                target.setLyric(lyric);
++            }
++        };
++
+         while (loop_flg) {
+             var r = this.nextToken(s);
+ 
+@@ -492,11 +503,13 @@ export class Parser {
+                     s = r.s;
+                     break;
+                 case TOKEN_STRING:
+-                    var chord = new common.Chord(r.token);
++                    // Keep the original quoted-text grammar: a quoted maj name stays plain text.
++                    var chord = new common.Chord(r.token, false);
+ 
+                     if(atmark_associated_elements.length > 0){
+                         associator(atmark_associated_elements, chord);
+                         atmark_associated_elements = [];
++                        lyric_fallback = null;
+                     }
+ 
+                     measure.appendChild(chord);
+@@ -545,6 +558,7 @@ export class Parser {
+                     // Analyze Rest symbol firstly, if not it is chord.
+                     var rr = this.parseRest(r.token, r.type, r.s);
+                     if (rr.rest !== null) {
++                        if(atmark_associated_elements.length > 0 && !lyric_fallback) lyric_fallback = rr.rest;
+                         measure.appendChild(rr.rest);
+                         s = rr.s;
+                         cur_syncopation = null; // Cancel it
+@@ -560,6 +574,7 @@ export class Parser {
+                     if(atmark_associated_elements.length > 0){
+                         associator(atmark_associated_elements, r.chord);
+                         atmark_associated_elements = [];
++                        lyric_fallback = null;
+                     }
+                     if(cur_syncopation){
+                         //cur_syncopation.setCodeDependency(r.chord);
+@@ -575,6 +590,7 @@ export class Parser {
+                 case TOKEN_PERIOD:
+                     // Only simile symbol at this moment
+                     r = this.parseInMeasSimile(r.token, r.type, r.s);
++                    if(r.simile && atmark_associated_elements.length > 0 && !lyric_fallback) lyric_fallback = r.simile;
+                     measure.appendChild(r.simile);
+                     s = r.s;
+                     break;
+@@ -649,6 +665,10 @@ export class Parser {
+             }
+         }
+ 
++        if(lyric_fallback && atmark_associated_elements.length > 0){
++            attachLyricToFallback(atmark_associated_elements, lyric_fallback);
++        }
++
+         return { measure: measure, s: s };
+     }
+ 
+diff --git a/src/renderer/bar_numbering.mjs b/src/renderer/bar_numbering.mjs
+new file mode 100644
+index 0000000..5e1474a
+--- /dev/null
++++ b/src/renderer/bar_numbering.mjs
+@@ -0,0 +1,214 @@
++// Pure performance-order numbering; kept separate from engraving and playback.
++// No source-node mutation, DOM, timers, persistent cache or expanded repeat tree.
++const MAX_STEPS = 10000;
++const kind = node => node?.getElementName();
++const positiveInteger = value => Number.isSafeInteger(value) && value > 0;
++const begins = node => ['LoopBeginMark', 'LoopBothMark'].includes(kind(node));
++const ends = node => ['LoopEndMark', 'LoopBothMark'].includes(kind(node));
++const key = node => node.number ?? '';
++
++function endingRanges(text) {
++    const ranges = [];
++    for (const part of text.split(',')) {
++        const match = /^\s*(\d+)\.?\s*(?:-\s*(\d+)\.?)?\s*$/.exec(part);
++        if (!match) return null;
++        const first = Number(match[1]), last = Number(match[2] ?? match[1]);
++        if (!positiveInteger(first) || !positiveInteger(last) || last < first) return null;
++        ranges.push([first, last]);
++    }
++    return ranges;
++}
++
++function prepare(measures) {
++    const bars = measures.map(measure => {
++        const nodes = measure.childNodes;
++        const byType = new Map();
++        let contentError = null, entryError = null;
++        for (const node of nodes) {
++            const type = kind(node);
++            if (!['LoopIndicator', 'LongRest', 'Segno', 'Coda', 'ToCoda', 'DalSegno', 'DaCapo', 'Fine'].includes(type)) continue;
++            if (byType.has(type)) {
++                if (type === 'LoopIndicator') entryError = 'unsupported-ending';
++                else contentError = 'invalid-navigation';
++            }
++            byType.set(type, node);
++        }
++        const jump = byType.get('DalSegno') ?? byType.get('DaCapo');
++        if ((byType.has('DalSegno') && byType.has('DaCapo')) ||
++            (jump && (byType.has('ToCoda') || byType.has('Fine')))) contentError = 'invalid-navigation';
++        return { first: nodes[0], last: nodes[nodes.length - 1], entryError, contentError, jump,
++            ending: byType.get('LoopIndicator'), rest: byType.get('LongRest'),
++            segno: byType.get('Segno'), coda: byType.get('Coda'),
++            toCoda: byType.get('ToCoda'), fine: byType.has('Fine'), loop: null };
++    });
++    const stack = [], loops = [], starts = new Map(), finishes = new Map();
++    const segnos = new Map(), codas = new Map();
++    function target(map, node, index) {
++        if (node) map.set(key(node), map.has(key(node)) ? null : index);
++    }
++    bars.forEach((bar, index) => {
++        // A boundary can be represented on either or both adjacent measures,
++        // especially across a source newline. Process each side exactly once.
++        if (begins(bar.first) || begins(bars[index - 1]?.last)) {
++            const loop = { start: index, outerStart: stack[0]?.start ?? index, end: null, children: [], endings: [] };
++            if (stack.length) stack[stack.length - 1].children.push(loop);
++            stack.push(loop);
++            loops.push(loop);
++            starts.set(index, loop);
++        }
++        bar.loop = stack[stack.length - 1] ?? null;
++        const end = ends(bar.last) ? bar.last : ends(bars[index + 1]?.first) ? bars[index + 1].first : null;
++        if (end) {
++            let loop = stack.pop();
++            if (!loop && loops.length === 0) {
++                loop = { start: 0, outerStart: 0, end: null, children: [], endings: [] };
++                loops.push(loop);
++                starts.set(0, loop);
++                for (let i = 0; i <= index; i++) bars[i].loop = loop;
++            }
++            if (!loop) bar.endError = true;
++            else {
++                Object.assign(loop, { end: index, times: end.times, indefinite: end.ntimes });
++                finishes.set(index, loop);
++            }
++        }
++        target(segnos, bar.segno, index);
++        target(codas, bar.coda, index);
++    });
++    for (const loop of stack) bars[loop.start].entryError = 'invalid-repeat';
++    bars.forEach((bar, index) => {
++        if (!bar.ending) return;
++        // A final alternative may immediately follow the repeat-end measure.
++        const loop = starts.get(index) ?? finishes.get(index - 1) ?? bar.loop;
++        const ranges = endingRanges(bar.ending.indstr);
++        if (!loop || !ranges) bar.entryError = 'unsupported-ending';
++        else {
++            bar.ending = { loop, ranges, next: null };
++            const previous = loop.endings[loop.endings.length - 1];
++            if (previous !== undefined) bars[previous].ending.next = index;
++            loop.endings.push(index);
++        }
++    });
++    return { bars, starts, finishes, segnos, codas, hasJumps: bars.some(bar => bar.jump) };
++}
++
++/** Return every known visit number per measure and an optional partial-result reason.
++ * The starting number may be any safe integer; invalid values use one.
++ */
++export function numberBars(measures, start = 1) {
++    const { bars, starts, finishes, segnos, codas, hasJumps } = prepare(measures);
++    const numbers = measures.map(() => []);
++    const passes = new Map(), takenJumps = new Set();
++    let position = 0, nextNumber = Number.isSafeInteger(start) ? start : 1;
++    let steps = 0, returnJourney = null, stop = null;
++    const halt = reason => { stop = { reason, measure: position }; };
++    const passOf = loop => returnJourney?.straight ? loop.times : (passes.get(loop) ?? 1);
++    function step() {
++        if (steps++ < MAX_STEPS) return true;
++        halt('visit-limit');
++        return false;
++    }
++
++    function resetChildren(loop) {
++        // Iterate lazily: both a wide subtree and a deep one must obey the same
++        // budget, without recursion or input-sized argument/temporary arrays.
++        const pending = [loop.children.values()];
++        while (pending.length) {
++            const next = pending[pending.length - 1].next();
++            if (next.done) { pending.pop(); continue; }
++            if (!step()) return false;
++            const child = next.value;
++            passes.delete(child);
++            if (child.children.length) pending.push(child.children.values());
++        }
++        return true;
++    }
++    function finishRepeat(loop) {
++        if (loop.indefinite) { halt('indefinite-repeat'); return; }
++        if (!positiveInteger(loop.times)) { halt('invalid-repeat'); return; }
++        const pass = passOf(loop);
++        if (pass < loop.times) {
++            passes.set(loop, pass + 1);
++            if (resetChildren(loop)) position = loop.start;
++        } else position = loop.end + 1;
++    }
++    function navigate(bar) {
++        if (bar.fine && ((!returnJourney && !hasJumps) ||
++            (returnJourney && (returnJourney.phase === 'coda' || returnJourney.al !== 'Coda')))) {
++            position = bars.length;
++            returnJourney = null;
++            return true;
++        }
++        if (bar.toCoda && returnJourney?.phase === 'return' && returnJourney.al !== 'Fine' &&
++            (returnJourney.al !== 'Coda' || returnJourney.coda === key(bar.toCoda))) {
++            const destination = codas.get(key(bar.toCoda));
++            if (!Number.isInteger(destination) || destination <= position) halt('invalid-navigation');
++            else {
++                position = destination;
++                // The requested transfer is consumed, not converted into a bare
++                // return that could authorize unrelated To Coda instructions.
++                returnJourney.phase = 'coda';
++                passes.clear();
++            }
++            return true;
++        }
++        if (bar.jump && !takenJumps.has(position)) {
++            const destination = kind(bar.jump) === 'DaCapo' ? 0 : segnos.get(key(bar.jump));
++            if (!Number.isInteger(destination) || destination > position) { halt('invalid-navigation'); return true; }
++            const target = bars[destination];
++            const withRepeat = kind(bar.jump) === 'DalSegno' && /^with\s+repeat$/.test(target.segno?.opt ?? '');
++            if (withRepeat && target.loop && target.loop.outerStart !== destination) { halt('invalid-navigation'); return true; }
++            takenJumps.add(position);
++            returnJourney = { straight: !withRepeat, al: kind(bar.jump.al) ?? null,
++                coda: bar.jump.al ? key(bar.jump.al) : null, phase: 'return' };
++            passes.clear();
++            position = destination;
++            return true;
++        }
++        return false;
++    }
++
++    while (position < bars.length && !stop) {
++        if (!step()) break;
++        const bar = bars[position];
++        // Validate the route selector before using it; validate measure content
++        // only after selection, because unplayed endings cannot affect the route.
++        if (bar.entryError) { halt(bar.entryError); break; }
++        const start = starts.get(position);
++        if (start && !passes.has(start)) passes.set(start, 1);
++        if (bar.ending) {
++            const { loop, ranges, next } = bar.ending;
++            const pass = passOf(loop);
++            let matches = false;
++            for (const [first, last] of ranges) {
++                if (!step()) break;
++                if (first <= pass && pass <= last) { matches = true; break; }
++            }
++            if (stop) break;
++            if (!matches) {
++                if (position > loop.end) halt('unsupported-ending');
++                else if (next !== null && next <= loop.end) position = next;
++                else finishRepeat(loop);
++                continue;
++            }
++        }
++        if (bar.contentError) { halt(bar.contentError); break; }
++        const span = bar.rest ? bar.rest.longrestlen : 1;
++        if (!positiveInteger(span)) { halt('invalid-rest'); break; }
++        if (!Number.isSafeInteger(nextNumber)) { halt('counter-limit'); break; }
++        numbers[position].push(nextNumber);
++        nextNumber += span;
++        if (bar.endError) { halt('invalid-repeat'); break; }
++        // Navigation and repeat-end on the same bar have ambiguous precedence.
++        const end = finishes.get(position);
++        if (end && (bar.jump || bar.toCoda || bar.fine)) { halt('invalid-navigation'); break; }
++        if (navigate(bar)) continue;
++        if (end) finishRepeat(end);
++        else position++;
++    }
++    if (!stop && returnJourney?.phase === 'return' &&
++        (returnJourney.al === 'Fine' || returnJourney.al === 'Coda')) {
++        stop = { reason: 'invalid-navigation', measure: bars.length - 1 };
++    }
++    return { numbers, stop };
++}
+diff --git a/src/renderer/default_renderer.js b/src/renderer/default_renderer.js
+index 56d514e..a45173b 100644
+--- a/src/renderer/default_renderer.js
++++ b/src/renderer/default_renderer.js
+@@ -8,6 +8,7 @@ import { Renderer } from "./renderer";
+ import * as common from "../common/common";
+ import * as graphic from "./graphic";
+ import * as presets from "./presets";
++import { numberBars } from "./bar_numbering.mjs";
+ 
+ /**
+  * @typedef RenderParam
+@@ -30,8 +31,18 @@ import * as presets from "./presets";
+  * @property {int} [y_subtitle_offset] Top offset for sub-title
+  * @property {int} [y_artist_offset] Top offset for artist row
+  * @property {int} [y_footer_offset] Bottom offset for footer
++ * @property {String} [minor_label=–] Text to use for a minor triad.
++ * @property {String} [bar_number=off] on draws performance-order bar numbers at rendered row starts.
++ * @property {Number} [bar_start=1] Initial bar number; any safe integer, including zero or negative values.
++ * @property {String} [major_label=Δ] Text to use for an explicit major triad.
++ * @property {String} [diminished_label=O] Text to use for a diminished triad (the default is capital O).
++ * @property {String} [half_diminished_label=Ø] Text replacing the whole minor-seventh-flat-fifth combination, independently of minor_label.
++ * @property {String} [augmented_label=+] Text to use for an augmented triad, for both aug and + input.
++ * @property {String} [chord_suffix_style=compact] compact keeps the original small upper/lower suffixes; inline draws every root-following chord component at the normal size and baseline.
+  */
+ var SR_RENDER_PARAM = {
++    bar_number: "off",
++    bar_start: 1,
+     // Paper setting
+     paper_width     : 375, // iPhone 8 etc, the top share as of 2020
+     paper_height    : 667, // iPhone 8 etc, , the top share as of 2020
+@@ -102,6 +113,12 @@ var SR_RENDER_PARAM = {
+     // Chord settings
+     on_bass_style           : "right", // right|below
+     on_bass_below_y_offset  : 0,
++    minor_label             : String.fromCharCode(0x2013), // en dash
++    major_label             : String.fromCharCode(0x0394), // Greek capital letter delta
++    diminished_label        : "O", // capital letter O, as in the original renderer
++    half_diminished_label   : "Ø",
++    augmented_label         : "+",
++    chord_suffix_style      : "compact", // compact|inline
+     
+     // Rhythm Shalsh / Notes rendering settings
+     balken_width            : 3,
+@@ -1031,6 +1048,21 @@ export class DefaultRenderer extends Renderer {
+             });
+         });
+ 
++        // Number once per render, across all rows, even if some rows hide labels.
++        // Keep this state out of source nodes and cross-render measurement caches.
++        let barNumbering = null;
++        if (y_stacks.some(row => row.param.bar_number === "on")) {
++            const measures = y_stacks.flatMap(row => row.cont);
++            // Use the first source measure's setting, not a merged row setting:
++            // later changes (even on the same row) must not restart numbering.
++            const firstParam = measures[0]?.getVariable("PARAM");
++            const start = firstParam && Object.prototype.hasOwnProperty.call(firstParam, "bar_start")
++                ? firstParam.bar_start : param.bar_start;
++            const result = numberBars(measures, start);
++            music_context.bar_numbers = new Map(measures.map((measure, index) => [measure, result.numbers[index]]));
++            barNumbering = { stop: result.stop };
++        }
++
+         // ---------------------
+         // Stage 1 : Screening
+         // ---------------------
+@@ -1313,7 +1345,8 @@ export class DefaultRenderer extends Renderer {
+         this.hitManager.commit(this.context.current_canvas);
+ 
+         return {
+-            pages: common.shallowcopy(pages)
++            pages: common.shallowcopy(pages),
++            ...(barNumbering ? { barNumbering } : {})
+         };
+     }
+ 
+@@ -1379,7 +1412,15 @@ export class DefaultRenderer extends Renderer {
+                     if(e.lyric && !e.isSyncopatedSource() ){
+                         yprof.ml.detected = true;
+                         lyric_rows = Math.max(
+-                            e.lyric.lyric.split("/").length,
++                            e.lyric.getRows().length,
++                            lyric_rows
++                        );
++                    }
++                } else if (e instanceof common.Simile || e instanceof common.Rest) {
++                    if(e.lyric){
++                        yprof.ml.detected = true;
++                        lyric_rows = Math.max(
++                            e.lyric.getRows().length,
+                             lyric_rows
+                         );
+                     }
+@@ -1490,7 +1531,8 @@ export class DefaultRenderer extends Renderer {
+                     all_fixed_width_details.push({type:"fixed", f:r.width});
+                     e.renderprop = { w: r.width };
+                 } else if (e instanceof common.Time) {
+-                    let w = 12;
++                    // One glyph per digit: the width grows with the longer numeral.
++                    let w = 12 * Math.max(String(e.numer).length, String(e.denom).length);
+                     meas_fixed_width += w;
+                     all_fixed_width_details.push({type:"fixed", f:w});
+                     e.renderprop = { w: w };
+@@ -1706,7 +1748,7 @@ export class DefaultRenderer extends Renderer {
+                         this.hitManager.add(paper, r.bb.scale(draw_scale,1), e0.exceptinal_comment);
+                     }
+                     if (draw && e0.lyric !== null) {
+-                        var llist = e0.lyric.lyric.split("/");
++                        var llist = e0.lyric.getRows();
+                         for (var li = 0; li < llist.length; ++li) {
+                             let r = graphic.canvasText(
+                                 paper,
+@@ -1723,7 +1765,9 @@ export class DefaultRenderer extends Renderer {
+                 } else { // Rest or Simile or SyncopatedSource chord
+                     // Rest is drawn in render_rs_area function in RS area
+                     cr = {width:0};
+-                    
++                    if ((e0 instanceof common.Rest || e0 instanceof common.Simile) && e0.lyric) {
++                        this.drawElementLyric(paper, x, yprof, e0.lyric, draw_scale, param, draw);
++                    }
+                 }
+ 
+                 if(draw){
+@@ -1822,7 +1866,7 @@ export class DefaultRenderer extends Renderer {
+                             this.hitManager.add(paper, r.bb.scale(draw_scale,1), e.exceptinal_comment);
+                         }
+                         if (draw && e.lyric !== null && !e.isSyncopatedSource()) {
+-                            var llist = e.lyric.lyric.split("/");
++                            var llist = e.lyric.getRows();
+                             for (var li = 0; li < llist.length; ++li) {
+                                 let r = graphic.canvasText(
+                                     paper,
+@@ -1863,6 +1907,9 @@ export class DefaultRenderer extends Renderer {
+                             yprof.rs.detected ? param.rs_area_height : param.base_body_height,
+                             param
+                         );
++                        if(e.lyric){
++                            this.drawElementLyric(paper, x, yprof, e.lyric, draw_scale, param, draw);
++                        }
+                         if(draw){
+                             x += elem_width;
+                             this.hitManager.add(paper, cr.bb.scale(draw_scale,1), e);
+@@ -1891,6 +1938,10 @@ export class DefaultRenderer extends Renderer {
+                             "l"
+                         );
+ 
++                        if(e.lyric){
++                            this.drawElementLyric(paper, x, yprof, e.lyric, draw_scale, param, draw);
++                        }
++
+                         if(draw){
+                             x += elem_width;
+                             this.hitManager.add(paper, cr.bb.scale(draw_scale,1), e);
+@@ -2033,6 +2084,12 @@ export class DefaultRenderer extends Renderer {
+             x += row_elements_list[0].renderprop.left_margin;
+         }
+ 
++        if (param.bar_number === "on") {
++            const numbers = music_context.bar_numbers?.get(row_elements_list[0]);
++            if (numbers?.length) graphic.canvasText(paper, x - 4, y_body_or_rs_base,
++                numbers.join(","), param.base_font_size * 0.35, "rt");
++        }
++
+         // For each measure in this row
+         for (let ml = 0; ml < row_elements_list.length; ++ml) {
+             // measure object
+@@ -2162,22 +2219,26 @@ export class DefaultRenderer extends Renderer {
+                     let cont_height = yprof.rs.detected ?param.rs_area_height : chord_str_height;
+                     let left_margin = 2;
+                     
+-                    let rd = graphic.canvasImage(paper, 
+-                        graphic.G_imgmap["uniE08"+e.numer],// numbers
+-                        x + left_margin, 
++                    let numer_x = x + left_margin;
++                    let denom_x = x + left_margin;
++                    if (String(e.numer).length > 1 || String(e.denom).length > 1) {
++                        // Numerals of different lengths are centred on each other.
++                        let numer_w = this.timeNumeralWidth(paper, e.numer, cont_height/2);
++                        let denom_w = this.timeNumeralWidth(paper, e.denom, cont_height/2);
++                        let widest = Math.max(numer_w, denom_w);
++                        numer_x += (widest - numer_w) / 2;
++                        denom_x += (widest - denom_w) / 2;
++                    }
++                    let rd = this.renderTimeNumeral(paper, e.numer,
++                        numer_x,
+                         y_body_or_rs_base + row_height/2, 
+-                        null, 
+                         cont_height/2,
+-                        "lb",
+-                        true);
+-                    let rn = graphic.canvasImage(paper, 
+-                        graphic.G_imgmap["uniE08"+e.denom],// numbers
+-                        x + left_margin, 
++                        "lb");
++                    let rn = this.renderTimeNumeral(paper, e.denom,
++                        denom_x,
+                         y_body_or_rs_base + row_height/2, 
+-                        null, 
+                         cont_height/2,
+-                        "lt",
+-                        true);
++                        "lt");
+                     x += e.renderprop.w;
+                     this.hitManager.add(paper, rd.bb.add_BB(rn.bb), e);
+                 }
+@@ -2405,6 +2466,9 @@ export class DefaultRenderer extends Renderer {
+                         param
+                     );
+                     this.hitManager.add(paper, cr.bb, e);
++                    if(e.lyric){
++                        this.drawElementLyric(paper, sx, yprof, e.lyric, 1, param, true);
++                    }
+                 } else if (e instanceof common.Simile) {
+                     // Simile mark in measure wide element if there is no other body elements in this measure
+                     let sx =
+@@ -2423,6 +2487,9 @@ export class DefaultRenderer extends Renderer {
+                         "c"
+                     );
+                     this.hitManager.add(paper, r.bb, e);
++                    if(e.lyric){
++                        this.drawElementLyric(paper, sx, yprof, e.lyric, 1, param, true);
++                    }
+                 } else {
+                     throw "Unkown measure wide instance detected";
+                 }
+@@ -2697,6 +2764,53 @@ export class DefaultRenderer extends Renderer {
+         return { bb: new graphic.BoundingBox(x,y_body_or_rs_base, w, row_height)};
+     }
+ 
++    /**
++     * Draws a time signature numeral, one glyph per digit from left to right.
++     * Returns the bounding box of what is drawn.
++     */
++    renderTimeNumeral(paper, text, x, y, height, align) {
++        let bb = new graphic.BoundingBox(x, y, 0, 0);
++        String(text).split("").forEach(c => {
++            let img = graphic.G_imgmap["uniE08" + c];
++            if (!img) return; // Not a digit: nothing to draw.
++            let r = graphic.canvasImage(paper, img, x, y, null, height, align, true);
++            x += r.bb.width();
++            bb.add_BB(r.bb);
++        });
++        return { bb: bb };
++    }
++
++    /** The width renderTimeNumeral would draw. */
++    timeNumeralWidth(paper, text, height) {
++        let w = 0;
++        String(text).split("").forEach(c => {
++            let img = graphic.G_imgmap["uniE08" + c];
++            if (img) w += graphic.canvasImage(paper, img, 0, 0, null, height, "lt", false).bb.width();
++        });
++        return w;
++    }
++
++    /**
++     * Draws a lyric attached to an element other than a chord (a rest or a simile).
++     * Lyric rows are separated by "/", as for chords. x is the left edge of the element
++     * before scaling.
++     */
++    drawElementLyric(paper, x, yprof, lyric, draw_scale, param, draw = true) {
++        if (!draw) return;
++        var llist = lyric.getRows();
++        for (var li = 0; li < llist.length; ++li) {
++            let r = graphic.canvasText(
++                paper,
++                x / draw_scale,
++                yprof.ml.y + li * param.ml_row_height,
++                llist[li],
++                param.base_font_size / 3,
++                "lt"
++            );
++            this.hitManager.add(paper, r.bb.scale(draw_scale,1), lyric);
++        }
++    }
++
+     renderSimileMark(
+         draw,
+         paper,
+@@ -2896,69 +3010,159 @@ export class DefaultRenderer extends Renderer {
+             }
+         }
+ 
+-        // Half diminish is firstly rendered
+-        if(ce._halfdim_exists){
+-            // Remove m7 and -5
+-            _3rdelem = _3rdelem.filter((e)=>!(e.type=="triad" && e.value=="m"));
+-            _6791113suselem = _6791113suselem.filter((e)=>!(e.type=="dig"&&e.value=="7"));
+-            _5thelem = _5thelem.filter((e)=>!(e.type=="tension"&&e.value=="b"));
+-
+-            let r = graphic.canvasText(
+-                canvas,
+-                x + lower_width,
+-                y + param.row_height/2 + rootCharHeight/2 + chord_offset_on_bass + lower_onbass_y_offset,
+-                String.fromCharCode(0x00d8),
+-                B * 0.5,
+-                "lb",
+-                B * 0.5,
+-                !draw
+-            );
+-            lower_width += r.width;
+-            bb.add_BB(r.bb);
++        // Resolve labels once for both layouts, using the renderer's defaults.
++        // Empty strings are intentional; only non-string values fall back.
++        const labelFor = name => typeof param[name] == "string" ? param[name] : SR_RENDER_PARAM[name];
++        const minorLabel = labelFor("minor_label");
++        const majorLabel = labelFor("major_label");
++        const diminishedLabel = labelFor("diminished_label");
++        const halfDiminishedLabel = labelFor("half_diminished_label");
++        const augmentedLabel = labelFor("augmented_label");
++
++        // Replace only m7b5 with the half-diminished label. Keep additional
++        // qualities, suspensions, additions and alterations in either layout.
++        if (ce._halfdim_exists) {
++            _3rdelem = _3rdelem.filter(e => !(e.type == "triad" && e.value == "m"));
++            _6791113suselem = _6791113suselem.filter(e => !(e.type == "dig" && e.value == "7"));
++            _5thelem = _5thelem.filter(e => !(e.type == "tension" && e.value == "b" && e.param == "5"));
+         }
+ 
+-        _3rdelem.forEach(e => {
+-            if (e.type == "M"/* && _6791113suselem.length > 0*/) {
++        if (param.chord_suffix_style == "inline") {
++            // Compact rows can overlap horizontally, but an inline suffix
++            // must start after the entire root, including its accidental.
++            let inline_width = Math.max(lower_width, upper_width);
++            const drawInlineText = (text) => {
+                 let r = graphic.canvasText(
+                     canvas,
+-                    x + lower_width,
+-                    y + param.row_height/2 + rootCharHeight/2 + chord_offset_on_bass + lower_onbass_y_offset,
+-                    String.fromCharCode(0x0394),
+-                    B * 0.5,
+-                    "lb",
+-                    B * 0.5,
++                    x + inline_width,
++                    y + param.row_height/2 + chord_offset_on_bass,
++                    text,
++                    B,
++                    "lm",
++                    null,
+                     !draw
+                 );
+-                lower_width += r.width;
++                inline_width += r.width;
+                 bb.add_BB(r.bb);
+-            } else if (e.type == "triad" && e.value == "m") {
++            };
++            const drawInlineAccidental = (accidental) => {
++                if (draw) {
++                    let r = graphic.canvasImage(
++                        canvas,
++                        graphic.G_imgmap[accidental == "b" ? "uni266D" : "uni266F"],
++                        x + inline_width,
++                        y + param.row_height/2 + chord_offset_on_bass,
++                        B * 0.25,
++                        rootCharHeight,
++                        "lm",
++                        true
++                    );
++                    bb.add_BB(r.bb);
++                }
++                inline_width += B * 0.25;
++            };
++            if (ce._halfdim_exists) drawInlineText(halfDiminishedLabel);
++            _3rdelem.forEach(e => {
++                if (e.type == "M") drawInlineText(majorLabel);
++                else if (e.type == "triad" && e.value == "m") drawInlineText(minorLabel);
++                else if (e.type == "triad" && e.value == "dim") drawInlineText(diminishedLabel);
++            });
++            // In a single-line layout, the augmented quality precedes the
++            // extension (Caug7 / C+7), just like minor and diminished labels.
++            _5thelem.forEach(e => {
++                if (e.type == "triad" && e.value == "+") drawInlineText(augmentedLabel);
++            });
++            _6791113suselem.forEach(e => {
++                if (e.type == "dig") drawInlineText(e.value);
++                else if (e.type == "sus") drawInlineText(e.type + (e.param ? e.param : ""));
++                else if (e.type == "tension" && e.value == "add") drawInlineText(e.value + (e.param ? e.param : ""));
++            });
++            _5thelem.forEach(e => {
++                if (e.type == "tension" && e.value == "b") drawInlineText("-5");
++                else if (e.type == "tension" && e.value == "#") drawInlineText("+5");
++            });
++            if (_alteredelem.length > 0) {
++                drawInlineText("(");
++                _alteredelem.forEach((e, index) => {
++                    if (e.type == "tension" && (e.value == "b" || e.value == "#")) {
++                        drawInlineAccidental(e.value);
++                        drawInlineText(e.param);
++                    } else if (e.type == "tension" && e.value == "omit") {
++                        drawInlineText(e.value + e.param);
++                    }
++                    if (index != _alteredelem.length - 1) drawInlineText(", ");
++                });
++                drawInlineText(")");
++            }
++            if (onbass != null) {
++                const below = param.on_bass_style == "below";
++                const onbassX = below ? x : x + inline_width;
++                const onbassY = below
++                    ? y + param.row_height/2 + rootCharHeight/2 + chord_offset_on_bass + 1
++                    : y + param.row_height/2 + chord_offset_on_bass;
++                const onbassAlign = below ? "lt" : "lm";
+                 let r = graphic.canvasText(
+                     canvas,
+-                    x + lower_width,
+-                    y + param.row_height/2 + rootCharHeight/2 + chord_offset_on_bass + lower_onbass_y_offset,
+-                    String.fromCharCode(0x2013),
+-                    B * 0.5,
+-                    "lb",
+-                    B * 0.5,
++                    onbassX,
++                    onbassY,
++                    "/" + onbass[0],
++                    B,
++                    onbassAlign,
++                    null,
+                     !draw
+                 );
+-                lower_width += r.width;
++                let onbassWidth = r.width;
+                 bb.add_BB(r.bb);
++                if (onbass.length == 2) {
++                    if (draw) {
++                        let rd = graphic.canvasImage(
++                            canvas,
++                            graphic.G_imgmap[onbass[1] == "b" ? "uni266D" : "uni266F"],
++                            onbassX + onbassWidth,
++                            onbassY,
++                            B * 0.25,
++                            rootCharHeight,
++                            onbassAlign,
++                            true
++                        );
++                        bb.add_BB(rd.bb);
++                    }
++                    onbassWidth += B * 0.25;
++                }
++                inline_width = below ? Math.max(inline_width, onbassWidth) : inline_width + onbassWidth;
++            }
++            return { width: inline_width, bb:bb };
++        }
++
++        const lowerLabelY = y + param.row_height/2 + rootCharHeight/2 + chord_offset_on_bass + lower_onbass_y_offset;
++        const upperLabelY = y + param.row_height/2 + chord_offset_on_bass + upper_tension_y_offset;
++        const drawCompactLabel = (label, offset, baseline) => {
++            // Preserve the original width limit for symbols. Words must use
++            // their natural width in both the measurement and drawing passes.
++            const r = graphic.canvasText(
++                canvas,
++                x + offset,
++                baseline,
++                label,
++                B * 0.5,
++                "lb",
++                label.length > 1 ? null : B * 0.5,
++                !draw
++            );
++            bb.add_BB(r.bb);
++            return r.width;
++        };
++
++        if (ce._halfdim_exists) {
++            lower_width += drawCompactLabel(halfDiminishedLabel, lower_width, lowerLabelY);
++        }
++        _3rdelem.forEach(e => {
++            if (e.type == "M"/* && _6791113suselem.length > 0*/) {
++                lower_width += drawCompactLabel(majorLabel, lower_width, lowerLabelY);
++            } else if (e.type == "triad" && e.value == "m") {
++                lower_width += drawCompactLabel(minorLabel, lower_width, lowerLabelY);
+             } else if (e.type == "triad" && e.value == "dim") {
+-                let r = graphic.canvasText(
+-                    canvas,
+-                    x + lower_width,
+-                    y + param.row_height/2 + rootCharHeight/2 + chord_offset_on_bass + lower_onbass_y_offset,
+-                    String.fromCharCode(0x004f),
+-                    B * 0.5,
+-                    "lb",
+-                    B * 0.5,
+-                    !draw
+-                );
+-                lower_width += r.width;
+-                bb.add_BB(r.bb);
+-            } else {
+-                // Unkown type
++                lower_width += drawCompactLabel(diminishedLabel, lower_width, lowerLabelY);
+             }
+         });
+         _6791113suselem.forEach(e => {
+@@ -3031,18 +3235,7 @@ export class DefaultRenderer extends Renderer {
+                 upper_width += r.width;
+                 bb.add_BB(r.bb);
+             } else if (e.type == "triad" && e.value == "+") {
+-                let r = graphic.canvasText(
+-                    canvas,
+-                    x + upper_width,
+-                    y + param.row_height/2 + chord_offset_on_bass + upper_tension_y_offset,
+-                    "+",
+-                    B * 0.5,
+-                    "lb",
+-                    B * 0.5,
+-                    !draw
+-                );
+-                upper_width += r.width;
+-                bb.add_BB(r.bb);
++                upper_width += drawCompactLabel(augmentedLabel, upper_width, upperLabelY);
+             }
+         });
+ 
+diff --git a/test/bar-numbering.test.mjs b/test/bar-numbering.test.mjs
+new file mode 100644
+index 0000000..7c8d04b
+--- /dev/null
++++ b/test/bar-numbering.test.mjs
+@@ -0,0 +1,253 @@
++import assert from 'node:assert/strict';
++import { test } from 'node:test';
++import { numberBars } from '../src/renderer/bar_numbering.mjs';
++
++// Minimal Fumen node protocol; parser integration is exercised against the real
++// bundled parser in the extension's browser suite, not imitated by this helper.
++const element = (type, fields = {}) => ({ getElementName: () => type, ...fields });
++function bar(options = {}) {
++    const nodes = [element(options.start ? 'LoopBeginMark' : 'MeasureBoundaryMark')];
++    if (options.ending) nodes.push(element('LoopIndicator', { indstr: options.ending }));
++    if (options.rest !== undefined) nodes.push(element('LongRest', { longrestlen: options.rest }));
++    for (const [key, type] of [['segno', 'Segno'], ['coda', 'Coda'], ['to', 'ToCoda']]) {
++        if (key in options) nodes.push(element(type, { number: options[key], opt: options.option ?? null }));
++    }
++    if ('ds' in options || options.dc) nodes.push(element(options.dc ? 'DaCapo' : 'DalSegno', {
++        number: options.ds ?? null, al: options.al === 'Fine' ? element('Fine')
++            : options.al !== undefined ? element('Coda', { number: options.al }) : null
++    }));
++    if (options.fine) nodes.push(element('Fine'));
++    nodes.push(element(options.end !== undefined ? 'LoopEndMark' : 'MeasureBoundaryMark',
++        { times: options.end === 'X' ? 2 : options.end, ntimes: options.end === 'X' }));
++    return { childNodes: nodes };
++}
++const score = (...options) => options.map(bar);
++function expectNumbers(input, expected, reason = null) {
++    const result = numberBars(input);
++    assert.deepEqual(result.numbers, expected);
++    assert.equal(result.stop?.reason ?? null, reason);
++    return result;
++}
++
++test('N01: straight bars, long rest and empty measures continue from one', () => {
++    expectNumbers(score({}, { rest: 4 }, {}, {}), [[1], [2], [6], [7]]);
++    expectNumbers([], []);
++});
++
++for (const [start, expected] of [
++    [0, [[0, 2], [1, 3], [4], [8]]],
++    [-10, [[-10, -8], [-9, -7], [-6], [-2]]],
++    [30, [[30, 32], [31, 33], [34], [38]]]
++]) test(`N11: start ${start} is applied once across repeats and long rests`, () => {
++    assert.deepEqual(numberBars(score({ start: true }, { end: 2 }, { rest: 4 }, {}), start),
++        { numbers: expected, stop: null });
++});
++test('N11: a return jump does not restart the counter at the custom starting value', () => {
++    assert.deepEqual(numberBars(score({}, { fine: true }, { dc: true, al: 'Fine' }), 0),
++        { numbers: [[0, 3], [1, 4], [2]], stop: null });
++});
++test('N11: invalid starting values fall back to one without numeric coercion', () => {
++    for (const start of [null, true, false, '0', [], {}, 0.5, NaN, Infinity, -Infinity,
++        Number.MAX_SAFE_INTEGER + 1, Number.MIN_SAFE_INTEGER - 1]) {
++        assert.deepEqual(numberBars(score({}, {}), start), { numbers: [[1], [2]], stop: null }, String(start));
++    }
++});
++test('N11: both safe integer boundaries are supported and overflow still stops', () => {
++    assert.deepEqual(numberBars(score({}, {}), Number.MIN_SAFE_INTEGER),
++        { numbers: [[-9007199254740991], [-9007199254740990]], stop: null });
++    assert.deepEqual(numberBars(score({}, {}), Number.MAX_SAFE_INTEGER),
++        { numbers: [[9007199254740991], []], stop: { reason: 'counter-limit', measure: 1 } });
++});
++
++for (const [times, expected] of [
++    [1, [[1], [2], [3]]], [2, [[1, 3], [2, 4], [5]]],
++    [3, [[1, 3, 5], [2, 4, 6], [7]]]
++]) test(`N02: ${times} total repeat passes`, () => {
++    expectNumbers(score({ start: true }, { end: times }, {}), expected);
++});
++
++test('N03: initial repeat end without a start returns to the beginning', () => {
++    expectNumbers(score({}, { end: 2 }, {}), [[1, 3], [2, 4], [5]]);
++});
++test('N03: adjacent repeats and paired nested repeats have independent counters', () => {
++    expectNumbers(score({ start: true, end: 2 }, { start: true, end: 2 }, {}), [[1, 2], [3, 4], [5]]);
++    expectNumbers(score({ start: true }, { start: true, end: 2 }, { end: 2 }, {}),
++        [[1, 5], [2, 3, 6, 7], [4, 8], [9]]);
++});
++test('N03: shared boundary nodes are processed once on each side', () => {
++    const shared = element('LoopBothMark', { times: 2, ntimes: false });
++    const input = score({ start: true }, {}, {}, { end: 2 }, {});
++    input[1].childNodes[1] = shared;
++    input[2].childNodes[0] = shared;
++    expectNumbers(input, [[1, 3], [2, 4], [5, 7], [6, 8], [9]]);
++});
++
++test('N04: first and trailing second endings', () => {
++    expectNumbers(score({ start: true }, { ending: '1.', end: 2 }, { ending: '2.' }, {}),
++        [[1, 3], [2], [4], [5]]);
++});
++test('N04: numeric ranges and comma lists; skipped ending still repeats', () => {
++    expectNumbers(score({ start: true }, { ending: '1.' }, { ending: '2-3.', end: 3 }, {}),
++        [[1, 3, 5], [2], [4, 6], [7]]);
++    expectNumbers(score({ start: true }, { ending: '1,3.' }, { ending: '2.', end: 3 }, {}),
++        [[1, 3, 5], [2, 6], [4], [7]]);
++});
++test('N04: multi-measure endings skip all their bars', () => {
++    expectNumbers(score({ start: true }, { ending: '1.' }, { end: 2 }, { ending: '2.' }, {}),
++        [[1, 4], [2], [3], [5], [6]]);
++});
++
++test('N05: D.C. al Fine and standalone Fine', () => {
++    expectNumbers(score({}, { fine: true }, { dc: true, al: 'Fine' }, {}), [[1, 4], [2, 5], [3], []]);
++    expectNumbers(score({}, { fine: true }, {}), [[1], [2], []]);
++});
++test('N05: numbered D.S. al Fine and one-shot bare D.S.', () => {
++    expectNumbers(score({}, { segno: '2' }, { fine: true }, { ds: '2', al: 'Fine' }, {}),
++        [[1], [2, 5], [3, 6], [4], []]);
++    expectNumbers(score({ segno: null }, { ds: null }, {}), [[1, 3], [2, 4], [5]]);
++});
++for (const dc of [false, true]) test(`N05: ${dc ? 'D.C.' : 'D.S.'} al Coda honors its target`, () => {
++    expectNumbers(score({ segno: null }, { to: '2' }, { ds: null, dc, al: '2' },
++        {}, { coda: '2' }, {}), [[1, 4], [2, 5], [3], [], [6], [7]]);
++});
++test('N05: bare return enables To Coda; al Coda ignores an earlier Fine', () => {
++    expectNumbers(score({ segno: null }, { to: null }, { ds: null }, { coda: null }),
++        [[1, 4], [2, 5], [3], [6]]);
++    expectNumbers(score({ segno: null, fine: true }, { to: null }, { ds: null, al: null }, { coda: null }),
++        [[1, 4], [2, 5], [3], [6]]);
++});
++for (const option of [null, 'straight', 'with repeat']) test(`N06: return policy ${option}`, () => {
++    const repeated = option === 'with repeat';
++    expectNumbers(score({ start: true, segno: null, option }, { end: 2 }, { fine: true }, { ds: null, al: 'Fine' }),
++        repeated ? [[1, 3, 7, 9], [2, 4, 8, 10], [5, 11], [6]]
++            : [[1, 3, 7], [2, 4, 8], [5, 9], [6]]);
++});
++test('N06: a straight return selects the final ending', () => {
++    expectNumbers(score({ start: true }, { ending: '1.', end: 2 }, { ending: '2.', fine: true }, { dc: true, al: 'Fine' }),
++        [[1, 3, 6], [2], [4, 7], [5]]);
++});
++test('N07: xX keeps only the known prefix, including its first pass', () => {
++    expectNumbers(score({}, { start: true }, { end: 'X' }, {}), [[1], [2], [3], []], 'indefinite-repeat');
++});
++test('N07: an unreachable xX does not affect a finished route', () => {
++    expectNumbers(score({ fine: true }, { start: true, end: 'X' }), [[1], []]);
++});
++
++for (const value of [0, -1, 1.5, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
++    test(`N08: invalid repeat count ${value}`, () => {
++        expectNumbers(score({ start: true }, { end: value }, {}), [[1], [2], []], 'invalid-repeat');
++    });
++    test(`N08: invalid rest length ${value}`, () => {
++        expectNumbers(score({}, { rest: value }, {}), [[1], [], []], 'invalid-rest');
++    });
++}
++for (const ending of ['Solo', '2-1.', '0.', '1 trailing text', '1,,2', '9007199254740992']) {
++    test(`N08: unsupported ending ${ending}`, () => {
++        expectNumbers(score({ start: true }, { ending, end: 2 }), [[1], []], 'unsupported-ending');
++    });
++}
++test('N08: endings without a repeat and absent final endings are not guessed', () => {
++    expectNumbers(score({}, { ending: '2.' }), [[1], []], 'unsupported-ending');
++    expectNumbers(score({ start: true }, { ending: '1.', end: 2 }, { ending: '3.' }),
++        [[1, 3], [2], []], 'unsupported-ending');
++});
++test('N08: missing and duplicate Segnos, missing Coda, absent requested Fine', () => {
++    expectNumbers(score({}, { ds: null }, {}), [[1], [2], []], 'invalid-navigation');
++    expectNumbers(score({ segno: null }, { segno: null }, { ds: null }), [[1], [2], [3]], 'invalid-navigation');
++    expectNumbers(score({ segno: null, to: null }, { ds: null, al: null }), [[1, 3], [2]], 'invalid-navigation');
++    expectNumbers(score({ dc: true, al: 'Fine' }), [[1, 2]], 'invalid-navigation');
++});
++test('N08: unmatched repeat and with-repeat jump into the middle are rejected', () => {
++    expectNumbers(score({}, { start: true }, {}), [[1], [], []], 'invalid-repeat');
++    expectNumbers(score({ start: true }, { segno: null, option: 'with repeat', end: 2 }, { ds: null }),
++        [[1, 3], [2, 4], [5]], 'invalid-navigation');
++});
++test('N09: huge range is evaluated without expanding it into an array', () => {
++    const result = numberBars(score({ start: true }, { ending: '1-9007199254740991', end: 9007199254740991 }));
++    assert.equal(result.stop.reason, 'visit-limit');
++    assert.ok(result.numbers.flat().length <= 10000);
++});
++test('N09: extreme repetition is bounded; counter overflow is not rounded', () => {
++    const result = numberBars(score({ start: true, end: Number.MAX_SAFE_INTEGER }));
++    assert.equal(result.stop.reason, 'visit-limit');
++    assert.equal(result.numbers[0].length, 10000);
++    expectNumbers(score({ rest: Number.MAX_SAFE_INTEGER }, {}), [[1], []], 'counter-limit');
++});
++test('N10: repeated analysis does not mutate nodes or retain state', () => {
++    const input = score({ start: true }, { end: 2 }, {});
++    const before = JSON.stringify(input);
++    assert.deepEqual(numberBars(input), numberBars(input));
++    assert.equal(JSON.stringify(input), before);
++});
++
++test('N03/N04: an ending at a new repeat start belongs to that new repeat', () => {
++    expectNumbers(score({ start: true, end: 2 }, { start: true, ending: '1.' },
++        { ending: '2.', end: 2 }, {}), [[1, 2], [3], [4], [5]]);
++});
++test('N08: with-repeat return inside an enclosing repeat is ambiguous', () => {
++    expectNumbers(score({ start: true }, { start: true, segno: null, option: 'with repeat', end: 2 },
++        { end: 2 }, { ds: null }), [[1, 5], [2, 3, 6, 7], [4, 8], [9]], 'invalid-navigation');
++});
++test('N08: duplicate Coda, conflicting jump instructions and unsafe counts stop locally', () => {
++    expectNumbers(score({ segno: null }, { to: null }, { ds: null }, { coda: null }, { coda: null }),
++        [[1, 4], [2, 5], [3], [], []], 'invalid-navigation');
++    const input = score({}, { ds: null });
++    input[1].childNodes.splice(1, 0, element('DaCapo', { al: null }));
++    expectNumbers(input, [[1], []], 'invalid-navigation');
++});
++test('N05: al Fine does not follow To Coda on the return', () => {
++    expectNumbers(score({ segno: null, to: null }, { fine: true }, { ds: null, al: 'Fine' }, { coda: null }),
++        [[1, 4], [2, 5], [3], []]);
++});
++test('N03: repeat markers on only one side of a row boundary still work', () => {
++    const input = score({}, {}, {}, {});
++    input[0].childNodes[1] = element('LoopBeginMark');
++    input[3].childNodes[0] = element('LoopEndMark', { times: 2, ntimes: false });
++    expectNumbers(input, [[1], [2, 4], [3, 5], [6]]);
++});
++test('N09: large ending lists also consume the bounded control-work budget', () => {
++    const result = numberBars(score({ start: true }, { ending: Array(12000).fill('2').join(','), end: 2 }));
++    assert.equal(result.stop?.reason, 'visit-limit');
++    assert.deepEqual(result.numbers, [[1], []]);
++});
++
++for (const dc of [false, true]) test(`N05: ${dc ? 'D.C.' : 'D.S.'} al Coda is consumed at its destination`, () => {
++    expectNumbers(score({ segno: null }, { to: '1' }, { ds: null, dc, al: '1' },
++        { coda: '1' }, { to: '2' }, {}, { coda: '2' }, {}),
++        [[1, 4], [2, 5], [3], [6], [7], [8], [9], [10]]);
++});
++test('N05: a bare return also consumes its To Coda transfer', () => {
++    expectNumbers(score({ segno: null }, { to: '1' }, { ds: null },
++        { coda: '1' }, { to: '2' }, {}, { coda: '2' }),
++        [[1, 4], [2, 5], [3], [6], [7], [8], [9]]);
++});
++test('N05: Fine may finish the coda after the requested transfer', () => {
++    expectNumbers(score({ segno: null }, { to: null }, { ds: null, al: null },
++        { coda: null }, { fine: true }, {}),
++        [[1, 4], [2, 5], [3], [6], [7], []]);
++});
++test('N04/N08: navigation errors matter only inside the selected ending', () => {
++    const input = score({ start: true }, { ending: '2.', dc: true }, { end: 1 }, {});
++    input[1].childNodes.splice(1, 0, element('DalSegno', { number: null, al: null }));
++    expectNumbers(input, [[1], [], [], [2]]);
++    input[2].childNodes.at(-1).times = 2;
++    expectNumbers(input, [[1, 2], [], [], []], 'invalid-navigation');
++});
++test('N04/N08: ambiguous ending selectors cannot silently skip their own errors', () => {
++    const input = score({ start: true }, { ending: '2.', end: 1 }, {});
++    input[1].childNodes.splice(1, 0, element('LoopIndicator', { indstr: '1.' }));
++    expectNumbers(input, [[1], [], []], 'unsupported-ending');
++});
++test('N09: resetting a wide skipped repeat subtree stays within the work budget', () => {
++    // Reach the outer repeat end without visiting the very wide inner subtree.
++    // Resetting descendants must not spread an input-sized array into arguments.
++    const input = score({ start: true, segno: null, option: 'with repeat' },
++        { start: true, to: '1' }, { ds: null, al: '1' });
++    for (let i = 0; i < 130000; i++) input.push(bar({ start: true, end: 1 }));
++    input.push(...score({ coda: '1' }, { end: 1 }, { end: 2 }, {}));
++    const result = numberBars(input);
++    assert.deepEqual(result.stop, { reason: 'visit-limit', measure: input.length - 2 });
++    assert.deepEqual(result.numbers.slice(0, 3), [[1, 4], [2, 5], [3]]);
++    assert.ok(result.numbers.slice(3, -4).every(visits => visits.length === 0));
++    assert.deepEqual(result.numbers.slice(-4), [[6], [7], [8], []]);
++});
+diff --git a/test/chord-labels.test.js b/test/chord-labels.test.js
+new file mode 100644
+index 0000000..adda169
+--- /dev/null
++++ b/test/chord-labels.test.js
+@@ -0,0 +1,167 @@
++const assert = require("node:assert/strict");
++const fs = require("node:fs");
++const path = require("node:path");
++const puppeteer = require("puppeteer");
++
++const distDirectory = path.resolve(__dirname, "..", "dist");
++const baseFontSize = 28;
++const compactLabelWidth = baseFontSize * 0.5;
++
++function browserLaunchOptions() {
++    const bundledBrowser = puppeteer.executablePath();
++    const macOSArmChrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
++    const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH
++        || (process.platform === "darwin" && process.arch === "arm64" && fs.existsSync(macOSArmChrome)
++            ? macOSArmChrome
++            : bundledBrowser);
++
++    return {
++        executablePath,
++        headless: true
++    };
++}
++
++async function captureRender(browser, code) {
++    const page = await browser.newPage();
++    try {
++        await page.addScriptTag({ path: path.join(distDirectory, "fumen.js") });
++        return await page.evaluate(async code => {
++            const calls = [];
++            const images = [];
++            const fillText = CanvasRenderingContext2D.prototype.fillText;
++            CanvasRenderingContext2D.prototype.fillText = function(text, x, y, maxWidth) {
++                if (this.canvas.dataset.score) calls.push({ text: String(text), x, y, font: this.font,
++                    maxWidth: maxWidth === undefined ? null : maxWidth, naturalWidth: this.measureText(text).width });
++                return fillText.apply(this, arguments);
++            };
++            const drawImage = CanvasRenderingContext2D.prototype.drawImage;
++            CanvasRenderingContext2D.prototype.drawImage = function(image, x, y, width, height) {
++                if (this.canvas.dataset.score) images.push({ x, y, width, height });
++                return drawImage.apply(this, arguments);
++            };
++            const track = new Fumen.Parser().parse('%SHOW_FOOTER="NO"\n' + code);
++            if (!track) throw new Error("Invalid test score");
++            const renderer = new Fumen.DefaultRenderer(() => {
++                const canvas = document.createElement("canvas");
++                canvas.dataset.score = "true";
++                document.body.append(canvas);
++                return canvas;
++            });
++            const exported = track.exportCode();
++            await renderer.render(track);
++            if (track.exportCode() !== exported) throw new Error("Rendering modified the exported score");
++            return { calls, images };
++        }, code);
++    } finally {
++        await page.close();
++    }
++}
++
++async function captureTextCalls(browser, code) {
++    return (await captureRender(browser, code)).calls;
++}
++
++function callWithText(calls, text) {
++    const call = calls.find((entry) => entry.text === text);
++    assert.ok(call, `Expected renderer to draw ${JSON.stringify(text)}.`);
++    return call;
++}
++
++function assertSameBaseline(first, second) {
++    assert.equal(first.y, second.y, "Expected chord label to share its root's baseline.");
++}
++
++async function main() {
++    const browser = await puppeteer.launch(browserLaunchOptions());
++
++    try {
++        const defaultCalls = await captureTextCalls(browser, "| Am | CM |");
++        const defaultMinor = callWithText(defaultCalls, "–");
++        const defaultMajor = callWithText(defaultCalls, "Δ");
++        assert.equal(defaultMinor.maxWidth, compactLabelWidth);
++        assert.equal(defaultMajor.maxWidth, compactLabelWidth);
++
++        const explicitCompactCalls = await captureTextCalls(
++            browser,
++            "%PARAM={\"minor_label\":\"–\",\"major_label\":\"Δ\",\"chord_suffix_style\":\"compact\"}\n| Am | CM |"
++        );
++        assert.equal(callWithText(explicitCompactCalls, "–").maxWidth, compactLabelWidth);
++        assert.equal(callWithText(explicitCompactCalls, "Δ").maxWidth, compactLabelWidth);
++
++        const customCompactCalls = await captureTextCalls(
++            browser,
++            "%PARAM={\"minor_label\":\"m\",\"major_label\":\"M\"}\n| Am | CM |"
++        );
++        assert.equal(callWithText(customCompactCalls, "m").maxWidth, compactLabelWidth);
++        assert.equal(callWithText(customCompactCalls, "M").maxWidth, compactLabelWidth);
++
++        const inlineCalls = await captureTextCalls(
++            browser,
++            "%PARAM={\"minor_label\":\"m\",\"major_label\":\"M\",\"chord_suffix_style\":\"inline\"}\n| Am7 | BM7 | C-5 | D7#11 | E/F |"
++        );
++        const inlineMinor = callWithText(inlineCalls, "m");
++        const inlineMajor = callWithText(inlineCalls, "M");
++        const inlineSeventh = callWithText(inlineCalls, "7");
++        const inlineFifth = callWithText(inlineCalls, "-5");
++        const inlineAlteration = callWithText(inlineCalls, "11");
++        const inlineBass = callWithText(inlineCalls, "/F");
++        [inlineMinor, inlineMajor, inlineSeventh, inlineFifth, inlineAlteration, inlineBass]
++            .forEach((call) => assert.equal(call.maxWidth, null));
++        assertSameBaseline(callWithText(inlineCalls, "A"), inlineMinor);
++        [inlineMajor, inlineSeventh, inlineFifth, inlineAlteration, inlineBass]
++            .forEach((call) => assertSameBaseline(inlineMinor, call));
++
++        for (const style of ["compact", "inline"]) {
++            const aliases = "| Cmaj | Fmaj7 | Bbmaj9 | Cmaj7/G | Cmmaj7 | Cmaj13add11:4 |";
++            for (const [transpose, labels] of [[0, {}], [2, { major_label: "maj" }]]) {
++                const prefix = '%KEY="C"\n%TRANSPOSE=' + transpose + '\n%PARAM='
++                    + JSON.stringify({ ...labels, chord_suffix_style: style }) + '\n';
++                const actual = await captureRender(browser, prefix + aliases);
++                assert.deepEqual(actual, await captureRender(browser, prefix + aliases.replace(/maj/g, "M")));
++                assert.ok(actual.calls.some(call => call.text === (transpose ? "D" : "C")));
++                assert.ok(actual.calls.some(call => call.text === (transpose ? "/A" : "/G")));
++            }
++            const defaults = await captureTextCalls(browser,
++                `%PARAM={"chord_suffix_style":"${style}"}\n| Cdim | Cm7-5 | Caug | C+ |`);
++            assert.deepEqual(defaults.map(call => call.text), ["C", "O", "C", "Ø", "C", "+", "C", "+"]);
++            for (const [chord, label] of [["Cdim", "dim"], ["Cm7-5", "m7-5"], ["Cm7b5", "m7-5"], ["Caug", "aug"], ["C+", "aug"]]) {
++                const calls = await captureTextCalls(browser,
++                    `%PARAM={"diminished_label":"dim","half_diminished_label":"m7-5","augmented_label":"aug","chord_suffix_style":"${style}"}\n| ${chord} |`);
++                assert.deepEqual(calls.map(call => call.text), ["C", label]);
++                assert.equal(calls[1].maxWidth, null, "A label must not be squeezed into a one-symbol width");
++                assert.equal(parseFloat(/([\d.]+)px/.exec(calls[1].font)[1]), baseFontSize * (style === "inline" ? 1 : 0.5));
++                if (style === "inline") assertSameBaseline(calls[0], calls[1]);
++            }
++            const extended = await captureTextCalls(browser,
++                `%KEY="C"\n%TRANSPOSE=2\n%PARAM={"half_diminished_label":"m7-5","chord_suffix_style":"${style}"}\n| Cm7-5add9/G:4 |`);
++            assert.deepEqual(extended.map(call => call.text), ["D", "m7-5", "add9", "/A"]);
++        }
++
++        const mixed = await captureTextCalls(browser,
++            "| 'first'@ `verse1`@ CM7:2 'second'@ `verse2`@ Cmaj7:2 | \"Cmaj7\" |");
++        for (const text of ["first", "verse1", "second", "verse2", "Cmaj7"]) {
++            assert.ok(mixed.some(call => call.text === text), text);
++        }
++
++        for (const chord of ["C#dim7", "Dbm7-5", "F#aug", "C#/G"]) {
++            const { calls, images } = await captureRender(browser,
++                `%PARAM={"chord_suffix_style":"inline"}\n| ${chord} |`);
++            assert.ok(images[0], "The root accidental must be drawn");
++            assert.ok(calls[1].x >= images[0].x + images[0].width - 0.001,
++                `${chord}: an inline suffix must follow the complete root, including its accidental`);
++        }
++        for (const [chord, parameter, label] of [["Cm7", "minor_label", "min"], ["CM7", "major_label", "maj"]]) {
++            const calls = await captureTextCalls(browser, `%PARAM={"${parameter}":"${label}"}\n| ${chord} |`);
++            const quality = callWithText(calls, label);
++            assert.equal(quality.maxWidth, null, "All multi-character quality labels use their natural width");
++            assert.ok(callWithText(calls, "7").x >= quality.x + quality.naturalWidth - 0.001);
++        }
++    } finally {
++        await browser.close();
++    }
++}
++
++main().catch((error) => {
++    console.error(error);
++    process.exitCode = 1;
++});
+diff --git a/test/chord_labels.fumen b/test/chord_labels.fumen
+new file mode 100644
+index 0000000..3de9c74
+--- /dev/null
++++ b/test/chord_labels.fumen
+@@ -0,0 +1,5 @@
++%TITLE="Chord component labels"
++%PARAM={"minor_label":"m","major_label":"M","diminished_label":"dim","half_diminished_label":"m7-5","augmented_label":"aug","chord_suffix_style":"inline"}
++
++| Am7 | AM7 | C-5 | D7#11 | E/F |
++| Cdim7 | Cm7-5 | Cm7b5 | Caug | C+ |
+diff --git a/test/fumen2-ci.js b/test/fumen2-ci.js
+index b91048d..061b09f 100644
+--- a/test/fumen2-ci.js
++++ b/test/fumen2-ci.js
+@@ -191,6 +191,7 @@ let dotest = async (headInfo)=>{
+         "zoom.fumen",
+         "align.fumen",
+         "tuplet.fumen",
++        "chord_labels.fumen",
+         "multiup.fumen"];
+     const results = [];
+ 
+diff --git a/test/maj-alias.test.js b/test/maj-alias.test.js
+new file mode 100644
+index 0000000..f5fa2f0
+--- /dev/null
++++ b/test/maj-alias.test.js
+@@ -0,0 +1,47 @@
++const assert = require('node:assert/strict');
++const { readFileSync } = require('node:fs');
++const { test } = require('node:test');
++const { runInNewContext } = require('node:vm');
++const path = require('node:path');
++
++// The UMD bundle exposes its parser with only `self`; no browser or DOM is needed.
++const Fumen = runInNewContext(readFileSync(path.resolve(__dirname, '../dist/fumen.js'), 'utf8') + '\nself.Fumen;', { self: {} });
++
++test('maj matches M across major-mark positions and preserves spelling on export and clone', () => {
++  const spellings = ['Cmaj', 'Cmaj7', 'Fmaj7', 'Bbmaj9', 'Cmaj7/G:4.', 'Cmmaj7',
++    'Cmimaj7', 'Cminmaj7', 'Cdimmaj7', 'Caugmaj7', 'C+maj7', 'Cmajsus4',
++    'Cmaj7add11', 'Cmaj9(b9,#11)', ...['5', '6', '69', '11', '13'].map(n => `Cmaj${n}`)];
++  for (const text of spellings) {
++    const alias = new Fumen.Chord(text);
++    const canonical = new Fumen.Chord(text.replace('maj', 'M'));
++    assert.ok(canonical.is_valid_chord && alias.is_valid_chord, text);
++    assert.deepEqual(alias.mid_elem_objs, canonical.mid_elem_objs, text);
++    assert.deepEqual(alias.note_group_list, canonical.note_group_list, text);
++    assert.deepEqual(alias.getChordStrBase(2, 'b', 'C'), canonical.getChordStrBase(2, 'b', 'C'), text);
++    assert.equal(alias.exportCode(), text);
++    assert.equal(alias.clone().exportCode(), text);
++  }
++});
++
++test('score round trips retain maj, lyrics, annotations and the existing quoted-text grammar', () => {
++  const source = '%TITLE="Cmaj7"\n| `Cmaj7`@ Cmaj7/G | \'Cmmaj7\'@ Cmmaj7 | "Fmaj7" | "CM7" |';
++  const track = new Fumen.Parser().parse(source);
++  const chords = track.find((node) => node instanceof Fumen.Chord, true);
++  assert.ok(chords[0].is_valid_chord && chords[1].is_valid_chord);
++  assert.equal(chords[2].is_valid_chord, false, 'Quoted maj remains text');
++  assert.equal(chords[2].clone().is_valid_chord, false);
++  assert.equal(chords[2].clone().exportCode(), '"Fmaj7"');
++  assert.equal(chords[3].is_valid_chord, true, 'Quoted M keeps its previous meaning');
++  const exported = track.exportCode();
++  for (const fragment of ['%TITLE="Cmaj7"', '`Cmaj7`@ Cmaj7/G', "'Cmmaj7'@ Cmmaj7", '"Fmaj7"', 'CM7']) {
++    assert.ok(exported.includes(fragment), fragment);
++  }
++  assert.equal(new Fumen.Parser().parse(exported).exportCode(), exported);
++});
++
++test('minor aliases stay minor and partial or mixed-case major aliases stay invalid', () => {
++  const minor = new Fumen.Chord('Cm7').mid_elem_objs;
++  for (const text of ['Cmi7', 'Cmin7']) assert.deepEqual(new Fumen.Chord(text).mid_elem_objs, minor);
++  assert.notDeepEqual(minor, new Fumen.Chord('CM7').mid_elem_objs);
++  for (const text of ['Cma7', 'CMaj7', 'Cmajmaj7']) assert.equal(new Fumen.Chord(text).is_valid_chord, false, text);
++});
+diff --git a/test/notation-extensions.test.js b/test/notation-extensions.test.js
+new file mode 100644
+index 0000000..86f91ae
+--- /dev/null
++++ b/test/notation-extensions.test.js
+@@ -0,0 +1,224 @@
++const assert = require("node:assert/strict");
++const fs = require("node:fs");
++const path = require("node:path");
++const puppeteer = require("puppeteer");
++
++const distDirectory = path.resolve(__dirname, "..", "dist");
++
++function browserLaunchOptions() {
++    const bundledBrowser = puppeteer.executablePath();
++    const macOSArmChrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
++    const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH
++        || (process.platform === "darwin" && process.arch === "arm64" && fs.existsSync(macOSArmChrome)
++            ? macOSArmChrome
++            : bundledBrowser);
++    return { executablePath, headless: true };
++}
++
++// Renders the score and returns the texts drawn on canvas, in drawing order, with their x positions.
++async function drawnTexts(browser, code) {
++    const page = await browser.newPage();
++    try {
++        await page.addScriptTag({ path: path.join(distDirectory, "fumen.js") });
++        return await page.evaluate(async code => {
++            const calls = [];
++            const fillText = CanvasRenderingContext2D.prototype.fillText;
++            CanvasRenderingContext2D.prototype.fillText = function(text, x, y) {
++                if (this.canvas.dataset.score) calls.push({ text: String(text), x, y });
++                return fillText.apply(this, arguments);
++            };
++            const track = new Fumen.Parser().parse('%SHOW_FOOTER="NO"\n' + code);
++            if (!track) throw new Error("Invalid test score");
++            const renderer = new Fumen.DefaultRenderer(() => {
++                const canvas = document.createElement("canvas");
++                canvas.dataset.score = "true";
++                document.body.append(canvas);
++                return canvas;
++            });
++            await renderer.render(track);
++            return calls;
++        }, code);
++    } finally {
++        await page.close();
++    }
++}
++
++// Parses the score in a page and returns what each simile and rest holds as a lyric,
++// together with the code exported back from the parsed tree.
++async function parsedLyrics(browser, code) {
++    const page = await browser.newPage();
++    try {
++        await page.addScriptTag({ path: path.join(distDirectory, "fumen.js") });
++        return await page.evaluate(code => {
++            const track = new Fumen.Parser().parse(code);
++            const found = [];
++            (function walk(node) {
++                if (!node || typeof node !== "object") return;
++                if (node.constructor && (node.constructor.name === "Simile" || node.constructor.name === "Rest")) {
++                    found.push({ kind: node.constructor.name, lyric: node.lyric ? node.lyric.lyric : null,
++                        linked: node.lyric ? node.lyric.chorddep === node : null });
++                }
++                (node.childNodes || []).forEach(walk);
++            })(track);
++            return { found, exported: track.exportCode ? track.exportCode() : null };
++        }, code);
++    } finally {
++        await page.close();
++    }
++}
++
++// Returns whether each chord is accepted as a chord, and the texts drawn for the whole score.
++async function inspect(browser, chords) {
++    const page = await browser.newPage();
++    try {
++        await page.addScriptTag({ path: path.join(distDirectory, "fumen.js") });
++        return await page.evaluate(async chords => {
++            const accepted = {};
++            for (const chord of chords) {
++                const track = new Fumen.Parser(() => {}).parse("| " + chord + " |");
++                let valid = null;
++                (function walk(node, seen) {
++                    if (!node || typeof node !== "object" || seen.has(node)) return;
++                    seen.add(node);
++                    if (node.constructor && node.constructor.name === "Chord") valid = node.is_valid_chord;
++                    for (const key of Object.keys(node)) if (key !== "parent") walk(node[key], seen);
++                })(track, new Set());
++                accepted[chord] = valid;
++            }
++            const texts = [];
++            const fillText = CanvasRenderingContext2D.prototype.fillText;
++            CanvasRenderingContext2D.prototype.fillText = function(text) {
++                if (this.canvas.dataset.score) texts.push(String(text));
++                return fillText.apply(this, arguments);
++            };
++            const track = new Fumen.Parser().parse('%SHOW_FOOTER="NO"\n| ' + chords.join(" | ") + " |");
++            const renderer = new Fumen.DefaultRenderer(() => {
++                const canvas = document.createElement("canvas");
++                canvas.dataset.score = "true";
++                document.body.append(canvas);
++                return canvas;
++            });
++            await renderer.render(track);
++            return { accepted, texts };
++        }, chords);
++    } finally {
++        await page.close();
++    }
++}
++
++// Returns how many images (time signature digits, rests, marks) the score draws.
++async function drawnImages(browser, code) {
++    const page = await browser.newPage();
++    try {
++        await page.addScriptTag({ path: path.join(distDirectory, "fumen.js") });
++        return await page.evaluate(async code => {
++            let images = 0;
++            const drawImage = CanvasRenderingContext2D.prototype.drawImage;
++            CanvasRenderingContext2D.prototype.drawImage = function() {
++                if (this.canvas.dataset.score) images += 1;
++                return drawImage.apply(this, arguments);
++            };
++            const track = new Fumen.Parser().parse('%SHOW_FOOTER="NO"\n' + code);
++            if (!track) throw new Error("Invalid test score");
++            const renderer = new Fumen.DefaultRenderer(() => {
++                const canvas = document.createElement("canvas");
++                canvas.dataset.score = "true";
++                document.body.append(canvas);
++                return canvas;
++            });
++            await renderer.render(track);
++            return images;
++        }, code);
++    } finally {
++        await page.close();
++    }
++}
++
++(async () => {
++    const browser = await puppeteer.launch(browserLaunchOptions());
++    try {
++        // Parsing: a lyric before a simile or a rest is attached to it, the one before a chord is unchanged.
++        const parsed = await parsedLyrics(browser, "| `a`@ ./. | `b`@ r:1 | `c`@ C |");
++        assert.deepEqual(parsed.found, [
++            { kind: "Simile", lyric: "a", linked: true },
++            { kind: "Rest", lyric: "b", linked: true }
++        ]);
++        if (parsed.exported !== null) {
++            assert.match(parsed.exported, /`a`@ \.\/\./);
++            assert.match(parsed.exported, /`b`@ r:1/);
++        }
++
++        // A simile without lyric stays without one.
++        const plain = await parsedLyrics(browser, "| ./. |");
++        assert.deepEqual(plain.found, [{ kind: "Simile", lyric: null, linked: null }]);
++
++        // Drawing: the lyric text is drawn under a measure-wide simile and a whole rest.
++        const wide = (await drawnTexts(browser, "| C | `on simile`@ ./. | `on rest`@ r:1 |")).map(c => c.text);
++        assert.ok(wide.includes("on simile"), "lyric on a measure-wide simile is drawn");
++        assert.ok(wide.includes("on rest"), "lyric on a whole rest is drawn");
++
++        // Drawing: rows are split by "/" as for chords.
++        const rows = (await drawnTexts(browser, "| `first/second`@ ./. |")).map(c => c.text);
++        assert.ok(rows.includes("first") && rows.includes("second"));
++
++        // A chord later in the measure still takes the lyric, as in the published Fumen.
++        const lead = await parsedLyrics(browser, "| `x`@ r:4 C:2 D:4 | `y`@ ./. C |");
++        assert.deepEqual(lead.found, [
++            { kind: "Rest", lyric: null, linked: null },
++            { kind: "Simile", lyric: null, linked: null }
++        ]);
++        const before = (await drawnTexts(browser, "| `before`@ r:4 C:2 D:4 |")).map(c => c.text);
++        assert.ok(before.includes("before"), "the lyric is drawn under the chord");
++
++        // Drawing: with the 5 lines shown, a lyric on a whole rest and on a simile is drawn.
++        const staff = (await drawnTexts(browser, '%SHOW_STAFF="YES"\n| `solo`@ r:1 | `again`@ ./. |')).map(c => c.text);
++        assert.ok(staff.includes("solo") && staff.includes("again"));
++
++        // Drawing: the lyric is left-aligned with its element, and does not move the chord lyric.
++        const both = await drawnTexts(browser, "| `lc`@ C | `ls`@ ./. |");
++        const chordLyric = both.find(c => c.text === "lc");
++        const simileLyric = both.find(c => c.text === "ls");
++        assert.ok(chordLyric && simileLyric);
++        assert.ok(simileLyric.x > chordLyric.x, "second measure is to the right of the first");
++        assert.equal(simileLyric.y, chordLyric.y, "both lyrics are on the same row");
++
++        // Escapes in a lyric: \/ is a slash, \\ is a backslash, other backslashes are kept.
++        const escaped = (await drawnTexts(browser, "| `and\\/or`@ C | `a\\\\/b`@ D | `x\\y/z`@ E | `p/q`@ F | `s\\/t`@ ./. |")).map(c => c.text);
++        assert.ok(escaped.includes("and/or"), "\\/ is one slash in one row");
++        assert.ok(!escaped.includes("and") && !escaped.includes("or"), "\\/ does not split rows");
++        assert.ok(escaped.includes("a\\") && escaped.includes("b"), "\\\\ is a backslash, and a following / still splits");
++        assert.ok(escaped.includes("x\\y") && escaped.includes("z"), "a backslash before another character is kept");
++        assert.ok(escaped.includes("p") && escaped.includes("q"), "an unescaped slash still splits rows");
++        assert.ok(escaped.includes("s/t"), "escape works on a simile lyric");
++
++        // Escapes are kept in the exported code.
++        const roundTrip = await parsedLyrics(browser, "| `and\\/or`@ ./. |");
++        if (roundTrip.exported !== null) assert.match(roundTrip.exported, /`and\\\/or`@ \.\/\./);
++
++        // A lyric without "@" is still not attached to anything (upstream behaviour is unchanged).
++        const stray = await parsedLyrics(browser, "| `x` | ./. |");
++        assert.deepEqual(stray.found, [{ kind: "Simile", lyric: null, linked: null }]);
++
++        // Time signatures with more than one digit are drawn, one glyph per digit.
++        const single = await drawnImages(browser, "| (4/4) C |");
++        assert.equal(await drawnImages(browser, "| (12/8) C |"), single + 1, "12 has two digits");
++        assert.equal(await drawnImages(browser, "| (12/16) C |"), single + 2, "both numerals have two digits");
++        assert.equal(await drawnImages(browser, "| (3/16) C |"), single + 1);
++        assert.equal(await drawnImages(browser, "| (3/4) C | (12/8) D |"), single + single + 1);
++
++        // Added chord tensions.
++        const chords = ["Cadd4", "Cadd11", "Cadd13", "Cm7add11", "C7add13(b9)", "Cadd9", "Cadd2", "Cadd12", "Cadd1"];
++        const { accepted, texts } = await inspect(browser, chords);
++        for (const chord of ["Cadd4", "Cadd11", "Cadd13", "Cm7add11", "C7add13(b9)"]) {
++            assert.equal(accepted[chord], true, `${chord} is a chord`);
++        }
++        // Existing tensions are unchanged, and spellings that are not tensions are still not chords.
++        assert.equal(accepted.Cadd9, true);
++        assert.equal(accepted.Cadd2, true);
++        assert.equal(accepted.Cadd12, false);
++        assert.equal(accepted.Cadd1, false);
++        for (const text of ["add4", "add11", "add13"]) assert.ok(texts.includes(text), `${text} is drawn`);
++    } finally {
++        await browser.close();
++    }
++})().catch(error => { console.error(error); process.exitCode = 1; });
+diff --git a/webpack.config.js b/webpack.config.js
+index 77f9b52..2c88adc 100644
+--- a/webpack.config.js
++++ b/webpack.config.js
+@@ -32,7 +32,7 @@ module.exports = {
+         }
+       },*/
+       {
+-        test: /\.js$/,
++        test: /\.m?js$/,
+         use: [
+           {
+             loader: "babel-loader",

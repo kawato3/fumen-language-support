@@ -138,7 +138,7 @@ test('the reusable Fumen patch is documented, version-pinned and excluded from t
   const directory = 'patches/fumen-1.3.3-chord-component-display';
   const english = readFileSync(`${directory}/README.md`, 'utf8');
   const japanese = readFileSync(`${directory}/README.ja.md`, 'utf8');
-  const patch = readFileSync(`${directory}/0001-fumen-1.3.3-chord-component-display-1.0.6.patch`, 'utf8');
+  const patch = readFileSync(`${directory}/0001-fumen-1.3.3-chord-component-display-1.0.7.patch`, 'utf8');
   const example = readFileSync(`${directory}/examples/chord-component-display.fumen`, 'utf8');
   for (const source of [english, japanese]) {
     assert.ok(source.includes('f3d04a522c19236c81f553871d6aee665d9eda22'));
@@ -147,6 +147,7 @@ test('the reusable Fumen patch is documented, version-pinned and excluded from t
   assert.ok(patch.startsWith('diff --git '), 'A cumulative diff applicable with git apply');
   assert.ok(patch.includes('diff --git a/src/parser/parser.js'), 'Lyrics on rhythm slashes and rests extend the parser');
   assert.ok(patch.includes('diff --git a/test/notation-extensions.test.js'));
+  assert.ok(patch.includes('diff --git a/test/maj-alias.test.js'));
   assert.ok(patch.includes('src/renderer/default_renderer.js'));
   assert.doesNotMatch(patch, /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
     'The reusable patch must not contain email addresses');
@@ -158,7 +159,7 @@ test('the reusable Fumen patch is documented, version-pinned and excluded from t
 });
 
 test('the reusable patch excludes generated distribution files', () => {
-  const patch = readFileSync('patches/fumen-1.3.3-chord-component-display/0001-fumen-1.3.3-chord-component-display-1.0.6.patch', 'utf8');
+  const patch = readFileSync('patches/fumen-1.3.3-chord-component-display/0001-fumen-1.3.3-chord-component-display-1.0.7.patch', 'utf8');
   assert.doesNotMatch(patch, /^diff --git a\/dist\//m,
     'Rebuild distribution files after applying the source patch');
 });
@@ -168,10 +169,16 @@ test('patch instructions require a build and identify the expected bundled rende
   const blobId = createHash('sha1').update(`blob ${bundle.length}\0`).update(bundle).digest('hex');
   for (const suffix of ['', '.ja']) {
     const instructions = readFileSync(`patches/fumen-1.3.3-chord-component-display/README${suffix}.md`, 'utf8');
-    assert.ok(instructions.includes('npm ci\nnpm run test:chord-labels\nnpm run test:bar-numbers\nnpm run test:notation-extensions'));
+    assert.ok(instructions.includes('npm ci\nnpm run test:chord-labels\nnpm run test:bar-numbers\nnpm run test:notation-extensions\nnpm run test:maj-alias'));
     assert.ok(instructions.includes('git hash-object dist/fumen.js'));
     assert.ok(instructions.includes(blobId), 'The expected build must match the bundled renderer');
   }
+});
+
+test('the published 1.0.6 patch is retained byte-for-byte under its versioned name', () => {
+  const bytes = readFileSync('patches/fumen-1.3.3-chord-component-display/0001-fumen-1.3.3-chord-component-display-1.0.6.patch');
+  assert.equal(createHash('sha256').update(bytes).digest('hex'),
+    'e1e9cde7c68fc429e9af3207588fa191e8154b00441a82a3b1152b6a1af97b2c');
 });
 
 test('the published 1.0.5 patch is retained byte-for-byte under its versioned name', () => {

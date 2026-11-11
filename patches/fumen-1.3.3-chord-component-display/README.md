@@ -6,13 +6,15 @@ This directory distributes a renderer patch for [hbjpn/fumen](https://github.com
 
 These are **not** official Fumen features. The patch adds chord-display settings and opt-in
 performance-order bar numbers; an unpatched renderer ignores these additional `%PARAM` members
-and keeps its usual appearance. It also extends the notation in four small ways that an
+and keeps its usual appearance. It also extends the notation in five small ways that an
 unpatched renderer reads differently (see [Lyrics on rhythm slashes and rests](#lyrics-on-rhythm-slashes-and-rests),
-[Escaping a slash in lyrics](#escaping-a-slash-in-lyrics), [Add tensions](#add-tensions) and [Time signature numerals](#time-signature-numerals)).
+[Escaping a slash in lyrics](#escaping-a-slash-in-lyrics), [Add tensions](#add-tensions), [Time signature numerals](#time-signature-numerals) and
+[Lowercase major alias](#lowercase-major-alias)).
 
 Patch filenames use the extension release that introduces their contents, not a
-separate patch version. The `1.0.6` file matches extension version 1.0.6;
-the unchanged [1.0.5 patch](0001-fumen-1.3.3-chord-component-display-1.0.5.patch)
+separate patch version. The `1.0.7` file matches extension version 1.0.7;
+the unchanged [1.0.6 patch](0001-fumen-1.3.3-chord-component-display-1.0.6.patch),
+[1.0.5 patch](0001-fumen-1.3.3-chord-component-display-1.0.5.patch)
 and [1.0.3 patch](0001-fumen-1.3.3-chord-component-display-1.0.3.patch)
 remain available for the older functionality.
 Do not apply more than one patch: each is cumulative against unmodified upstream.
@@ -26,8 +28,8 @@ The patch applies only to this exact upstream base:
 | Upstream repository | `https://github.com/hbjpn/fumen.git` |
 | Upstream tag | `v1.3.3` |
 | Upstream commit | `f3d04a522c19236c81f553871d6aee665d9eda22` |
-| Patch file | [`0001-fumen-1.3.3-chord-component-display-1.0.6.patch`](0001-fumen-1.3.3-chord-component-display-1.0.6.patch) |
-| SHA-256 | `e1e9cde7c68fc429e9af3207588fa191e8154b00441a82a3b1152b6a1af97b2c` |
+| Patch file | [`0001-fumen-1.3.3-chord-component-display-1.0.7.patch`](0001-fumen-1.3.3-chord-component-display-1.0.7.patch) |
+| SHA-256 | `fd287278b986102a359af8d68984701f6d7e60de6e5df24a3f440875d5682a31` |
 
 Do not apply it blindly to another Fumen release. Rebase and retest the patch against a newer upstream revision instead. The patch includes source code, tests, build configuration and documentation, but no generated `dist/` files. **Build after applying it:** the upstream `dist/fumen.js` and its source map remain unchanged until you rebuild.
 
@@ -39,8 +41,8 @@ Clone Fumen, check out the exact base revision, then validate and apply the patc
 git clone https://github.com/hbjpn/fumen.git
 cd fumen
 git checkout f3d04a522c19236c81f553871d6aee665d9eda22
-git apply --check /path/to/0001-fumen-1.3.3-chord-component-display-1.0.6.patch
-git apply /path/to/0001-fumen-1.3.3-chord-component-display-1.0.6.patch
+git apply --check /path/to/0001-fumen-1.3.3-chord-component-display-1.0.7.patch
+git apply /path/to/0001-fumen-1.3.3-chord-component-display-1.0.7.patch
 ```
 
 This is a cumulative diff against unmodified v1.3.3, not an incremental update over an older copy of this patch. It does not create a commit; commit the changes yourself if needed.
@@ -52,6 +54,7 @@ npm ci
 npm run test:chord-labels
 npm run test:bar-numbers
 npm run test:notation-extensions
+npm run test:maj-alias
 ```
 
 `test:chord-labels` runs Webpack before the test, regenerating both `dist/fumen.js`
@@ -60,13 +63,13 @@ distribute a source map, use the newly generated one alongside it.
 
 The tests verify the original compact defaults, custom labels in both layouts, equivalent input spellings, transposition, extensions, alterations, slash basses, bar numbering, lyrics on rhythm slashes and rests, slash escapes in lyrics, the added tensions and multi-digit time signatures. Chord tests observe actual Canvas text drawing, not pixel-level engraving quality.
 
-To verify that your build matches the renderer bundled with extension 1.0.6, run:
+To verify that your build matches the renderer bundled with extension 1.0.7, run:
 
 ```sh
 git hash-object dist/fumen.js
 ```
 
-Expected Git blob ID: `dd8b0f55b4ae260d80b824bc03091193e7bb9a20`.
+Expected Git blob ID: `dd1306591d66bbe1e122f97944d35577fdeadbd2`.
 If it differs, check the upstream revision, patch and locked dependencies before
 deploying. Build inside the cloned repository with its own `node_modules`: the bundle
 records module paths, so a linked or relocated `node_modules` produces a different file.
@@ -147,6 +150,20 @@ The published Fumen 1.3.3 splits at every `/`; only lyrics that contain `\/` or 
 
 `add4`, `add11` and `add13` are accepted like `add2` and `add9` (`Cadd4`, `C7add13(b9)`).
 The published Fumen 1.3.3 draws them as plain text, without transposition or the label settings above.
+
+## Lowercase major alias
+
+Lowercase `maj` is an alias wherever `M` is accepted: `Cmaj` = `CM`,
+`Cmaj7` = `CM7`, `Bbmaj9` = `BbM9`, `Cmaj7/G` = `CM7/G` and `Cmmaj7` = `CmM7`.
+Other extensions, alterations and durations supported with `M` also work with `maj`.
+Rendering follows `major_label` and `chord_suffix_style`, and transposition works as for `M`.
+The parser retains the source spelling for export and cloning.
+
+Lyrics, annotations and quoted text keep their previous interpretation: `"Cmaj7"` stays
+plain text, and `"CM7"` keeps its existing chord meaning. Rhythm grouping continues to
+compare source spellings, as it does for `m` / `min`; entries with different spellings
+remain separate and retain their attached text. Published Fumen 1.3.3 draws `maj` chords as plain
+text without transposition.
 
 ## Time signature numerals
 

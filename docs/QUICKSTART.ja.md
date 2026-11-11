@@ -65,7 +65,7 @@
 - プレビューのタブを閉じると描画を停止します。再びボタンを押せば開けます。
 - 元の文書を閉じた場合や、保存・名前変更で元の文書が置き換わった場合も、プレビューを開き直してください。
 
-同梱レンダラーは Fumen 1.3.3 をもとにしており、ネット接続やフォントの追加インストールは不要です。既定の用紙設定は A4 で、`%PARAM` の指定があればそちらを優先します。表示の拡大・縮小では入力内容を変更しません。独自の `minor_label`、`major_label`、`diminished_label`、`half_diminished_label`、`augmented_label` でコードの種類ごとの表記を選び、`chord_suffix_style` でコンパクトまたは通常サイズのインライン配置を選べます。入力の綴りを再現する機能ではなく、例えば `augmented_label` を `"aug"` にすると、入力が `Caug` でも `C+` でも `Caug` と表示します。入力記法は増えません。本家 Fumen 1.3.3 の公開済みパラメーターではなく、ほかの Fumen ツールでは無視されることがあります。既定値、例、共有時の注意は、独立した[チートシートの説明](CHEATSHEET.ja.md#extension-chord-display)を確認してください。
+同梱レンダラーは Fumen 1.3.3 をもとにしており、ネット接続やフォントの追加インストールは不要です。既定の用紙設定は A4 で、`%PARAM` の指定があればそちらを優先します。表示の拡大・縮小では入力内容を変更しません。独自の `minor_label`、`major_label`、`diminished_label`、`half_diminished_label`、`augmented_label` でコードの種類ごとの表記を選び、`chord_suffix_style` でコンパクトまたは通常サイズのインライン配置を選べます。入力の綴りを再現する機能ではなく、例えば `augmented_label` を `"aug"` にすると、入力が `Caug` でも `C+` でも `Caug` と表示します。これらの表示設定で入力記法は変わりません。本家 Fumen 1.3.3 の公開済みパラメーターではなく、ほかの Fumen ツールでは無視されることがあります。既定値、例、共有時の注意は、独立した[チートシートの説明](CHEATSHEET.ja.md#extension-chord-display)を確認してください。
 
 ![同じコードの既定のコンパクト表示と、この拡張固有のインライン表示を比べた画像](../resources/images/chord-display-modes.png)
 

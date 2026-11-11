@@ -48,6 +48,7 @@ A quick reference for the bundled **Fumen 1.3.3**, available offline. Chord name
 | Example | Meaning |
 | --- | --- |
 | `C`, `Am7`, `Cm7-5#11` | Chord names. See the official chord reference for details. |
+| `Cmaj7`, `Bbmaj9`, `Cmaj7/G`, `Cmmaj7` | Extension-specific: lowercase `maj` is an alias wherever `M` is accepted (`CM7`, `BbM9`, `CM7/G`, `CmM7`). |
 | `C/D` | Slash chord. The bass note follows `/`. |
 | `/D` | Bass note only. |
 | `(4/4)` | Time signature, written inside a measure. |
@@ -62,6 +63,8 @@ A quick reference for the bundled **Fumen 1.3.3**, available offline. Chord name
 | `-2-` | Two-measure rest. The number sets the measure count. |
 
 Duration numbers: `1` = whole, `2` = half, `4` = quarter, `8` = eighth, `16` = sixteenth, `32` = thirty-second, `64` = sixty-fourth note.
+
+The `maj` alias also works without a number (`Cmaj` = `CM`) and with other extensions supported after `M`. It follows `major_label` and `chord_suffix_style`, and transposes as `M` does. Parsing, rendering and score export preserve the source spelling. Lyrics, annotations and quoted text keep their existing interpretation; `"Cmaj7"` stays plain text. Unpatched Fumen 1.3.3 treats unquoted `maj` chords as plain text and does not transpose them.
 
 The duration-only, tie and tuplet examples describe chords/rhythm slashes. Do not assume that every combination also applies to rests.
 

@@ -4,7 +4,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const base = 'https://raw.githubusercontent.com/hbjpn/fumen/f3d04a522c19236c81f553871d6aee665d9eda22/';
 const assets = [
-  ['fumen.js', null, 'd2e0cde6df3bdc48431f6cc4982e7a42d6ded35c5df8ca78f749238f1733bfa4'],
+  ['fumen.js', null, '7d7ebf7a2c41b1059746989df399dbda8a3f583850fb557b75de9b9230bab2d9'],
   ['FUMEN-LICENSE.txt', base + 'LICENSE.txt', 'c929baf8c1319dc5c7a2febbbc63abcff243ebdc0d2e1fedf989ff33b7181849'],
   ['OFL.txt', base + 'OFL.txt', '632bb8c8c187ad3385504addd36705148b29de24f67b3bdafb7efb11687eb7fc'],
   ['BABEL-LICENSE.txt', 'https://unpkg.com/@babel/polyfill@7.8.7/LICENSE', '117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76'],
